@@ -1,0 +1,1023 @@
+hostname %hostname%
+!
+feature tacacs+
+feature scheduler
+feature bgp
+feature pim
+feature udld
+feature interface-vlan
+feature hsrp
+feature lacp
+feature dhcp
+feature lldp
+feature bfd
+feature sflow
+feature scp-server
+no feature telnet
+!
+role name ENG
+  description FSC ACCESS
+  rule 8 permit command terminal *
+  rule 7 permit command copy *
+  rule 6 permit command dir *
+  rule 5 permit read
+  rule 4 permit command clear counters *
+  rule 3 permit command show *
+  rule 2 permit command traceroute *
+  rule 1 permit command ping *
+!
+username admin password 0 T_Mobile123  role network-admin
+username ops password 5 $5$JPLCBM$6tAE/Jn/ktPkwndN/2fwnwQ2Zg52mMTghX026M1MNzA  role network-admin
+crypto key generate rsa label %hostname%.T-MOBILE.NET modulus 512
+banner motd ^
+T-Mobile USA, Inc. 2014 (C) All rights reserved.
+All use subject to applicable license agreements.
+This system is for the use of authorized users only. Everyone (Users) using
+this system consents to the terms and conditions hereunder. The use is for
+T-Mobile USA, Inc. (TMUS) authorized users only, and all use must be for TMUS
+nbusiness only. All data, content, software and other information (Data) on the
+system is owned or licensed by TMUS. Users should not disclose or otherwise use
+the Data except as expressly authorized by TMUS. No Data may be shared outside
+of TMUS systems unless expressly authorized by TMUS. TMUS may monitor Users'
+usage. Users should contact T-Mobile National Help Desk at 877-878-7326 with
+any questions. Users in violation of these terms and conditions are subject to
+disciplinary or other action.
+
+^
+!
+no ip domain-lookup
+ip domain-name T-MOBILE.NET
+logging event link-status default
+logging level ethpm link-up error
+logging level ethpm link-down error
+errdisable recovery cause link-flap
+ip access-list SNMP-RO-NMNET
+  10 remark +----------------------------------------------------------------------
+  20 remark + SNMP Read-Only Acesss (NMNET)
+  30 remark +----------------------------------------------------------------------
+  40 permit ip 5.0.0.0/8 any
+  50 permit ip 10.245.0.0/16 any
+  60 permit ip 10.248.0.0/13 any
+  70 permit ip 10.240.0.0/13 any
+!
+ip access-list 3
+  10 remark Deny everything for NTP
+  20 deny ip any any
+ip access-list 4
+  10 remark Permit NTP servers we sync to
+  20 permit udp 10.251.4.4/32 any
+  30 permit udp 10.251.4.5/32 any
+  40 permit udp 10.252.4.4/32 any
+  50 permit udp 10.252.4.5/32 any
+!
+ip access-list set-dscp-best-effort
+  10 permit ip any any
+ip access-list set-dscp-bronze
+  10 deny ip any any
+ip access-list set-dscp-gold
+  10 deny ip any any
+ip access-list set-dscp-silver
+  10 deny ip any any
+ip access-list ssh-only
+  10 permit tcp 5.0.0.0/8 any eq 22
+  20 permit tcp 10.245.0.0/16 any eq 22
+  30 permit tcp 10.248.0.0/13 any eq 22
+  40 permit tcp 10.240.0.0/13 any eq 22
+!
+class-map type qos match-any set-dscp-gold
+  match dscp 46
+  match precedence 5
+class-map type qos match-any set-dscp-best-effort
+  match dscp 10,12,14
+  match precedence 1
+class-map type qos match-any set-dscp-bronze
+  match dscp 18,20,22
+  match precedence 2
+class-map type qos match-any set-dscp-silver
+  match dscp 26,28,30,34,36,38
+  match precedence 3-4
+!
+policy-map type qos set-dscp-all
+  class set-dscp-gold
+    set qos-group 4
+  class set-dscp-silver
+    set qos-group 3
+  class set-dscp-bronze
+    set qos-group 2
+  class set-dscp-best-effort
+    set qos-group 1
+!
+policy-map type network-qos jumbo
+  class type network-qos class-default
+    mtu 9216
+system qos
+  service-policy type network-qos jumbo
+!
+ip access-list copp-acl-auto-rp-custom
+  10 permit ip any 224.0.1.39/32 
+  20 permit ip any 224.0.1.40/32 
+ip access-list copp-acl-bgp-custom
+  10 permit tcp any gt 1023 any eq bgp 
+  20 permit tcp any eq bgp any gt 1023 
+ipv6 access-list copp-acl-bgp6-custom
+  10 permit tcp any gt 1023 any eq bgp 
+  20 permit tcp any eq bgp any gt 1023 
+ip access-list copp-acl-dhcp-custom
+  10 permit udp any eq bootpc any 
+  20 permit udp any neq bootps any eq bootps 
+ip access-list copp-acl-dhcp-relay-response-custom
+  10 permit udp any eq bootps any 
+  20 permit udp any any eq bootpc 
+ipv6 access-list copp-acl-dhcp6-custom
+  10 permit udp any eq 546 any 
+  20 permit udp any any eq 547 
+ipv6 access-list copp-acl-dhcp6-relay-response-custom
+  10 permit udp any eq 547 any 
+  20 permit udp any any eq 546 
+ip access-list copp-acl-eigrp-custom
+  10 permit eigrp any any 
+ipv6 access-list copp-acl-eigrp6-custom
+  10 permit eigrp any any 
+ip access-list copp-acl-ftp-custom
+  10 permit tcp any any eq ftp-data 
+  20 permit tcp any any eq ftp 
+  30 permit tcp any eq ftp-data any 
+  40 permit tcp any eq ftp any 
+ip access-list copp-acl-hsrp-custom
+  10 permit udp any 224.0.0.0/24 eq 1985 
+ipv6 access-list copp-acl-hsrp6-custom
+  10 permit udp any ff02::66/128 eq 2029 
+ip access-list copp-acl-http-custom
+  10 permit tcp any eq www any 
+  20 permit tcp any any eq www 
+ip access-list copp-acl-https-custom
+  10 permit tcp any eq 443 any 
+  20 permit tcp any any eq 443 
+ip access-list copp-acl-icmp-custom
+  10 permit icmp any any echo 
+  20 permit icmp any any echo-reply 
+ipv6 access-list copp-acl-icmp6-custom
+  10 permit icmp any any echo-request 
+  20 permit icmp any any echo-reply 
+ip access-list copp-acl-igmp-custom
+  10 permit igmp any 224.0.0.0/3 
+mac access-list copp-acl-mac-cdp-udld-vtp-custom
+  10 permit any 0100.0ccc.cccc 0000.0000.0000 
+mac access-list copp-acl-mac-cfsoe-custom
+  10 permit any 0180.c200.000e 0000.0000.0000 0x8843 
+  20 permit any 0180.c200.000e 0000.0000.0000 
+mac access-list copp-acl-mac-dot1x-custom
+  10 permit any 0180.c200.0003 0000.0000.0000 0x888e 
+mac access-list copp-acl-mac-fcoe-custom
+  10 permit any any 0x8906 
+  20 permit any any 0x8914 
+mac access-list copp-acl-mac-l2-tunnel-custom
+  10 permit any any 0x8840 
+mac access-list copp-acl-mac-l3-isis-custom
+  10 permit any 0180.c200.0015 0000.0000.0000 
+  20 permit any 0180.c200.0014 0000.0000.0000 
+  30 permit any 0900.2b00.0005 0000.0000.0000 
+mac access-list copp-acl-mac-lacp-custom
+  10 permit any 0180.c200.0002 0000.0000.0000 0x8809 
+mac access-list copp-acl-mac-lldp-custom
+  10 permit any 0180.c200.000e 0000.0000.0000 0x88cc 
+mac access-list copp-acl-mac-sdp-srp-custom
+  10 permit any 0180.c200.000e 0000.0000.0000 0x3401 
+mac access-list copp-acl-mac-stp-custom
+  10 permit any 0100.0ccc.cccd 0000.0000.0000 
+  20 permit any 0180.c200.0000 0000.0000.0000 
+mac access-list copp-acl-mac-undesirable-custom
+  10 permit any any 
+ipv6 access-list copp-acl-mld-custom
+  10 permit icmp any any mld-query 
+  20 permit icmp any any mld-report 
+  30 permit icmp any any mld-reduction 
+  40 permit icmp any any mldv2 
+ip access-list copp-acl-msdp-custom
+  10 permit tcp any gt 1023 any eq 639 
+  20 permit tcp any eq 639 any gt 1023 
+ipv6 access-list copp-acl-ndp-custom
+  10 permit icmp any any router-solicitation 
+  20 permit icmp any any router-advertisement 
+  30 permit icmp any any nd-ns 
+  40 permit icmp any any nd-na 
+ip access-list copp-acl-ntp-custom
+  10 permit udp any any eq ntp 
+  20 permit udp any eq ntp any 
+ipv6 access-list copp-acl-ntp6-custom
+  10 permit udp any any eq ntp 
+  20 permit udp any eq ntp any 
+ip access-list copp-acl-openflow-custom
+  10 permit tcp any eq 6653 any 
+ip access-list copp-acl-ospf-custom
+  10 permit ospf any any 
+ipv6 access-list copp-acl-ospf6-custom
+  10 permit 89 any any 
+ip access-list copp-acl-pim-custom
+  10 permit pim any 224.0.0.0/24 
+  20 permit udp any any eq pim-auto-rp 
+  30 permit ip any 224.0.0.13/32 
+ip access-list copp-acl-pim-mdt-join-custom
+  10 permit udp any 224.0.0.13/32 
+ip access-list copp-acl-pim-reg-custom
+  10 permit pim any any 
+ipv6 access-list copp-acl-pim6-custom
+  10 permit pim any ff02::d/128 
+  20 permit udp any any eq pim-auto-rp 
+ipv6 access-list copp-acl-pim6-reg-custom
+  10 permit pim any any 
+ip access-list copp-acl-ptp-custom
+  10 permit udp any 224.0.1.129/32 eq 319 
+  20 permit udp any 224.0.1.129/32 eq 320 
+ip access-list copp-acl-radius-custom
+  10 permit udp any any eq 1812 
+  20 permit udp any any eq 1813 
+  30 permit udp any any eq 1645 
+  40 permit udp any any eq 1646 
+  50 permit udp any eq 1812 any 
+  60 permit udp any eq 1813 any 
+  70 permit udp any eq 1645 any 
+  80 permit udp any eq 1646 any 
+ipv6 access-list copp-acl-radius6-custom
+  10 permit udp any any eq 1812 
+  20 permit udp any any eq 1813 
+  30 permit udp any any eq 1645 
+  40 permit udp any any eq 1646 
+  50 permit udp any eq 1812 any 
+  60 permit udp any eq 1813 any 
+  70 permit udp any eq 1645 any 
+  80 permit udp any eq 1646 any 
+ip access-list copp-acl-rip-custom
+  10 permit udp any 224.0.0.0/24 eq rip 
+ipv6 access-list copp-acl-rip6-custom
+  10 permit udp any ff02::9/64 eq 521 
+ip access-list copp-acl-sftp-custom
+  10 permit tcp any any eq 115 
+  20 permit tcp any eq 115 any 
+ip access-list copp-acl-snmp-custom
+  10 permit udp any any eq snmp 
+  20 permit udp any any eq snmptrap 
+  30 permit tcp any any eq 161 
+  40 permit tcp any any eq 162 
+ipv6 access-list copp-acl-snmp6-custom
+  10 permit udp any any eq snmp 
+  20 permit udp any any eq snmptrap 
+  30 permit tcp any any eq 161 
+  40 permit tcp any any eq 162 
+ip access-list copp-acl-ssh-custom
+  10 permit tcp any any eq 22 
+  20 permit tcp any eq 22 any 
+ipv6 access-list copp-acl-ssh6-custom
+  10 permit tcp any any eq 22 
+  20 permit tcp any eq 22 any 
+ip access-list copp-acl-tacacs-custom
+  10 permit tcp any any eq tacacs 
+  20 permit tcp any eq tacacs any 
+ipv6 access-list copp-acl-tacacs6-custom
+  10 permit tcp any any eq tacacs 
+  20 permit tcp any eq tacacs any 
+ip access-list copp-acl-telnet-custom
+  10 permit tcp any any eq telnet 
+  20 permit tcp any any eq 107 
+  30 permit tcp any eq telnet any 
+  40 permit tcp any eq 107 any 
+ipv6 access-list copp-acl-telnet6-custom
+  10 permit tcp any any eq telnet 
+  20 permit tcp any any eq 107 
+  30 permit tcp any eq telnet any 
+  40 permit tcp any eq 107 any 
+ip access-list copp-acl-tftp-custom
+  10 permit udp any any eq tftp 
+  20 permit udp any any eq 1758 
+  30 permit udp any eq tftp any 
+  40 permit udp any eq 1758 any 
+ipv6 access-list copp-acl-tftp6-custom
+  10 permit udp any any eq tftp 
+  20 permit udp any any eq 1758 
+  30 permit udp any eq tftp any 
+  40 permit udp any eq 1758 any 
+ip access-list copp-acl-traceroute-custom
+  10 permit icmp any any ttl-exceeded 
+  20 permit icmp any any port-unreachable 
+  30 permit udp any any range 33434 33534 
+ip access-list copp-acl-undesirable-custom
+  10 permit udp any any eq 1434 
+ip access-list copp-acl-vpc-custom
+  10 permit udp any any eq 3200 
+ip access-list copp-acl-vrrp-custom
+  10 permit ip any 224.0.0.18/32 
+ipv6 access-list copp-acl-vrrp6-custom
+  10 permit ipv6 any ff02::12/128 
+!
+class-map type control-plane match-any copp-class-critical-custom
+  match access-group name copp-acl-bgp-custom
+  match access-group name copp-acl-rip-custom
+  match access-group name copp-acl-vpc-custom
+  match access-group name copp-acl-bgp6-custom
+  match access-group name copp-acl-ospf-custom
+  match access-group name copp-acl-rip6-custom
+  match access-group name copp-acl-eigrp-custom
+  match access-group name copp-acl-ospf6-custom
+  match access-group name copp-acl-eigrp6-custom
+  match access-group name copp-acl-auto-rp-custom
+  match access-group name copp-acl-mac-l3-isis-custom
+class-map type control-plane match-any copp-class-exception-custom
+  match exception ip option
+  match exception ip icmp unreachable
+  match exception ipv6 option
+  match exception ipv6 icmp unreachable
+class-map type control-plane match-any copp-class-exception-diag-custom
+  match exception ttl-failure
+  match exception mtu-failure
+class-map type control-plane match-any copp-class-fcoe-custom
+  match access-group name copp-acl-mac-fcoe-custom
+class-map type control-plane match-any copp-class-important-custom
+  match access-group name copp-acl-hsrp-custom
+  match access-group name copp-acl-vrrp-custom
+  match access-group name copp-acl-hsrp6-custom
+  match access-group name copp-acl-vrrp6-custom
+  match access-group name copp-acl-mac-lldp-custom
+class-map type control-plane match-any copp-class-l2-default-custom
+  match access-group name copp-acl-mac-undesirable-custom
+class-map type control-plane match-any copp-class-l2-unpoliced-custom
+  match access-group name copp-acl-mac-stp-custom
+  match access-group name copp-acl-mac-lacp-custom
+  match access-group name copp-acl-mac-cfsoe-custom
+  match access-group name copp-acl-mac-sdp-srp-custom
+  match access-group name copp-acl-mac-l2-tunnel-custom
+  match access-group name copp-acl-mac-cdp-udld-vtp-custom
+class-map type control-plane match-any copp-class-l3mc-data-custom
+  match exception multicast rpf-failure
+  match exception multicast dest-miss
+class-map type control-plane match-any copp-class-l3uc-data-custom
+  match exception glean
+class-map type control-plane match-any copp-class-management-custom
+  match access-group name copp-acl-ftp-custom
+  match access-group name copp-acl-ntp-custom
+  match access-group name copp-acl-ssh-custom
+  match access-group name copp-acl-http-custom
+  match access-group name copp-acl-ntp6-custom
+  match access-group name copp-acl-sftp-custom
+  match access-group name copp-acl-snmp-custom
+  match access-group name copp-acl-ssh6-custom
+  match access-group name copp-acl-tftp-custom
+  match access-group name copp-acl-https-custom
+  match access-group name copp-acl-snmp6-custom
+  match access-group name copp-acl-tftp6-custom
+  match access-group name copp-acl-radius-custom
+  match access-group name copp-acl-tacacs-custom
+  match access-group name copp-acl-telnet-custom
+  match access-group name copp-acl-radius6-custom
+  match access-group name copp-acl-tacacs6-custom
+  match access-group name copp-acl-telnet6-custom
+class-map type control-plane match-any copp-class-monitoring-custom
+  match access-group name copp-acl-icmp-custom
+  match access-group name copp-acl-icmp6-custom
+  match access-group name copp-acl-traceroute-custom
+class-map type control-plane match-any copp-class-multicast-host-custom
+  match access-group name copp-acl-mld-custom
+class-map type control-plane match-any copp-class-multicast-router-custom
+  match access-group name copp-acl-pim-custom
+  match access-group name copp-acl-msdp-custom
+  match access-group name copp-acl-pim6-custom
+  match access-group name copp-acl-pim-reg-custom
+  match access-group name copp-acl-pim6-reg-custom
+  match access-group name copp-acl-pim-mdt-join-custom
+class-map type control-plane match-any copp-class-nat-flow-custom
+  match exception nat-flow
+class-map type control-plane match-any copp-class-ndp-custom
+  match access-group name copp-acl-ndp-custom
+class-map type control-plane match-any copp-class-normal-custom
+  match access-group name copp-acl-mac-dot1x-custom
+  match protocol arp
+class-map type control-plane match-any copp-class-normal-dhcp-custom
+  match access-group name copp-acl-dhcp-custom
+  match access-group name copp-acl-dhcp6-custom
+class-map type control-plane match-any copp-class-normal-dhcp-relay-response-custom
+  match access-group name copp-acl-dhcp-relay-response-custom
+  match access-group name copp-acl-dhcp6-relay-response-custom
+class-map type control-plane match-any copp-class-normal-igmp-custom
+  match access-group name copp-acl-igmp-custom
+class-map type control-plane match-any copp-class-openflow-custom
+  match access-group name copp-acl-openflow-custom
+class-map type control-plane match-any copp-class-redirect-custom
+  match access-group name copp-acl-ptp-custom
+class-map type control-plane match-any copp-class-undesirable-custom
+  match access-group name copp-acl-undesirable-custom
+  match exception multicast sg-rpf-failure
+policy-map type control-plane copp-policy-strict-custom 
+  class copp-class-critical-custom
+    set cos 7 
+    police cir 19000 pps bc 128 packets conform transmit violate drop 
+  class copp-class-exception-custom
+    set cos 1 
+    police cir 50 pps bc 32 packets conform transmit violate drop 
+  class copp-class-exception-diag-custom
+    set cos 1 
+    police cir 50 pps bc 32 packets conform transmit violate drop 
+  class copp-class-fcoe-custom
+    set cos 6 
+    police cir 1500 pps bc 128 packets conform transmit violate drop 
+  class copp-class-important-custom
+    set cos 6 
+    police cir 3000 pps bc 128 packets conform transmit violate drop 
+  class copp-class-l2-default-custom
+    set cos 0 
+    police cir 50 pps bc 32 packets conform transmit violate drop 
+  class copp-class-l2-unpoliced-custom
+    set cos 7 
+    police cir 20000 pps bc 8192 packets conform transmit violate drop 
+  class copp-class-l3mc-data-custom
+    set cos 1 
+    police cir 3000 pps bc 32 packets conform transmit violate drop 
+  class copp-class-l3uc-data-custom
+    set cos 1 
+    police cir 250 pps bc 32 packets conform transmit violate drop 
+  class copp-class-management-custom
+    set cos 2 
+    police cir 0 pps bc 1 packets conform transmit violate drop 
+  class copp-class-monitoring-custom
+    set cos 1 
+    police cir 300 pps bc 128 packets conform transmit violate drop 
+  class copp-class-multicast-host-custom
+    set cos 1 
+    police cir 2000 pps bc 128 packets conform transmit violate drop 
+  class copp-class-multicast-router-custom
+    set cos 6 
+    police cir 3000 pps bc 128 packets conform transmit violate drop 
+  class copp-class-nat-flow-custom
+    set cos 7 
+    police cir 100 pps bc 64 packets conform transmit violate drop 
+  class copp-class-ndp-custom
+    set cos 6 
+    police cir 1500 pps bc 32 packets conform transmit violate drop 
+  class copp-class-normal-custom
+    set cos 1 
+    police cir 1500 pps bc 32 packets conform transmit violate drop 
+  class copp-class-normal-dhcp-custom
+    set cos 1 
+    police cir 300 pps bc 32 packets conform transmit violate drop 
+  class copp-class-normal-dhcp-relay-response-custom
+    set cos 1 
+    police cir 400 pps bc 64 packets conform transmit violate drop 
+  class copp-class-normal-igmp-custom
+    set cos 3 
+    police cir 6000 pps bc 64 packets conform transmit violate drop 
+  class copp-class-openflow-custom
+    set cos 5 
+    police cir 2000 pps bc 32 packets conform transmit violate drop 
+  class copp-class-redirect-custom
+    set cos 1 
+    police cir 1500 pps bc 32 packets conform transmit violate drop 
+  class copp-class-undesirable-custom
+    set cos 0 
+    police cir 15 pps bc 32 packets conform transmit violate drop 
+  class class-default
+    set cos 0 
+    police cir 50 pps bc 32 packets conform transmit violate drop 
+control-plane
+  service-policy input copp-policy-strict-custom 
+!
+bfd interval 250 min_rx 250 multiplier 3
+logging event link-status default
+no logging console
+snmp-server contact TierII IP Support 1-866-783-9557 Option 4
+snmp-server location %snmp%
+snmp-server user ops network-admin auth md5 0xb157a4b6cdc8a0e0b18cd29e473c5bb6 priv 0xb157a4b6cdc8a0e0b18cd29e473c5bb6 localizedkey
+snmp-server user admin network-admin auth md5 0x6208b6de1ac7bea6f0920465179ed0a5 priv 0x6208b6de1ac7bea6f0920465179ed0a5 localizedkey
+snmp-server host 10.253.77.71 traps version 2c <redacted - obtain from CyberArk>
+snmp-server host 10.253.77.71 use-vrf management
+snmp-server host 10.253.77.71 source-interface mgmt0
+snmp-server host 10.253.77.72 traps version 2c <redacted - obtain from CyberArk>
+snmp-server host 10.253.77.72 use-vrf management
+snmp-server host 10.253.77.72 source-interface mgmt0
+snmp-server host 10.255.51.25 traps version 2c <redacted - obtain from CyberArk>
+snmp-server host 10.255.51.25 use-vrf management
+snmp-server host 10.255.51.25 source-interface mgmt0
+snmp-server host 10.255.51.26 traps version 2c <redacted - obtain from CyberArk>
+snmp-server host 10.255.51.26 use-vrf management
+snmp-server host 10.255.51.26 source-interface mgmt0
+snmp-server host 10.251.6.72 traps version 2c HPtraps01
+snmp-server host 10.251.6.72 use-vrf management
+snmp-server host 10.251.6.72 source-interface mgmt0
+snmp-server host 10.252.9.18 traps version 2c HPtraps01
+snmp-server host 10.252.9.18 use-vrf management
+snmp-server host 10.252.9.18 source-interface mgmt0
+snmp-server enable traps bgp
+snmp-server enable traps bridge topologychange
+snmp-server enable traps bridge newroot
+snmp-server enable traps stpx inconsistency
+snmp-server enable traps stpx loop-inconsistency
+snmp-server enable traps stpx root-inconsistency
+snmp-server enable traps callhome event-notify
+snmp-server enable traps callhome smtp-send-fail
+snmp-server enable traps cfs state-change-notif
+snmp-server enable traps cfs merge-failure
+snmp-server enable traps hsrp state-change
+snmp-server enable traps upgrade UpgradeOpNotifyOnCompletion
+snmp-server enable traps upgrade UpgradeJobStatusNotify
+snmp-server enable traps feature-control FeatureOpStatusChange
+snmp-server enable traps config ccmCLIRunningConfigChanged
+snmp-server enable traps snmp authentication
+snmp-server community <redacted - obtain from CyberArk> group network-operator
+snmp-server community <redacted - obtain from CyberArk> use-acl SNMP-RO-NMNET
+!
+ntp server 10.251.4.4 use-vrf management
+ntp server 10.251.4.5 use-vrf management
+ntp server 10.252.4.4 use-vrf management
+ntp source-interface  mgmt0
+ntp access-group peer 4
+ntp access-group serve 3
+ntp access-group query-only 3
+!
+vrf context management
+  ip route 0.0.0.0/0 %default_gate%
+track 1 interface port-channel1 line-protocol
+track 2 interface port-channel2 line-protocol
+track 101 interface loopback101 line-protocol
+system vlan long-name
+vlan 1
+vlan 25
+  name PRIVATE_VLAN_HB1
+vlan 26
+  name PRIVATE_VLAN_HB2
+vlan 27
+  name PRIVATE_VLAN_HB3
+vlan 28
+  name PRIVATE_VLAN_HB4
+vlan 29
+  name PRIVATE_VLAN_HB5
+vlan 30
+  name PRIVATE_VLAN_HB6
+vlan 31
+  name PRIVATE_VLAN_HB7
+vlan 32
+  name PRIVATE_VLAN_HB8
+vlan 33
+  name PRIVATE_VLAN_HB9
+vlan 34
+  name PRIVATE_VLAN_HB10
+vlan 35
+  name PRIVATE_VLAN_HB11
+vlan 36
+  name PRIVATE_VLAN_HB12
+vlan 37
+  name PRIVATE_VLAN_HB13
+vlan 38
+  name PRIVATE_VLAN_HB14
+vlan 39
+  name PRIVATE_VLAN_HB15
+vlan 40
+  name PRIVATE_VLAN_HB16
+vlan 41
+  name PRIVATE_VLAN_HB17
+vlan 42
+  name PRIVATE_VLAN_HB18
+vlan 43
+  name PRIVATE_VLAN_HB19
+vlan 44
+  name PRIVATE_VLAN_HB20
+vlan 45
+  name PRIVATE_VLAN_HB21
+vlan 46
+  name PRIVATE_VLAN_HB22
+vlan 47
+  name PRIVATE_VLAN_HB23
+vlan 48
+  name PRIVATE_VLAN_HB24
+vlan 49
+  name PRIVATE_VLAN_HB25
+vlan 111
+  name %hostname%/%remote_name%_INTERCONNECT
+!		
+spanning-tree mode mst
+spanning-tree pathcost method long
+spanning-tree port type edge default
+spanning-tree port type edge bpduguard default
+spanning-tree mst 0 priority %stp_priority%
+spanning-tree mst configuration
+  name TMO_MST
+ip prefix-list DEFAULT-IPV4-ROUTE seq 5 permit 0.0.0.0/0
+ip prefix-list NB-IPV4-ASSIGNED-SPACE seq 10 deny 192.168.0.0/16 le 32
+ip prefix-list NB-IPV4-ASSIGNED-SPACE seq 20 permit %loopback%/32
+!		
+route-map IPV4-DEFAULT-ONLY permit 10
+  match ip address prefix-list DEFAULT-IPV4-ROUTE
+route-map NB-IPV4-ASSIGNED-SPACE-ONLY permit 10
+  match ip address prefix-list NB-IPV4-ASSIGNED-SPACE
+key chain hsrp-keys
+  key 1
+    key-string T-mobile
+service dhcp
+ip dhcp relay
+!
+interface Vlan1
+  shutdown
+!
+interface Vlan111
+  no ip redirects
+  ip address %vlan111_ip%
+  no shutdown
+  mtu 9216
+  description %hostname%/%remote_name%_%vlan111_sub%
+!		
+interface port-channel111
+  description %remote_RR%_%remote_name%_Po111
+  switchport mode trunk
+  switchport trunk allowed vlan 25-49,111
+  spanning-tree port type network
+  mtu 9216
+  no shutdown
+  storm-control broadcast level 0.5
+  storm-control multicast level 0.5
+  storm-control action trap
+!
+interface Ethernet1/49
+  description %remote_RR%_%remote_name%_E1/49
+  switchport mode trunk
+  switchport trunk allowed vlan 25-49,111
+  mtu 9216
+  no shutdown
+  storm-control broadcast level 0.5
+  storm-control multicast level 0.5
+  storm-control action trap
+  channel-group 111 mode active
+!
+interface Ethernet1/50
+  description %remote_RR%_%remote_name%_E1/50
+  switchport mode trunk
+  switchport trunk allowed vlan 25-49,111
+  mtu 9216
+  no shutdown
+  storm-control broadcast level 0.5
+  storm-control multicast level 0.5
+  storm-control action trap
+  channel-group 111 mode active
+!
+interface Ethernet 1/1
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.0/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/2
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.2/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/3
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.4/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/4
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.6/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/5
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.8/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/6
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.10/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/7
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.12/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/8
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.14/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/9
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.16/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/10
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.18/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/11
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.20/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/12
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.22/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/13
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.24/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/14
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.26/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/15
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.28/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/16
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.30/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/17
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.32/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/18
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.34/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/19
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.36/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/20
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.38/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/21
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.40/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/22
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.42/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/23
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.44/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/24
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.46/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/25
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.48/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/26
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.50/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/27
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.52/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/28
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.54/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/29
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.56/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/30
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.58/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/31
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.60/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/32
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.62/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/33
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.64/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/34
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.66/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/35
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.68/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/36
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.70/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/37
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.72/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/38
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.74/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/39
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.76/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/40
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.78/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/41
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.80/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/42
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.82/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/43
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.84/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/44
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.86/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/45
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.88/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/46
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.90/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/47
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.92/31
+  mtu 9216
+  no shutdown
+interface Ethernet 1/48
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.94/31
+  mtu 9216
+  no shutdown
+!
+interface mgmt0
+  description %mgmt_description%
+  vrf member management
+  ip address %mgmt_ip%
+!		
+interface loopback0
+  description %hostname%_LO0
+  ip address %loopback%/32
+!		
+interface loopback101
+  description HSRP CONTROL INTERFACE LOOPBACK101
+clock timezone GMT 0 0
+cli alias name sir show ip route
+cli alias name srb sho run | beg
+cli alias name sri sho run | inc
+cli alias name son sho ip ospf nei
+cli alias name sr sho run
+cli alias name sirc sho ip route vrf cos
+cli alias name sli show log | include
+cli alias name sle show log | exclude
+cli alias name wr copy run start
+!
+line console
+  exec-timeout 15
+line vty
+  exec-timeout 15
+  access-class ssh-only in
+!
+router bgp %bgp_as%
+ router-id %loopback%
+  log-neighbor-changes
+  address-family ipv4 unicast
+    redistribute direct route-map NB-IPV4-ASSIGNED-SPACE-ONLY
+    redistribute static route-map NB-IPV4-ASSIGNED-SPACE-ONLY
+	maximum-paths 4
+ neighbor %remote_ip% remote-as %bgp_as%
+  description %remote_name%
+  bfd
+  password tmo
+  timers 3 9
+  address-family ipv4 unicast
+!
+ip pim ssm range 232.0.0.0/8
+ip arp timeout 3600
+mac address-table aging-time 14460
+errdisable recovery cause bpduguard
+!
+logging server 10.253.182.93 5 use-vrf management facility kern
+logging server 10.255.160.63 5 use-vrf management facility kern
+logging source-interface mgmt0
+logging timestamp milliseconds
+logging event trunk-status enable
+no logging console
+!
+! Assigning value 0 to all tcam regions 
+hardware access-list tcam region copp 0
+hardware access-list tcam region racl 0
+hardware access-list tcam region ipv6-racl 0
+hardware access-list tcam region l3qos 0
+hardware access-list tcam region span 0
+hardware access-list tcam region redirect 0
+hardware access-list tcam region e-racl 0
+hardware access-list tcam region ifacl 0
+hardware access-list tcam region e-qos 0
+!										
+!
+hardware access-list tcam region vpc-convergence 0
+hardware access-list tcam region qos 0
+hardware access-list tcam region copp 256
+hardware access-list tcam region racl 256
+hardware access-list tcam region ipv6-racl 256
+hardware access-list tcam region l3qos 256
+hardware access-list tcam region span 256
+hardware access-list tcam region redirect 256
+hardware access-list tcam region e-qos 256
+hardware access-list tcam region e-racl 256
+hardware access-list tcam region ifacl 256
+!									  

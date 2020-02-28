@@ -1,0 +1,52 @@
+.NotFound {
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 15px;
+  padding-left: 15px;
+
+
+}
+
+.NotFound p {
+  font-weight: normal;
+}
+
+.NotFound a:not([href]),
+.NotFound a:not([href]):hover {
+  color: #007bff;
+
+}
+
+.NotFound a:not([href]):hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.NotFound img {
+  margin-top: 1rem;
+}
+
+@media (min-width: 576px) {
+  .NotFound {
+    max-width: 540px;
+  }
+}
+
+@media (min-width: 768px) {
+  .NotFound {
+    max-width: 720px;
+  }
+}
+
+@media (min-width: 992px) {
+  .NotFound {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .NotFound {
+    max-width: 1140px;
+  }
+}

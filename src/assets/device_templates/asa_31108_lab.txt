@@ -1,0 +1,527 @@
+hostname %hostname%
+!
+no feature telnet
+feature tacacs+
+feature scheduler
+feature interface-vlan
+feature hsrp
+feature lacp
+feature dhcp
+feature lldp
+feature bfd
+feature sflow
+feature scp-server
+feature bgp
+feature pim
+feature udld
+!
+!
+role name ENG
+  description FSC ACCESS
+  rule 8 permit command terminal *
+  rule 7 permit command copy *
+  rule 6 permit command dir *
+  rule 5 permit read
+  rule 4 permit command clear counters *
+  rule 3 permit command show *
+  rule 2 permit command traceroute *
+  rule 1 permit command ping *
+username admin password 0 T_Mobile123 role network-admin
+
+
+
+crypto key generate rsa label %hostname%.T-MOBILE.NET modulus 512
+!
+banner motd ^
+T-Mobile USA, Inc. 2014 (C) All rights reserved.
+All use subject to applicable license agreements.
+This system is for the use of authorized users only. Everyone (Users) using
+this system consents to the terms and conditions hereunder. The use is for
+T-Mobile USA, Inc. (TMUS) authorized users only, and all use must be for TMUS
+nbusiness only. All data, content, software and other information (Data) on the
+system is owned or licensed by TMUS. Users should not disclose or otherwise use
+the Data except as expressly authorized by TMUS. No Data may be shared outside
+of TMUS systems unless expressly authorized by TMUS. TMUS may monitor Users'
+usage. Users should contact T-Mobile National Help Desk at 877-878-7326 with
+any questions. Users in violation of these terms and conditions are subject to
+disciplinary or other action.
+
+^
+!
+no ip domain-lookup
+ip domain-name T-MOBILE.NET
+logging event link-status default
+logging level ethpm link-up error
+logging level ethpm link-down error
+errdisable recovery cause link-flap
+ip access-list SNMP-RO-NMNET
+  10 remark +----------------------------------------------------------------------
+  20 remark + SNMP Read-Only Acesss (NMNET)
+  30 remark +----------------------------------------------------------------------
+  40 permit ip 5.0.0.0/8 any
+  50 permit ip 10.245.0.0/16 any
+  60 permit ip 10.248.0.0/13 any
+  70 permit ip 10.240.0.0/13 any
+ip access-list set-dscp-best-effort
+  10 permit ip any any
+ip access-list set-dscp-bronze
+  10 deny ip any any
+ip access-list set-dscp-gold
+  10 deny ip any any
+ip access-list set-dscp-silver
+  10 deny ip any any
+ip access-list ssh-only
+  10 permit tcp 5.0.0.0/8 any eq 22
+  20 permit tcp 10.245.0.0/16 any eq 22
+  30 permit tcp 10.248.0.0/13 any eq 22
+  40 permit tcp 10.240.0.0/13 any eq 22
+!
+ip access-list 3
+  10 remark Deny everything for NTP
+  20 deny ip any any
+ip access-list 4
+  10 remark Permit NTP servers we sync to
+  20 permit udp 10.251.4.4/32 any
+  30 permit udp 10.251.4.5/32 any
+  40 permit udp 10.252.4.4/32 any
+  50 permit udp 10.252.4.5/32 any
+!
+policy-map type network-qos jumbo
+  class type network-qos class-default
+    mtu 9216
+system qos
+  service-policy type network-qos jumbo
+!
+copp profile strict
+!
+bfd interval 250 min_rx 250 multiplier 3
+!
+class-map type qos match-any set-dscp-gold
+  match dscp 46
+  match precedence 5
+class-map type qos match-any set-dscp-bronze
+  match dscp 18,20,22
+  match precedence 2
+class-map type qos match-any set-dscp-silver
+  match dscp 26,28,30,34,36,38
+  match precedence 3-4
+class-map type qos match-any set-dscp-best-effort
+  match dscp 10,12,14
+  match precedence 1
+!
+!
+policy-map type qos set-dscp-all
+  class set-dscp-gold
+    set qos-group 4
+  class set-dscp-silver
+    set qos-group 3
+  class set-dscp-bronze
+    set qos-group 2
+  class set-dscp-best-effort
+    set qos-group 1
+!
+!
+policy-map q-i-set-dscp-default
+ class class-default
+!
+snmp-server contact TierII IP Support 1-866-783-9557 Option 4
+snmp-server location %snmp%
+snmp-server user ops network-admin auth md5 0x5ddce125edb49b75149b1e91798d9917 priv 0x5ddce125edb49b75149b1e91798d9917 localizedkey
+snmp-server user admin network-admin auth md5 0xb92bc596649ca9f9149caedb6649126a priv 0xb92bc596649ca9f9149caedb6649126a localizedkey
+!
+snmp-server host 10.253.77.71 traps version 2c <redacted - obtain from CyberArk>
+snmp-server host 10.253.77.71 use-vrf management
+snmp-server host 10.253.77.71 source-interface mgmt0
+snmp-server host 10.253.77.72 traps version 2c <redacted - obtain from CyberArk>
+snmp-server host 10.253.77.72 use-vrf management
+snmp-server host 10.253.77.72 source-interface mgmt0
+snmp-server host 10.255.51.25 traps version 2c <redacted - obtain from CyberArk>
+snmp-server host 10.255.51.25 use-vrf management
+snmp-server host 10.255.51.25 source-interface mgmt0
+snmp-server host 10.255.51.26 traps version 2c <redacted - obtain from CyberArk>
+snmp-server host 10.255.51.26 use-vrf management
+snmp-server host 10.255.51.26 source-interface mgmt0
+snmp-server community <redacted - obtain from CyberArk> group network-operator
+snmp-server community <redacted - obtain from CyberArk> use-acl SNMP-RO-NMNET
+!
+snmp-server enable traps bgp
+snmp-server enable traps callhome event-notify
+snmp-server enable traps callhome smtp-send-fail
+snmp-server enable traps cfs state-change-notif
+snmp-server enable traps cfs merge-failure
+snmp-server enable traps hsrp state-change
+snmp-server enable traps upgrade UpgradeOpNotifyOnCompletion
+snmp-server enable traps upgrade UpgradeJobStatusNotify
+snmp-server enable traps feature-control FeatureOpStatusChange
+snmp-server enable traps config ccmCLIRunningConfigChanged
+snmp-server enable traps snmp authentication
+snmp-server enable traps bridge newroot
+snmp-server enable traps bridge topologychange
+snmp-server enable traps stpx inconsistency
+snmp-server enable traps stpx root-inconsistency
+snmp-server enable traps stpx loop-inconsistency
+!
+ntp server 10.251.4.4 use-vrf management
+ntp server 10.251.4.5 use-vrf management
+ntp server 10.252.4.4 use-vrf management
+ntp source-interface  mgmt0
+ntp access-group peer 4
+ntp access-group serve 3
+ntp access-group query-only 3
+!
+!
+vrf context management
+ip route 0.0.0.0/0 192.168.1.69
+vlan configuration 1
+!
+spanning-tree mode mst
+spanning-tree pathcost method long
+spanning-tree port type edge default
+spanning-tree port type edge bpduguard default
+spanning-tree mst configuration
+  name TMO_MST
+!
+interface Ethernet 1/1
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.0/31
+  no shutdown
+interface Ethernet 1/2
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.2/31
+  no shutdown
+interface Ethernet 1/3
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.4/31
+  no shutdown
+interface Ethernet 1/4
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.6/31
+  no shutdown
+interface Ethernet 1/5
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.8/31
+  no shutdown
+interface Ethernet 1/6
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.10/31
+  no shutdown
+interface Ethernet 1/7
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.12/31
+  no shutdown
+interface Ethernet 1/8
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.14/31
+  no shutdown
+interface Ethernet 1/9
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.16/31
+  no shutdown
+interface Ethernet 1/10
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.18/31
+  no shutdown
+interface Ethernet 1/11
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.20/31
+  no shutdown
+interface Ethernet 1/12
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.22/31
+  no shutdown
+interface Ethernet 1/13
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.24/31
+  no shutdown
+interface Ethernet 1/14
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.26/31
+  no shutdown
+interface Ethernet 1/15
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.28/31
+  no shutdown
+interface Ethernet 1/16
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.30/31
+  no shutdown
+interface Ethernet 1/17
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.32/31
+  no shutdown
+interface Ethernet 1/18
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.34/31
+  no shutdown
+interface Ethernet 1/19
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.36/31
+  no shutdown
+interface Ethernet 1/20
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.38/31
+  no shutdown
+interface Ethernet 1/21
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.40/31
+  no shutdown
+interface Ethernet 1/22
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.42/31
+  no shutdown
+interface Ethernet 1/23
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.44/31
+  no shutdown
+interface Ethernet 1/24
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.46/31
+  no shutdown
+interface Ethernet 1/25
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.48/31
+  no shutdown
+interface Ethernet 1/26
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.50/31
+  no shutdown
+interface Ethernet 1/27
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.52/31
+  no shutdown
+interface Ethernet 1/28
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.54/31
+  no shutdown
+interface Ethernet 1/29
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.56/31
+  no shutdown
+interface Ethernet 1/30
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.58/31
+  no shutdown
+interface Ethernet 1/31
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.60/31
+  no shutdown
+interface Ethernet 1/32
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.62/31
+  no shutdown
+interface Ethernet 1/33
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.64/31
+  no shutdown
+interface Ethernet 1/34
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.66/31
+  no shutdown
+interface Ethernet 1/35
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.68/31
+  no shutdown
+interface Ethernet 1/36
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.70/31
+  no shutdown
+interface Ethernet 1/37
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.72/31
+  no shutdown
+interface Ethernet 1/38
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.74/31
+  no shutdown
+interface Ethernet 1/39
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.76/31
+  no shutdown
+interface Ethernet 1/40
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.78/31
+  no shutdown
+interface Ethernet 1/41
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.80/31
+  no shutdown
+interface Ethernet 1/42
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.82/31
+  no shutdown
+interface Ethernet 1/43
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.84/31
+  no shutdown
+interface Ethernet 1/44
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.86/31
+  no shutdown
+interface Ethernet 1/45
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.88/31
+  no shutdown
+interface Ethernet 1/46
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.90/31
+  no shutdown
+interface Ethernet 1/47
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.92/31
+  no shutdown
+interface Ethernet 1/48
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.94/31
+  no shutdown
+interface Ethernet 1/49
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.96/31
+  no shutdown
+interface Ethernet 1/50
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.98/31
+  no shutdown
+interface Ethernet 1/51
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.100/31
+  no shutdown
+interface Ethernet 1/52
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.102/31
+  no shutdown
+interface Ethernet 1/53
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.104/31
+  no shutdown
+interface Ethernet 1/54
+  description Auto_Cable_Testing
+  no switchport
+  ip address 192.168.%cable_test%.106/31
+  no shutdown
+!
+interface ethernet1/1-54
+  no bfd echo
+!
+service dhcp
+ip dhcp relay
+ip pim ssm range 232.0.0.0/8
+ip arp timeout 3600
+!
+interface Vlan1
+  shutdown
+system vlan long-name
+
+interface mgmt0
+  description %mgmt_des%
+  vrf member management
+  ip address %mgmt_ip%
+!
+!
+clock timezone GMT 0 0
+line console
+  exec-timeout 15
+line vty
+  exec-timeout 15
+ip arp timeout 3600
+!
+!
+mac address-table aging-time 14460
+!
+logging server 10.253.182.93 5 use-vrf management facility kern
+logging server 10.255.160.63 5 use-vrf management facility kern
+logging source-interface mgmt0
+logging timestamp milliseconds
+logging event trunk-status enable
+no logging console
+!
+!
+key chain hsrp-keys
+key 1
+key-string T-Mobile
+!
+!
+cli alias name sir show ip route
+cli alias name srb sho run | beg
+cli alias name sri sho run | inc
+cli alias name son sho ip ospf nei
+cli alias name sr sho run
+cli alias name sirc sho ip route vrf cos
+cli alias name sli show log | include
+cli alias name sle show log | exclude
+cli alias name wr copy run start
+!
+hardware access-list tcam region copp 0
+hardware access-list tcam region racl 0
+hardware access-list tcam region ipv6-racl 0
+hardware access-list tcam region l3qos 0
+hardware access-list tcam region span 0
+hardware access-list tcam region redirect 0
+hardware access-list tcam region e-racl 0
+hardware access-list tcam region ifacl 0
+hardware access-list tcam region e-qos 0
+!
+hardware access-list tcam region vpc-convergence 0
+hardware access-list tcam region qos 0
+hardware access-list tcam region copp 256
+hardware access-list tcam region racl 256
+hardware access-list tcam region ipv6-racl 256
+hardware access-list tcam region l3qos 256
+hardware access-list tcam region span 256
+hardware access-list tcam region redirect 256
+hardware access-list tcam region e-qos 256
+hardware access-list tcam region e-racl 256
+hardware access-list tcam region ifacl 256
+!
