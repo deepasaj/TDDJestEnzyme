@@ -33,7 +33,7 @@ const tableTheme = createMuiTheme({
 
 const MyJobsTable = () => {
   const classes = useStyles();
-  let { job_id } = useParams();
+  let { jobId } = useParams();
   const [state] = useStateValue();
   const authHeader = getAuthHeader(state.token);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -191,7 +191,7 @@ const MyJobsTable = () => {
         var row = data.data.data;
         var jobTasks = [];
         for (var status in row) {
-          if (row[status].job_id == job_id) {
+          if (row[status].job_id == jobId) {
             jobTasks.push(row[status]);
           }
         }
@@ -262,7 +262,7 @@ const MyJobsTable = () => {
         var row = data.data.data;
         var jobTasks = [];
         for (var status in row) {
-          if (row[status].job_id == job_id) {
+          if (row[status].job_id == jobId) {
             jobTasks.push(row[status]);
           }
         }

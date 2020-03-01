@@ -140,11 +140,9 @@ const DeploymentGroupsTable = (props) => {
         download: false,
         customBodyRender: (value, tableMeta) => {
           var ownsGroup = true;
-          if (user.id) {
-            if (tableMeta.rowData != undefined) {
-              if (tableMeta.rowData[2] === user.display_name) {
-                ownsGroup = false;
-              }
+          if (tableMeta.rowData != undefined) {
+            if (tableMeta.rowData[2] === user.display_name) {
+              ownsGroup = false;
             }
           }
           return (
@@ -173,11 +171,9 @@ const DeploymentGroupsTable = (props) => {
         download: false,
         customBodyRender: (value, tableMeta) => {
           var ownsGroup = true;
-          if (user.id) {
-            if (tableMeta.rowData != undefined) {
-              if (tableMeta.rowData[2] === user.display_name) {
-                ownsGroup = false;
-              }
+          if (tableMeta.rowData != undefined) {
+            if (tableMeta.rowData[2] === user.display_name) {
+              ownsGroup = false;
             }
           }
           return (

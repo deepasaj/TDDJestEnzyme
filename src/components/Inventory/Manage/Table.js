@@ -192,13 +192,10 @@ const InventoryTable = () => {
           //undefined check and state set check
           //if passes, only set disabled if locked_bool is true and it is not belonging to current user
           if (tableMeta.rowData != undefined) {
-            if (user.id) {
-              if (tableMeta.rowData[6] != false) {
-                if (tableMeta.rowData[4] != user.display_name) {
-                  isDisabled = true;
-                }
+            if (tableMeta.rowData[6] != false) {
+              if (tableMeta.rowData[4] != user.display_name) {
+                isDisabled = true;
               }
-
             }
           }
           var helper = tableMeta.rowData[1] + " is currently part of a deployment group that does not belong to you. To unlock the device, please contact the locked by user."
@@ -368,16 +365,14 @@ const InventoryTable = () => {
     },
     isRowSelectable: (dataIndex) => {
       //only allow row to be selected if device is not locked or if you are not the one locking it
-      if (user.id != -1) {
-        if (data[dataIndex].locked_bool != false) {
-          if (data[dataIndex].locked_by == user.id) {
-            return true;
-          } else {
-            return false;
-          }
-        } else {
+      if (data[dataIndex].locked_bool != false) {
+        if (data[dataIndex].locked_by == user.id) {
           return true;
+        } else {
+          return false;
         }
+      } else {
+        return true;
       }
     }
   };
