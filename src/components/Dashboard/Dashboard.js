@@ -40,8 +40,6 @@ const week_label = ["M", "T", "W", "TH", "F", "S", "SN"]
 export default function Dashboard() {
   const classes = useStyles();
   const lineClasses = lineStyles();
-  const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
   const [flipped, setCardState] = React.useState(false);
   const [refresh, setRefresh] = React.useState(false);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -361,8 +359,7 @@ export default function Dashboard() {
       }, 5000);
 
       authAPI.fetch(API_URL + "/dashboard/completed_jobs", {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then((response) => {
           response.json().then((responseData) => {
@@ -394,8 +391,7 @@ export default function Dashboard() {
 
       // fetch for active jobs
       authAPI.fetch(API_URL + "/dashboard/active_jobs", {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then((response) => {
           response.json().then((responseData) => {
@@ -425,8 +421,7 @@ export default function Dashboard() {
 
       // fetch for total tasks
       authAPI.fetch(API_URL + "/dashboard/tasks", {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then((response) => {
           response.json().then((responseData) => {
@@ -457,8 +452,7 @@ export default function Dashboard() {
 
       // fetch for inventory
       authAPI.fetch(API_URL + "/dbase/inventory", {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then((response) => {
           response.json().then((responseData) => {
@@ -489,8 +483,7 @@ export default function Dashboard() {
 
       // fetch for deployment groups
       authAPI.fetch(API_URL + "/dbase/deployment_group", {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then((response) => {
           response.json().then((responseData) => {
@@ -521,8 +514,7 @@ export default function Dashboard() {
 
       // fetch for users
       authAPI.fetch(API_URL + "/dbase/user", {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then((response) => {
           response.json().then((responseData) => {
@@ -556,8 +548,7 @@ export default function Dashboard() {
       }, 5000);
 
       authAPI.fetch(API_URL + "/dashboard/daily_jobs", {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then((response) => {
           response.json().then((responseData) => {
@@ -589,8 +580,7 @@ export default function Dashboard() {
       }, 5000);
 
       authAPI.fetch(API_URL + "/dashboard/monthly_jobs", {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then((response) => {
           response.json().then((responseData) => {
@@ -622,8 +612,7 @@ export default function Dashboard() {
       }, 5000);
 
       authAPI.fetch(API_URL + "/dashboard/daily_tasks", {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then((response) => {
           response.json().then((responseData) => {
@@ -655,8 +644,7 @@ export default function Dashboard() {
       }, 5000);
 
       authAPI.fetch(API_URL + "/dashboard/monthly_tasks", {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then((response) => {
           response.json().then((responseData) => {
@@ -688,8 +676,7 @@ export default function Dashboard() {
       }, 5000);
 
       authAPI.fetch(API_URL + "/dashboard/daily_users", {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then((response) => {
           response.json().then((responseData) => {
@@ -721,8 +708,7 @@ export default function Dashboard() {
       }, 5000);
 
       authAPI.fetch(API_URL + "/dashboard/monthly_users", {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then((response) => {
           response.json().then((responseData) => {
@@ -755,8 +741,7 @@ export default function Dashboard() {
 
       //Personalized Graph Data
       authAPI.fetch(API_URL + "/dashboard/daily_jobs_user", {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then((response) => {
           response.json().then((responseData) => {
@@ -788,8 +773,7 @@ export default function Dashboard() {
       }, 5000);
 
       authAPI.fetch(API_URL + "/dashboard/monthly_jobs_user", {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then((response) => {
           response.json().then((responseData) => {
@@ -821,8 +805,7 @@ export default function Dashboard() {
       }, 5000);
 
       authAPI.fetch(API_URL + "/dashboard/daily_tasks_user", {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then((response) => {
           response.json().then((responseData) => {
@@ -854,8 +837,7 @@ export default function Dashboard() {
       }, 5000);
 
       authAPI.fetch(API_URL + "/dashboard/monthly_tasks_user", {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then((response) => {
           response.json().then((responseData) => {
@@ -888,8 +870,7 @@ export default function Dashboard() {
 
       // Fetch for personalized Data
       authAPI.fetch(API_URL + "/dashboard/completed_jobs_user", {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then((response) => {
           response.json().then((responseData) => {
@@ -921,8 +902,7 @@ export default function Dashboard() {
 
       // fetch for active jobs
       authAPI.fetch(API_URL + "/dashboard/active_jobs_user", {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then((response) => {
           response.json().then((responseData) => {
@@ -953,8 +933,7 @@ export default function Dashboard() {
 
       // fetch for deployment groups
       authAPI.fetch(API_URL + "/dashboard/deployment_group_user", {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then((response) => {
           response.json().then((responseData) => {
@@ -984,8 +963,7 @@ export default function Dashboard() {
 
       // fetch for tasks user
       authAPI.fetch(API_URL + "/dashboard/tasks_user", {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then((response) => {
           response.json().then((responseData) => {
@@ -1016,8 +994,7 @@ export default function Dashboard() {
 
       //     fetch device type for piechart
       authAPI.fetch(API_URL + "/dashboard/device_types", {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then((response) => {
           response.json().then((responseData) => {
@@ -1053,8 +1030,7 @@ export default function Dashboard() {
 
       // fetch job status for piechart
       authAPI.fetch(API_URL + "/dashboard/job_status_stats", {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then((response) => {
           response.json().then((responseData) => {
