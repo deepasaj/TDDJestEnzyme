@@ -13,6 +13,7 @@ module.exports = {
 		publicPath: '/',
 		contentBase: path.resolve(__dirname, '../../', 'build'),
 		compress: true,
+		host: process.env.HOST || '127.0.0.1',
 		port: process.env.PORT || 3000,
 		hot: true,
 		headers: {
