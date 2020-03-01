@@ -3,7 +3,6 @@ import { NODE_ENV } from 'config';
 import { withRouter } from 'react-router-dom';
 import { useLogout } from 'hooks/authentication';
 import { useStateValue } from 'store/store';
-import { useAuth } from 'store/auth-store';
 
 import GenIconImg from 'assets/img/gen_icon.png';
 import DevEnvImg from 'assets/img/development.png';
@@ -13,10 +12,6 @@ function NavBar(props) {
   const { history } = props;
   const [{ user }] = useStateValue();
   const [isAuthenticated, logout] = useLogout();
-  const auth = useAuth();
-  auth.getAccessToken().then(function(token) {
-    console.log(token);
-  })
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <a className="navbar-brand" href="/">

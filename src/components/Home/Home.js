@@ -9,7 +9,7 @@ import { getAuthHeader } from 'utils/auth';
 import { useStateValue } from 'store/store';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-
+import { useAuthAPI } from 'store/auth-store';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -65,9 +65,11 @@ const HomeTab = props => {
   const [completedJobs, setCompletedJobs] = React.useState(0);
   const [invDevices, setInvDevices] = React.useState(0);
   const [deployGroups, setDeployGroups] = React.useState(0);
+  const authAPI = useAuthAPI();
 
   useEffect(() => {
-     axios.get(`${API_URL}/home/active_jobs`, { timeout:5000, headers: authHeader })
+    console.log('using effect')
+    authAPI.get(`${API_URL}/home/active_jobs`, { timeout:5000, headers: authHeader })
         .then((data) => {
             const rows = data.data.data[0];
             var count = rows['count(*)'];
