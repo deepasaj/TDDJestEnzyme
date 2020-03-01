@@ -17,7 +17,7 @@ import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
 import { getAuthHeader } from 'utils/auth';
 import { useStateValue } from 'store/store';
-
+import { useAuthAPI } from 'store/auth-store'
 
 //const Form = withTheme(MuiTheme);
 
@@ -56,6 +56,8 @@ const DynamicForm = props => {
   const classes = useStyles();
   const [state] = useStateValue();
   const authHeader = getAuthHeader(state.token);
+  const authAPI = useAuthAPI();
+  
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const {
     history,
@@ -93,7 +95,7 @@ const DynamicForm = props => {
   };
 
   const confirmDeploy = () => {
-    return axios.post(API_URL + `/orchestration/start-orchestration/${job.id}`, {
+    return authAPI.post(API_URL + `/orchestration/start-orchestration/${job.id}`, {}, {
       timeout: 5000,
       headers: authHeader
     })
@@ -138,11 +140,11 @@ const DynamicForm = props => {
       setLoading(true)
       var body = { "data": { "task_object": step.task_object } }
       if (activeStep === steps.length - 1) {
-        axios.patch(`${API_URL}/dbase/job/${job.id}`, { "data": { "status": "Ready", "status_details": "Ready for Deployment" } }, { timeout: 5000, headers: authHeader })
+        authAPI.patch(`${API_URL}/dbase/job/${job.id}`, { "data": { "status": "Ready", "status_details": "Ready for Deployment" } }, { timeout: 5000, headers: authHeader })
           .then(() => {
             setSuccess(true)
             setLoading(false)
-            axios.patch(`${API_URL}/dbase/tasks/${step.id}`, body, {
+            authAPI.patch(`${API_URL}/dbase/tasks/${step.id}`, body, {
               timeout: 5000,
               headers: authHeader
             })
@@ -159,7 +161,7 @@ const DynamicForm = props => {
             showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
           });
       } else {
-        axios.patch(`${API_URL}/dbase/tasks/${step.id}`, body, {
+        authAPI.patch(`${API_URL}/dbase/tasks/${step.id}`, body, {
           timeout: 5000,
           headers: authHeader
         })

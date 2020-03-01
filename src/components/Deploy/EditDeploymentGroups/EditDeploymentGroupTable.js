@@ -8,6 +8,7 @@ import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
 import { getAuthHeader } from 'utils/auth';
 import { useStateValue } from 'store/store';
+import { useAuthAPI } from 'store/auth-store';
 
 const tableTheme = createMuiTheme({
   overrides: {
@@ -40,6 +41,7 @@ const EditDeploymentsTable = (props) => {
   const [rowSelect, setRowSelect] = React.useState([]);
   const [currentTitle, setCurrentTitle] = React.useState("");
   const [unlockedData, setUnlockedData] = React.useState();
+  const authAPI = useAuthAPI();
 
   const columns = [
     {
@@ -209,7 +211,7 @@ const EditDeploymentsTable = (props) => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/dbase/get_back_ref/deploy/id:${groupId}`, {
+      authAPI.fetch(`${API_URL}/dbase/get_back_ref/deploy/id:${groupId}`, {
         method: 'GET',
         headers: authHeader
       })
@@ -252,7 +254,7 @@ const EditDeploymentsTable = (props) => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/dbase/inventory`, {
+      authAPI.fetch(`${API_URL}/dbase/inventory`, {
         method: 'GET',
         headers: authHeader
       })

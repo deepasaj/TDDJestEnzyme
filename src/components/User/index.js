@@ -9,6 +9,7 @@ import { getAuthHeader } from 'utils/auth';
 import { useStateValue } from 'store/store';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
+import { useAuthAPI } from 'store/auth-store'
 
 import './styles.css';
 
@@ -19,9 +20,10 @@ const User = () => {
   const [state] = useStateValue();
   const authHeader = getAuthHeader(state.token);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-
+  const authAPI = useAuthAPI();
+  
   useEffect(() => {
-    axios.get(`${API_URL}/user/get_user/${username}`, { timeout:5000, headers: authHeader })
+    authAPI.get(`${API_URL}/user/get_user/${username}`, { timeout:5000, headers: authHeader })
       .then(resp => {
         setUser(resp.data.data);
       })

@@ -7,6 +7,7 @@ import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
 import { getAuthHeader } from 'utils/auth';
 import { useStateValue } from 'store/store';
+import { useAuthAPI } from 'store/auth-store';
 
 
 const Builder = () => {
@@ -27,6 +28,7 @@ const Builder = () => {
   const [job, setJob] = useState({});
   const [disableBtn, setDisableBtn] = useState(false);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const authAPI = useAuthAPI();
 
   const cleanLabel = str => { // eslint-disable-line no-unused-vars
     return str.replace(/_/g, " ");
@@ -43,7 +45,7 @@ const Builder = () => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/deploy/get_mgmt_ip`, {
+      authAPI.fetch(`${API_URL}/deploy/get_mgmt_ip`, {
         method: 'GET',
         headers: authHeader
       })
@@ -82,7 +84,7 @@ const Builder = () => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/deploy/get_tasks/${job_id}`, {
+      authAPI.fetch(`${API_URL}/deploy/get_tasks/${job_id}`, {
         method: 'GET',
         headers: authHeader
       })
@@ -138,7 +140,7 @@ const Builder = () => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/dbase/job/${job_id}`, {
+      authAPI.fetch(`${API_URL}/dbase/job/${job_id}`, {
         method: 'GET',
         headers: authHeader
       })

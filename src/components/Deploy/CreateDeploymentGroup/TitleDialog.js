@@ -11,6 +11,7 @@ import { useStateValue } from 'store/store';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
 import { getAuthHeader } from 'utils/auth';
+import { useAuthAPI } from 'store/auth-store';
 
 const useStyles = makeStyles(() => ({
   btn_primary: {
@@ -44,6 +45,7 @@ const TitlePopUp = props => {
   const [title, setTitle] = React.useState("");
   const [selectedDevices, setSelectedDevices] = React.useState([]);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const authAPI = useAuthAPI();
 
   //set title state every time a change to the field occurs
   const handleChange = (e) => {
@@ -84,7 +86,7 @@ const TitlePopUp = props => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/dbase/back_populate/deploy`,{
+      authAPI.fetch(`${API_URL}/dbase/back_populate/deploy`,{
         method:"POST",
         headers: authHeader,
         body: JSON.stringify(body)

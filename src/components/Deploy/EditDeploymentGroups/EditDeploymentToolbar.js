@@ -13,6 +13,7 @@ import { showNotification } from 'utils/notifications';
 import { withRouter } from 'react-router-dom';
 import { getAuthHeader } from 'utils/auth';
 import { useStateValue } from 'store/store';
+import { useAuthAPI } from 'store/auth-store';
 
 const useStyles = makeStyles(() => ({
   iconContainer: {
@@ -30,6 +31,7 @@ const CustomToolbarSelect = (props) => {
   const authHeader = getAuthHeader(state.token);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [selectedDevices, setSelectedDevices] = React.useState([]);
+  const authAPI = useAuthAPI();
 
   const handleSaveDeploymentGroup = () => {
     // selectedRows is the dataIndex value
@@ -61,7 +63,7 @@ const CustomToolbarSelect = (props) => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/dbase/back_populate/deploy/id:${groupId}`, {
+      authAPI.fetch(`${API_URL}/dbase/back_populate/deploy/id:${groupId}`, {
         body: JSON.stringify(postData),
         method: 'PATCH',
         headers: authHeader
@@ -109,7 +111,7 @@ const CustomToolbarSelect = (props) => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/dbase/get_back_ref/deploy/id:${groupId}`, {
+      authAPI.fetch(`${API_URL}/dbase/get_back_ref/deploy/id:${groupId}`, {
         method: 'DELETE',
         headers: authHeader
       }).then((response) => {

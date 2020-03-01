@@ -11,7 +11,18 @@ export class AuthAPI {
   get = async (url, options) => {
     return axios.get(url, await this.buildAuthOptions(options));
   }
-
+  post = async (url, data, options) => {
+    return axios.post(url, data, await this.buildAuthOptions(options));
+  }
+  delete = async (url, options) => {
+    return axios.delete(url, await this.buildAuthOptions(options));
+  }
+  patch = async (url, data, options) => {
+    return axios.patch(url, data, await this.buildAuthOptions(options));
+  }
+  fetch = async (url, options) => {
+    return window.fetch(url, await this.buildAuthOptions(options));
+  }
   buildAuthOptions = async (options) => {
     const accessToken = await this.auth.getAccessToken();
     const headers = {...options.headers};

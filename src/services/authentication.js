@@ -7,7 +7,7 @@ function login(username, password) {
     body: JSON.stringify({ username, password })
   };
 
-  return fetch(`${API_URL}/api/auth/login`, requestOptions)
+  return window.fetch(`${API_URL}/api/auth/login`, requestOptions)
     .then(resp => resp.json())
     .then(data => data);
 }

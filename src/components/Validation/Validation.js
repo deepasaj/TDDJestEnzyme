@@ -11,6 +11,7 @@ import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
 import { withRouter } from 'react-router-dom';
 import { getAuthHeader } from 'utils/auth';
+import { useAuthAPI } from 'store/auth-store';
 
 const useStyles = makeStyles(() => ({
   devices: {
@@ -36,6 +37,7 @@ const ValidationRequest = (props) => {
   const [devices, setDevices] = useState();
   const [jobId, setJobID] = useState(-1); // eslint-disable-line no-unused-vars
   const [workflow, setWorkflow] = useState("DA Validation"); // eslint-disable-line no-unused-vars
+  const authAPI = useAuthAPI();
 
   const toUpper = (val) => {
     return val.toUpperCase();
@@ -65,7 +67,7 @@ const ValidationRequest = (props) => {
         didTimeOut = true;
         reject(new Error('Request timed out'));
       }, 5000);
-      fetch(`${API_URL}/dbase/job`, {
+      authAPI.fetch(`${API_URL}/dbase/job`, {
         method: 'POST',
         headers: authHeader,
         body: JSON.stringify(jobCreationBody)
@@ -89,7 +91,7 @@ const ValidationRequest = (props) => {
                   reject(new Error('Request timed out'));
                 }, 5000);
 
-                fetch(`${API_URL}/report_job_create`, {
+                authAPI.fetch(`${API_URL}/report_job_create`, {
                   method: 'POST',
                   headers: authHeader,
                   body: JSON.stringify(createJobInput)
@@ -109,7 +111,7 @@ const ValidationRequest = (props) => {
                             reject(new Error('Request timed out'));
                           }, 5000);
 
-                          fetch(`${API_URL}/orchestration/start-orchestration/${id}`, {
+                          authAPI.fetch(`${API_URL}/orchestration/start-orchestration/${id}`, {
                             method: 'POST',
                             headers: authHeader
                           })

@@ -8,6 +8,7 @@ import { API_URL } from 'config';
 import { showNotification } from 'utils/notifications';
 import { getAuthHeader } from 'utils/auth';
 import { useStateValue } from 'store/store';
+import { useAuthAPI } from 'store/auth-store';
 
 const tableTheme = createMuiTheme({
     overrides: {
@@ -37,6 +38,7 @@ const DeploymentGroupTable = () => {
   const [groupId, setGroupId] = React.useState("");
   const [state] = useStateValue();
   const authHeader = getAuthHeader(state.token);
+  const authAPI = useAuthAPI();
 
   const columns = [
     {
@@ -185,7 +187,7 @@ const DeploymentGroupTable = () => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/dbase/inventory`, {
+      authAPI.fetch(`${API_URL}/dbase/inventory`, {
         method: 'GET',
         headers: authHeader
       })

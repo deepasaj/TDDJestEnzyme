@@ -21,6 +21,7 @@ import { useStateValue } from 'store/store';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
 import { getAuthHeader } from 'utils/auth';
+import { useAuthAPI } from 'store/auth-store'
 
 
 const useStyles = makeStyles(() => ({
@@ -63,6 +64,8 @@ const DeploymentGroupsTable = (props) => {
   const { history } = props;
   const [state] = useStateValue();
   const authHeader = getAuthHeader(state.token);
+  const authAPI = useAuthAPI();
+
   const { user } = state;
   const classes = useStyles();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -334,7 +337,7 @@ const DeploymentGroupsTable = (props) => {
 
   //handle single row deletion
   const handleDelete = () => {
-    axios.delete(API_URL + `/dbase/get_back_ref/deploy/id:${groupId}`, { timeout: 5000, headers: authHeader })
+    authAPI.delete(API_URL + `/dbase/get_back_ref/deploy/id:${groupId}`, { timeout: 5000, headers: authHeader })
       .then(() => {
         setShowDeleteConfirm(false);
         setLoadingDone(false);
@@ -352,7 +355,7 @@ const DeploymentGroupsTable = (props) => {
   };
 
   const refreshDevices = () => {
-    axios.get(`${API_URL}/dbase/get_back_ref/deploy`, { timeout: 5000, headers: authHeader })
+    authAPI.get(`${API_URL}/dbase/get_back_ref/deploy`, { timeout: 5000, headers: authHeader })
       .then((response) => {
         const deploymentGroups = subNullsForEmptyStrings(response.data.data);
         deploymentGroups.forEach((deploymentGroup) => {
@@ -379,7 +382,7 @@ const DeploymentGroupsTable = (props) => {
 //                reject(new Error('Request timed out'));
 //            }, 5000);
 //
-//            fetch(`${API_URL}/dbase/get_back_ref/deploy/id:${group_id}`, {
+//            authAPI.fetch(`${API_URL}/dbase/get_back_ref/deploy/id:${group_id}`, {
 //                method: 'DELETE'
 //            }).then((response) => {
 //                clearTimeout(timeout);
@@ -400,7 +403,7 @@ const DeploymentGroupsTable = (props) => {
 //    };
 
     useEffect(() => {
-      axios.get(`${API_URL}/dbase/get_back_ref/deploy`, { timeout: 5000, headers: authHeader })
+      authAPI.get(`${API_URL}/dbase/get_back_ref/deploy`, { timeout: 5000, headers: authHeader })
         .then((response) => {
           const deploymentGroups = subNullsForEmptyStrings(response.data.data);
           deploymentGroups.forEach((deploymentGroup) => {

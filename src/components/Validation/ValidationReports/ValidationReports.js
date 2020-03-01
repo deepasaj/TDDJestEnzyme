@@ -15,6 +15,7 @@ import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
 import { getAuthHeader } from 'utils/auth';
 import { useStateValue } from 'store/store';
+import { useAuthAPI } from 'store/auth-store';
 
 
 const separator = {
@@ -83,6 +84,7 @@ const Validation = () => {
   const [job, setJob] = React.useState({}); // eslint-disable-line no-unused-vars
   const [tasks, setTasks] = React.useState([])
   const [loadingDone, setLoadingDone] = React.useState(false);
+  const authAPI = useAuthAPI();
 
   const getReportData = () => {
 
@@ -95,7 +97,7 @@ const Validation = () => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/deploy/get_tasks/${jobId}`, {
+      authAPI.fetch(`${API_URL}/deploy/get_tasks/${jobId}`, {
         method: 'GET',
         headers: authHeader
       })
@@ -152,7 +154,7 @@ const Validation = () => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/dbase/job/${jobId}`, {
+      authAPI.fetch(`${API_URL}/dbase/job/${jobId}`, {
         method: 'GET',
         headers: authHeader
       })

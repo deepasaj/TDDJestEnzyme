@@ -7,17 +7,20 @@ import { getAuthHeader } from 'utils/auth';
 import { useStateValue } from 'store/store';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
+import { useAuthAPI } from 'store/auth-store'
 
 import './styles.css';
 
 const List = () => {
   const [state] = useStateValue();
   const authHeader = getAuthHeader(state.token);
+  const authAPI = useAuthAPI();
+
   const [items, setItems] = useState();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   useEffect(() => {
-    axios.get(API_URL + "/inventory/list", { timeout: 5000, headers: authHeader })
+    authAPI.get(API_URL + "/inventory/list", { timeout: 5000, headers: authHeader })
       .then((resp) => {
         setItems(resp.data.inventoryRecords);
       }).catch(() => {

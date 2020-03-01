@@ -12,12 +12,14 @@ import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
 import { getAuthHeader } from 'utils/auth';
 import { useStateValue } from 'store/store';
+import { useAuthAPI } from 'store/auth-store';
 
 
 function BulkUpload(props) {
   const [state] = useStateValue();
   const { history } = props;
   const authHeader = getAuthHeader(state.token);
+  const authAPI = useAuthAPI();
 
   const goToManageInventory = () => {
     history.push('/inventory/manage')
@@ -130,7 +132,7 @@ function BulkUpload(props) {
 
 
             //fetch for bulk upload
-            fetch(API_URL + "/bulk_upload", {
+            authAPI.fetch(API_URL + "/bulk_upload", {
               method: 'POST',
               body: formData,
               signal: controller_signal,
@@ -162,7 +164,7 @@ function BulkUpload(props) {
                           }, 7000);
 
                           //fetch for url
-                          fetch(url, {
+                          window.fetch(url, {
                             method: 'GET',
                             signal: controller_signal
                           })
@@ -197,7 +199,7 @@ function BulkUpload(props) {
                                         }, 15000);
 
                                         //fetch for /bulk_insert/?job_id=
-                                        fetch(API_URL + "/bulk_insert/?job_id=" + job_id + "&user_id=" +
+                                        authAPI.fetch(API_URL + "/bulk_insert/?job_id=" + job_id + "&user_id=" +
                                           user_id, {
                                           method: 'POST',
                                           body: formData,

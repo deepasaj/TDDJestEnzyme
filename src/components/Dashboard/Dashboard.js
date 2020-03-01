@@ -29,6 +29,8 @@ import logoSrc from "assets/img/gen_icon.png";
 
 import { getAuthHeader } from 'utils/auth';
 import { useStateValue } from 'store/store';
+import { useAuthAPI } from 'store/auth-store';
+
 import { API_URL } from 'config';
 
 const useStyles = makeStyles(styles);
@@ -79,6 +81,7 @@ export default function Dashboard() {
   const [deviceTypesEmpty, setDeviceTypesEmpty] = React.useState(false);
 
   const [loading, setLoading] = React.useState(true);
+  const authAPI = useAuthAPI();
 
   const addUser = (id, display_name, email, username) => {
     var newUsers = {
@@ -357,7 +360,7 @@ export default function Dashboard() {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(API_URL + "/dashboard/completed_jobs", {
+      authAPI.fetch(API_URL + "/dashboard/completed_jobs", {
         method: 'GET',
         headers: authHeader
       })
@@ -390,7 +393,7 @@ export default function Dashboard() {
       }, 5000);
 
       // fetch for active jobs
-      fetch(API_URL + "/dashboard/active_jobs", {
+      authAPI.fetch(API_URL + "/dashboard/active_jobs", {
         method: 'GET',
         headers: authHeader
       })
@@ -421,7 +424,7 @@ export default function Dashboard() {
       }, 5000);
 
       // fetch for total tasks
-      fetch(API_URL + "/dashboard/tasks", {
+      authAPI.fetch(API_URL + "/dashboard/tasks", {
         method: 'GET',
         headers: authHeader
       })
@@ -453,7 +456,7 @@ export default function Dashboard() {
       }, 5000);
 
       // fetch for inventory
-      fetch(API_URL + "/dbase/inventory", {
+      authAPI.fetch(API_URL + "/dbase/inventory", {
         method: 'GET',
         headers: authHeader
       })
@@ -485,7 +488,7 @@ export default function Dashboard() {
       }, 5000);
 
       // fetch for deployment groups
-      fetch(API_URL + "/dbase/deployment_group", {
+      authAPI.fetch(API_URL + "/dbase/deployment_group", {
         method: 'GET',
         headers: authHeader
       })
@@ -517,7 +520,7 @@ export default function Dashboard() {
       }, 5000);
 
       // fetch for users
-      fetch(API_URL + "/dbase/user", {
+      authAPI.fetch(API_URL + "/dbase/user", {
         method: 'GET',
         headers: authHeader
       })
@@ -552,7 +555,7 @@ export default function Dashboard() {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(API_URL + "/dashboard/daily_jobs", {
+      authAPI.fetch(API_URL + "/dashboard/daily_jobs", {
         method: 'GET',
         headers: authHeader
       })
@@ -585,7 +588,7 @@ export default function Dashboard() {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(API_URL + "/dashboard/monthly_jobs", {
+      authAPI.fetch(API_URL + "/dashboard/monthly_jobs", {
         method: 'GET',
         headers: authHeader
       })
@@ -618,7 +621,7 @@ export default function Dashboard() {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(API_URL + "/dashboard/daily_tasks", {
+      authAPI.fetch(API_URL + "/dashboard/daily_tasks", {
         method: 'GET',
         headers: authHeader
       })
@@ -651,7 +654,7 @@ export default function Dashboard() {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(API_URL + "/dashboard/monthly_tasks", {
+      authAPI.fetch(API_URL + "/dashboard/monthly_tasks", {
         method: 'GET',
         headers: authHeader
       })
@@ -684,7 +687,7 @@ export default function Dashboard() {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(API_URL + "/dashboard/daily_users", {
+      authAPI.fetch(API_URL + "/dashboard/daily_users", {
         method: 'GET',
         headers: authHeader
       })
@@ -717,7 +720,7 @@ export default function Dashboard() {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(API_URL + "/dashboard/monthly_users", {
+      authAPI.fetch(API_URL + "/dashboard/monthly_users", {
         method: 'GET',
         headers: authHeader
       })
@@ -751,7 +754,7 @@ export default function Dashboard() {
       }, 5000);
 
       //Personalized Graph Data
-      fetch(API_URL + "/dashboard/daily_jobs_user", {
+      authAPI.fetch(API_URL + "/dashboard/daily_jobs_user", {
         method: 'GET',
         headers: authHeader
       })
@@ -784,7 +787,7 @@ export default function Dashboard() {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(API_URL + "/dashboard/monthly_jobs_user", {
+      authAPI.fetch(API_URL + "/dashboard/monthly_jobs_user", {
         method: 'GET',
         headers: authHeader
       })
@@ -817,7 +820,7 @@ export default function Dashboard() {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(API_URL + "/dashboard/daily_tasks_user", {
+      authAPI.fetch(API_URL + "/dashboard/daily_tasks_user", {
         method: 'GET',
         headers: authHeader
       })
@@ -850,7 +853,7 @@ export default function Dashboard() {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(API_URL + "/dashboard/monthly_tasks_user", {
+      authAPI.fetch(API_URL + "/dashboard/monthly_tasks_user", {
         method: 'GET',
         headers: authHeader
       })
@@ -884,7 +887,7 @@ export default function Dashboard() {
       }, 5000);
 
       // Fetch for personalized Data
-      fetch(API_URL + "/dashboard/completed_jobs_user", {
+      authAPI.fetch(API_URL + "/dashboard/completed_jobs_user", {
         method: 'GET',
         headers: authHeader
       })
@@ -917,7 +920,7 @@ export default function Dashboard() {
       }, 5000);
 
       // fetch for active jobs
-      fetch(API_URL + "/dashboard/active_jobs_user", {
+      authAPI.fetch(API_URL + "/dashboard/active_jobs_user", {
         method: 'GET',
         headers: authHeader
       })
@@ -949,7 +952,7 @@ export default function Dashboard() {
       }, 5000);
 
       // fetch for deployment groups
-      fetch(API_URL + "/dashboard/deployment_group_user", {
+      authAPI.fetch(API_URL + "/dashboard/deployment_group_user", {
         method: 'GET',
         headers: authHeader
       })
@@ -980,7 +983,7 @@ export default function Dashboard() {
       }, 5000);
 
       // fetch for tasks user
-      fetch(API_URL + "/dashboard/tasks_user", {
+      authAPI.fetch(API_URL + "/dashboard/tasks_user", {
         method: 'GET',
         headers: authHeader
       })
@@ -1012,7 +1015,7 @@ export default function Dashboard() {
       }, 5000);
 
       //     fetch device type for piechart
-      fetch(API_URL + "/dashboard/device_types", {
+      authAPI.fetch(API_URL + "/dashboard/device_types", {
         method: 'GET',
         headers: authHeader
       })
@@ -1049,7 +1052,7 @@ export default function Dashboard() {
       }, 5000);
 
       // fetch job status for piechart
-      fetch(API_URL + "/dashboard/job_status_stats", {
+      authAPI.fetch(API_URL + "/dashboard/job_status_stats", {
         method: 'GET',
         headers: authHeader
       })

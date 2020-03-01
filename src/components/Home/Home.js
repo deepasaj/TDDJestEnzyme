@@ -78,7 +78,7 @@ const HomeTab = props => {
         .catch(() => {
             showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
         });
-     axios.get(`${API_URL}/home/completed_jobs`, { timeout:5000, headers: authHeader })
+     authAPI.get(`${API_URL}/home/completed_jobs`, { timeout:5000, headers: authHeader })
         .then((data) => {
             const rows = data.data.data[0];
             var count = rows['count(*)'];
@@ -87,7 +87,7 @@ const HomeTab = props => {
         .catch(() => {
             showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
         });
-     axios.get(`${API_URL}/dbase/inventory`, { timeout:5000, headers: authHeader })
+     authAPI.get(`${API_URL}/dbase/inventory`, { timeout:5000, headers: authHeader })
         .then((data) => {
             const rows = data.data.data.length;
             setInvDevices(rows);
@@ -95,7 +95,7 @@ const HomeTab = props => {
         .catch(() => {
             showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
         });
-     axios.get(`${API_URL}/dbase/deployment_group`, { timeout:5000, headers: authHeader })
+     authAPI.get(`${API_URL}/dbase/deployment_group`, { timeout:5000, headers: authHeader })
         .then((data) => {
             const rows = data.data.data.length;
             setDeployGroups(rows);
