@@ -248,13 +248,11 @@ const Jobs = (props) => {
         download: false,
         customBodyRender: (value, tableMeta) => {
           var jobReady = true;
-          if (!user.id) {
-            if (tableMeta.rowData != undefined) {
-              //if the job is yours and status is in one of the below status, can open job wizard
-              if (tableMeta.rowData[4] == "User Input" || tableMeta.rowData[4] == "Ready" || tableMeta.rowData[4] == "Complete") {
-                if (tableMeta.rowData[5] === user.display_name) {
-                  jobReady = false;
-                }
+          if (tableMeta.rowData != undefined) {
+            //if the job is yours and status is in one of the below status, can open job wizard
+            if (tableMeta.rowData[4] == "User Input" || tableMeta.rowData[4] == "Ready" || tableMeta.rowData[4] == "Complete") {
+              if (tableMeta.rowData[5] === user.display_name) {
+                jobReady = false;
               }
             }
           }
