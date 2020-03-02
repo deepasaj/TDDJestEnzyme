@@ -26,7 +26,6 @@ import Validation from "components/Validation";
 import ValidationReports from "components/Validation/ValidationReports";
 import { AuthStoreProvider } from "store/auth-store";
 import { StoreProvider } from "store/store";
-import { AuthCallbackRoute } from "components/AuthCallbackRoute";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'assets/css/form.css';
@@ -43,7 +42,8 @@ const auth = new Auth({
   scope: 'openid profile email'
 });
 
-const App = (
+const App = () => {
+  return (
     <StoreProvider>
     <AuthStoreProvider auth={auth} history={history}>
       <SnackbarProvider
@@ -57,7 +57,7 @@ const App = (
       <Router history={history}>
           <Security auth={auth}>
             <Switch>            
-              <AuthCallbackRoute path='/auth/callback' />
+              <Route path='/auth/callback' component={ImplicitCallback} />
               <SecureRoute exact path='/' component={Home}/>
               <SecureRoute path='/home/index' component={Home}/>
               <SecureRoute path='/admin' component={Admin}/>
@@ -85,7 +85,7 @@ const App = (
       </SnackbarProvider>
     </AuthStoreProvider>
     </StoreProvider>
-);
+)};
 
 
-ReactDOM.render(App, document.getElementById("root"));
+ReactDOM.render(<App/>, document.getElementById("root"));

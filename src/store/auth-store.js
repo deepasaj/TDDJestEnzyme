@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, Fragment } from 'react';
 import axios from 'axios';
 import { API_URL } from 'config';
 
@@ -45,6 +45,7 @@ export class AuthAPI {
 const getInitialState = (auth) => {
   return {
     auth,
+    isAuthenticated: false,
     authAPI: new AuthAPI(auth),
     user: {}
   };
@@ -55,13 +56,35 @@ const reducer = (state, action) => {
     case 'AUTHENTICATED':
       return {
         ...state,
+        isAuthenticated: true,
         user: action.payload.user
       };
     case 'LOGOUT':
-      return { ...state, user: {} };
+      return { ...state, isAuthenticated: false, user: {} };
     default:
       return state;
   }
+}
+
+export const AuthDectector = props => {
+  const auth = useAuth();
+  const currentState = useState();
+  useEffect(() => {
+    // check for authentication
+    const checkAuthentication = async () => {
+      const authenticated = await auth.isAuthenticated();
+      if (!currentState.isAuthenticated && authenticated) {
+        // detected the authenticated
+        console.log('detected authenticated');
+      }
+    };
+    checkAuthentication();
+  });
+  return (
+    <Fragment>
+      {props.children}
+    </Fragment>
+  );
 }
 
 export const AuthStoreProvider = props => {
@@ -70,7 +93,9 @@ export const AuthStoreProvider = props => {
     <Store.Provider
       value={useReducer(reducer, initState)}
     >
-      {props.children}
+      <AuthDectector>
+        {props.children}
+      </AuthDectector>
     </Store.Provider>
   );
 }
@@ -88,4 +113,10 @@ export const useAuth = () => {
 export const useUser = () => {
   const [state] = useContext(Store);
   return state.user;
+}
+
+
+export const useState = () => {
+  const [state] = useContext(Store);
+  return state;
 }
