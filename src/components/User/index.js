@@ -7,37 +7,29 @@ import NotFound from 'components/NotFound/NotFound';
 import { useStateValue } from 'store/store';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { useAuthAPI } from 'store/auth-store'
+import { useAuth } from 'store/auth-store'
 
 import './styles.css';
 
 const User = () => {
   let { username } = useParams();
-  const [user, setUser] = React.useState(0);
   const [userNotFound, setUserNotFound] = React.useState(0);
-  const [state] = useStateValue();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-  const authAPI = useAuthAPI();
-  
+  const auth = useAuth();
+  const [user, setUser] = React.useState({});
+
   useEffect(() => {
-    authAPI.get(`/user/get_user/${username}`, { timeout:5000 })
-      .then(resp => {
-        setUser(resp.data.data);
-      })
-      .catch(error => {
-        if (error.response.status === 404) {
-          setUserNotFound(true);
-        } else {
-          showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-        }
-      });
-    }, []);
+    const checkAuth = async () => {
+      setUser(await auth.getUser());
+    };
+    checkAuth();
+  }, []);
 
   const getBreadcrumbsPath = () => {
     if (user) {
       return [
         { text: 'Home', path: '/'},
-        { text: `${user.username}`, path: `/user/${user.username}`},
+        { text: `${user.name}`, path: `/user/${user.preferred_username}`},
       ];
     }
     return [{ text: 'Home', path: '/'}];
@@ -60,10 +52,10 @@ const User = () => {
                   ></div>
                 </div>
                 <div className="card-body">
-                  <ul><strong>Username: </strong>{user.username}</ul>
-                  <ul><strong>First name: </strong>{user.first_name}</ul>
-                  <ul><strong>Last name: </strong>{user.last_name}</ul>
-                  <ul><strong>Display name: </strong>{user.display_name}</ul>
+                  <ul><strong>Username: </strong>{user.preferred_username}</ul>
+                  <ul><strong>First name: </strong>{user.given_name}</ul>
+                  <ul><strong>Last name: </strong>{user.family_name}</ul>
+                  <ul><strong>Display name: </strong>{user.name}</ul>
                   <ul><strong>Email: </strong>{user.email}</ul>
                 </div>
             </div>

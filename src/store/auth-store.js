@@ -8,7 +8,9 @@ export class AuthAPI {
   constructor(auth) {
     this.auth = auth;
   }
-
+  getAuth = () => {
+    return this.auth;
+  }
   get = async (path, options) => {
     const url = `${API_URL}${path}`
     return axios.get(url, await this.buildAuthOptions(options));
@@ -53,3 +55,4 @@ export const AuthStoreProvider = props => {
 }
 
 export const useAuthAPI = () => useContext(Store);
+export const useAuth = () => useContext(Store).auth;
