@@ -18,12 +18,11 @@ const User = () => {
   const [user, setUser] = React.useState(0);
   const [userNotFound, setUserNotFound] = React.useState(0);
   const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const authAPI = useAuthAPI();
   
   useEffect(() => {
-    authAPI.get(`${API_URL}/user/get_user/${username}`, { timeout:5000, headers: authHeader })
+    authAPI.get(`${API_URL}/user/get_user/${username}`, { timeout:5000 })
       .then(resp => {
         setUser(resp.data.data);
       })

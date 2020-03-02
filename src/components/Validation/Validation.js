@@ -31,7 +31,6 @@ const ValidationRequest = (props) => {
   const { history } = props;
   const classes = useStyles();
   const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
   const { user } = state;
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [devices, setDevices] = useState();
@@ -69,7 +68,6 @@ const ValidationRequest = (props) => {
       }, 5000);
       authAPI.fetch(`${API_URL}/dbase/job`, {
         method: 'POST',
-        headers: authHeader,
         body: JSON.stringify(jobCreationBody)
       }).then(response => response.json())
         .then((response) => {
@@ -93,7 +91,6 @@ const ValidationRequest = (props) => {
 
                 authAPI.fetch(`${API_URL}/report_job_create`, {
                   method: 'POST',
-                  headers: authHeader,
                   body: JSON.stringify(createJobInput)
                 }).then(response => response.json())
                   .then(response => {
@@ -112,8 +109,7 @@ const ValidationRequest = (props) => {
                           }, 5000);
 
                           authAPI.fetch(`${API_URL}/orchestration/start-orchestration/${id}`, {
-                            method: 'POST',
-                            headers: authHeader
+                            method: 'POST'
                           })
                             .then(() => {
                               clearTimeout(timeout3);

@@ -78,7 +78,6 @@ const Validation = () => {
   const classes = useStyles();
   let { jobId } = useParams();
   const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [systems, setSystems] = React.useState();
   const [job, setJob] = React.useState({}); // eslint-disable-line no-unused-vars
@@ -98,8 +97,7 @@ const Validation = () => {
       }, 5000);
 
       authAPI.fetch(`${API_URL}/deploy/get_tasks/${jobId}`, {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then(response => response.json())
         .then(response => {
@@ -155,8 +153,7 @@ const Validation = () => {
       }, 5000);
 
       authAPI.fetch(`${API_URL}/dbase/job/${jobId}`, {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then(response => response.json())
         .then(response => {

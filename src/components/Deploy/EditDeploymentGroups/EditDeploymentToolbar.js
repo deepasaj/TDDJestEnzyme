@@ -28,7 +28,6 @@ const CustomToolbarSelect = (props) => {
   const { history, groupId, selectedRows, displayData, currentTitle, setCurrentTitle } = props;
   const classes = useStyles();
   const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [selectedDevices, setSelectedDevices] = React.useState([]);
   const authAPI = useAuthAPI();
@@ -65,8 +64,7 @@ const CustomToolbarSelect = (props) => {
 
       authAPI.fetch(`${API_URL}/dbase/back_populate/deploy/id:${groupId}`, {
         body: JSON.stringify(postData),
-        method: 'PATCH',
-        headers: authHeader
+        method: 'PATCH'
       }).then(response => {
         clearTimeout(timeout);
         if (!didTimeOut) {
@@ -112,8 +110,7 @@ const CustomToolbarSelect = (props) => {
       }, 5000);
 
       authAPI.fetch(`${API_URL}/dbase/get_back_ref/deploy/id:${groupId}`, {
-        method: 'DELETE',
-        headers: authHeader
+        method: 'DELETE'
       }).then((response) => {
         clearTimeout(timeout);
         if (!didTimeOut) {

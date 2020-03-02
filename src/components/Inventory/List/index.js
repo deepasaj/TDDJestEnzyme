@@ -13,14 +13,13 @@ import './styles.css';
 
 const List = () => {
   const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
   const authAPI = useAuthAPI();
 
   const [items, setItems] = useState();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   useEffect(() => {
-    authAPI.get(API_URL + "/inventory/list", { timeout: 5000, headers: authHeader })
+    authAPI.get(API_URL + "/inventory/list", { timeout: 5000 })
       .then((resp) => {
         setItems(resp.data.inventoryRecords);
       }).catch(() => {

@@ -65,7 +65,6 @@ const Jobs = (props) => {
   const { history } = props;
   const classes = useStyles();
   const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
   const authAPI = useAuthAPI();
 
   const { user } = state;
@@ -412,7 +411,7 @@ const Jobs = (props) => {
 
   //called from toolbar, enabling to refresh table data without refreshing whole page
   const refreshData = () => {
-    authAPI.get(`${API_URL}/job/job_tasks`, { headers: authHeader })
+    authAPI.get(`${API_URL}/job/job_tasks`)
       .then((data) => {
         const rows = data.data.data;
         var userinput_required_tasks = [];
@@ -518,7 +517,7 @@ const Jobs = (props) => {
     } else {
       var jobId = tableMeta.rowData[0];
       var postData = { "name": tableMeta.rowData[1] };
-      authAPI.patch(API_URL + "/dbase/job/" + jobId, { "data": postData }, { timeout: 5000, headers: authHeader })
+      authAPI.patch(API_URL + "/dbase/job/" + jobId, { "data": postData }, { timeout: 5000 })
         .then(() => {
         })
         .catch(() => {
@@ -540,7 +539,7 @@ const Jobs = (props) => {
       workflowTypeFilter.push(workflow_type);
     }
     //pull all from job_tasks view, pull only the ones that need user input
-    authAPI.get(`${API_URL}/job/job_tasks`, { timeout: 5000, headers: authHeader })
+    authAPI.get(`${API_URL}/job/job_tasks`, { timeout: 5000 })
       .then((data) => {
         const rows = data.data.data;
         var userinput_required_tasks = [];

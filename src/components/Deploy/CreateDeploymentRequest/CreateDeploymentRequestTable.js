@@ -46,7 +46,6 @@ const DeploymentRequestTable = (props) => {
   const { history } = props;
   const classes = useStyles();
   const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
   const { user } = state;
   const { createDeploymentGroupId } = useParams();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -335,7 +334,6 @@ const DeploymentRequestTable = (props) => {
 
         authAPI.fetch(`${API_URL}/list_templates`, {
           method: 'POST',
-          headers: authHeader,
           body: JSON.stringify(body)
         }).then(response => response.json())
           .then(response => {
@@ -406,7 +404,6 @@ const DeploymentRequestTable = (props) => {
 
         authAPI.fetch(`${API_URL}/list_templates`, {
           method: 'POST',
-          headers: authHeader,
           body: JSON.stringify(body)
         }).then(response => response.json())
           .then(response => {
@@ -456,7 +453,6 @@ const DeploymentRequestTable = (props) => {
 
       authAPI.fetch(`${API_URL}/dbase/job`, {
         method: 'POST',
-        headers: authHeader,
         body: JSON.stringify(jobCreationBody)
       }).then(response => response.json())
         .then((response) => {
@@ -479,7 +475,6 @@ const DeploymentRequestTable = (props) => {
 
                 authAPI.fetch(`${API_URL}/job_create`, {
                   method: 'POST',
-                  headers: authHeader,
                   body: JSON.stringify(createJobInput)
                 }).then(response => response.json())
                   .then(response => {
@@ -498,8 +493,7 @@ const DeploymentRequestTable = (props) => {
                           }, 5000);
 
                           authAPI.fetch(`${API_URL}/orchestration/start-orchestration/${id}`, {
-                            method: 'POST',
-                            headers: authHeader
+                            method: 'POST'
                           })
                             .then(() => {
                               clearTimeout(timeout3);
@@ -567,8 +561,7 @@ const DeploymentRequestTable = (props) => {
       }, 5000);
 
       authAPI.fetch(`${API_URL}/dbase/get_back_ref/deploy/id:${createDeploymentGroupId}`, {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then(response => response.json())
         .then(response => {
@@ -604,8 +597,7 @@ const DeploymentRequestTable = (props) => {
       }, 5000);
 
       authAPI.fetch(`${API_URL}/dbase/workflow_types`, {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then(response => response.json())
         .then(response => {

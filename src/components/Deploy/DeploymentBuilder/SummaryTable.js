@@ -67,7 +67,6 @@ const tableTheme = createMuiTheme({
 const SummaryTable = props => {
   const classes = useStyles();
   const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
   const authAPI = useAuthAPI();
 
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -87,7 +86,7 @@ const SummaryTable = props => {
       jsonBody.template = taskObj.template;
     }
 
-    authAPI.post(`${API_URL}/generate_config`, jsonBody, { timeout: 5000, headers: authHeader })
+    authAPI.post(`${API_URL}/generate_config`, jsonBody, { timeout: 5000 })
       .then((response) => {
         const config = response.data.data.config;
         setPreviewConfig(config);

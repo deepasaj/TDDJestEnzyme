@@ -25,7 +25,7 @@ export class AuthAPI {
   }
   buildAuthOptions = async (options) => {
     const accessToken = await this.auth.getAccessToken();
-    const headers = {...options.headers};
+    const headers = options && options.headers ? options.headers : {};
     if (accessToken) {
         headers.Authorization = `Bearer ${accessToken}`;
     }

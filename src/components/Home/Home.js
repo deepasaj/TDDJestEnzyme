@@ -59,7 +59,6 @@ const HomeTab = props => {
   const { history } = props;
   const classes = useStyles();
   const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [activeJobs, setActiveJobs] = React.useState(0);
   const [completedJobs, setCompletedJobs] = React.useState(0);
@@ -69,7 +68,7 @@ const HomeTab = props => {
 
   useEffect(() => {
     console.log('using effect')
-    authAPI.get(`${API_URL}/home/active_jobs`, { timeout:5000, headers: authHeader })
+    authAPI.get(`${API_URL}/home/active_jobs`, { timeout:5000 })
         .then((data) => {
             const rows = data.data.data[0];
             var count = rows['count(*)'];
@@ -78,7 +77,7 @@ const HomeTab = props => {
         .catch(() => {
             showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
         });
-     authAPI.get(`${API_URL}/home/completed_jobs`, { timeout:5000, headers: authHeader })
+     authAPI.get(`${API_URL}/home/completed_jobs`, { timeout:5000 })
         .then((data) => {
             const rows = data.data.data[0];
             var count = rows['count(*)'];
@@ -87,7 +86,7 @@ const HomeTab = props => {
         .catch(() => {
             showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
         });
-     authAPI.get(`${API_URL}/dbase/inventory`, { timeout:5000, headers: authHeader })
+     authAPI.get(`${API_URL}/dbase/inventory`, { timeout:5000 })
         .then((data) => {
             const rows = data.data.data.length;
             setInvDevices(rows);
@@ -95,7 +94,7 @@ const HomeTab = props => {
         .catch(() => {
             showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
         });
-     authAPI.get(`${API_URL}/dbase/deployment_group`, { timeout:5000, headers: authHeader })
+     authAPI.get(`${API_URL}/dbase/deployment_group`, { timeout:5000 })
         .then((data) => {
             const rows = data.data.data.length;
             setDeployGroups(rows);

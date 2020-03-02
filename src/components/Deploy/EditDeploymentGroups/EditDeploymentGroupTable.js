@@ -34,7 +34,6 @@ const tableTheme = createMuiTheme({
 const EditDeploymentsTable = (props) => {
   const { groupId } = props;
   const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [data, setData] = React.useState([]);
   const [currentGroup, setCurrentGroup] = React.useState([]);
@@ -212,8 +211,7 @@ const EditDeploymentsTable = (props) => {
       }, 5000);
 
       authAPI.fetch(`${API_URL}/dbase/get_back_ref/deploy/id:${groupId}`, {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
       .then(response => response.json())
       .then(response => {
@@ -255,8 +253,7 @@ const EditDeploymentsTable = (props) => {
       }, 5000);
 
       authAPI.fetch(`${API_URL}/dbase/inventory`, {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
       .then(response=>response.json())
       .then(response=>{

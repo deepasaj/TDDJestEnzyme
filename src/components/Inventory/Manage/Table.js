@@ -51,7 +51,6 @@ const tableTheme = createMuiTheme({
 const InventoryTable = () => {
   const classes = InvStyles();
   const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
   const authAPI = useAuthAPI();
 
   const { user } = state;
@@ -389,8 +388,7 @@ const InventoryTable = () => {
   const deleteMult = () => {
     for (var idx in selectedDevices) {
       authAPI.delete(API_URL + `/dbase/inventory/${selectedDevices[idx].id}`, {
-        timeout: 5000,
-        headers: authHeader
+        timeout: 5000
       })
         .then(() => {
           refreshDevices();
@@ -424,7 +422,7 @@ const InventoryTable = () => {
   //called if inline edit button is clicked
   const editRow = (event, id) => {
     setId(id);
-    authAPI.get(API_URL + `/dbase/inventory/${id}`, { timeout: 5000, headers: authHeader })
+    authAPI.get(API_URL + `/dbase/inventory/${id}`, { timeout: 5000 })
       .then(({ data }) => {
         const rows = data.data;
         setDevice(rows);
@@ -435,7 +433,7 @@ const InventoryTable = () => {
 
   //handle single row deletion
   const handleDelete = () => {
-    authAPI.delete(API_URL + `/dbase/inventory/${deviceId}`, { timeout: 5000, headers: authHeader })
+    authAPI.delete(API_URL + `/dbase/inventory/${deviceId}`, { timeout: 5000 })
       .then(() => {
         refreshDevices();
         setShowDeleteConfirm(false);
@@ -448,7 +446,7 @@ const InventoryTable = () => {
   //provides needed information for confirmation dialog
   const inLineDelete = (event, id) => {
     setDeviceId(id);
-    authAPI.get(API_URL + `/dbase/inventory/${id}`, { timeout: 5000, headers: authHeader })
+    authAPI.get(API_URL + `/dbase/inventory/${id}`, { timeout: 5000 })
       .then(({ data }) => {
         const rows = data.data;
         setSingleDelete(true);
@@ -460,7 +458,7 @@ const InventoryTable = () => {
   };
 
   const refreshDevices = () => {
-    authAPI.get(API_URL + "/dbase/inventory", { timeout: 5000, headers: authHeader })
+    authAPI.get(API_URL + "/dbase/inventory", { timeout: 5000 })
       .then(({ data }) => {
         const rows = data.data;
         setData(rows);
@@ -490,7 +488,7 @@ const InventoryTable = () => {
     postData["created_by"] = user_id;
 
 
-    authAPI.post(API_URL + "/inventory", device_array, { timeout: 5000, headers: authHeader })
+    authAPI.post(API_URL + "/inventory", device_array, { timeout: 5000 })
       .then((data) => {
         const job_id = data.data.data
         checkStatus(job_id, postData);
@@ -525,7 +523,7 @@ const InventoryTable = () => {
   const checkStatus = (job_id, postData) => {
     progress();
     if (showButton === false) {
-      authAPI.get(API_URL + "/dbase/inventory", { timeout: 5000, headers: authHeader })
+      authAPI.get(API_URL + "/dbase/inventory", { timeout: 5000 })
         .then(({ data }) => {
           for (var i = 0; i < data.data.length; i++) {
             var obj = data.data[i];
@@ -551,7 +549,7 @@ const InventoryTable = () => {
           }
           setTimeout(() => {
             if (duplicateIP === false || duplicateHost === false) {
-              authAPI.get(API_URL + `/status/${job_id}`, { timeout: 5000, headers: authHeader })
+              authAPI.get(API_URL + `/status/${job_id}`, { timeout: 5000 })
                 .then((data) => {
                   //check if the call is still processing,
                   //if it is wait 5 seconds and call again
@@ -570,7 +568,7 @@ const InventoryTable = () => {
                     if (showButton === false) {
                       var postMsg = JSON.parse(data.data.data);
                       showNotification(postMsg.message, 'info', enqueueSnackbar, closeSnackbar);
-                      authAPI.post(API_URL + "/dbase/inventory", { "data": [postData] }, { timeout: 5000, headers: authHeader })
+                      authAPI.post(API_URL + "/dbase/inventory", { "data": [postData] }, { timeout: 5000 })
                         .then(() => {
                           showNotification("Your device has been successfully added to the Proteus inventory.", 'success', enqueueSnackbar, closeSnackbar);
                           refreshDevices();
@@ -600,7 +598,7 @@ const InventoryTable = () => {
         });
     }
     else if (showButton === true) {
-      authAPI.get(API_URL + `/status/${job_id}`, { timeout: 5000, headers: authHeader })
+      authAPI.get(API_URL + `/status/${job_id}`, { timeout: 5000 })
         .then((data) => {
           //check if the call is still processing,
           //if it is wait 5 seconds and call again
@@ -617,7 +615,7 @@ const InventoryTable = () => {
             var patch_device = { "hostname": device.hostname, "mgmt_ip": device.mgmt_ip }
             //If adding a new device, post, else patch the data
             //Make decision based on what button is shown
-            authAPI.patch(API_URL + `/dbase/inventory/${id}`, { "data": patch_device }, { timeout: 5000, headers: authHeader })
+            authAPI.patch(API_URL + `/dbase/inventory/${id}`, { "data": patch_device }, { timeout: 5000 })
               .then(() => {
                 showNotification("Your device has been successfully changed", 'success', enqueueSnackbar, closeSnackbar);
                 refreshDevices();
@@ -644,7 +642,7 @@ const InventoryTable = () => {
 
   useEffect(() => {
     //get all inventory items to view on table
-    authAPI.get(API_URL + "/dbase/inventory", { timeout: 5000, headers: authHeader })
+    authAPI.get(API_URL + "/dbase/inventory", { timeout: 5000 })
       .then((data) => {
         const rows = data.data.data;
         setData(rows);

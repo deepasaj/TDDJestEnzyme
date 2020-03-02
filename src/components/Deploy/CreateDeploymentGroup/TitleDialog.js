@@ -39,7 +39,6 @@ const useStyles = makeStyles(() => ({
 const TitlePopUp = props => {
   const classes = useStyles();
   const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
   const { user } = state;
   const { history, showSetTitle, selectedRows, displayData, setGroupId, setShowSetTitle } = props;
   const [title, setTitle] = React.useState("");
@@ -88,7 +87,6 @@ const TitlePopUp = props => {
 
       authAPI.fetch(`${API_URL}/dbase/back_populate/deploy`,{
         method:"POST",
-        headers: authHeader,
         body: JSON.stringify(body)
       })
       .then(response=>response.json())

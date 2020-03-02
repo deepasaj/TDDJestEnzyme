@@ -13,7 +13,6 @@ import { useAuthAPI } from 'store/auth-store';
 const Builder = () => {
   const { job_id } = useParams()
   const [{token}] = useStateValue();
-  const authHeader = getAuthHeader(token);
   const [state, setState] = useState();
   const [rows, setRows] = useState();
   const [steps, setSteps] = useState([]);
@@ -46,8 +45,7 @@ const Builder = () => {
       }, 5000);
 
       authAPI.fetch(`${API_URL}/deploy/get_mgmt_ip`, {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then(response => response.json())
         .then(response => {
@@ -85,8 +83,7 @@ const Builder = () => {
       }, 5000);
 
       authAPI.fetch(`${API_URL}/deploy/get_tasks/${job_id}`, {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then(response => response.json())
         .then(response => {
@@ -141,8 +138,7 @@ const Builder = () => {
       }, 5000);
 
       authAPI.fetch(`${API_URL}/dbase/job/${job_id}`, {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then(response => response.json())
         .then(response => {

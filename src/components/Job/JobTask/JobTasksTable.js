@@ -36,7 +36,6 @@ const MyJobsTable = () => {
   const classes = useStyles();
   let { job_id } = useParams();
   const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
   const authAPI = useAuthAPI();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [data, setData] = React.useState(); // eslint-disable-line no-unused-vars
@@ -188,7 +187,7 @@ const MyJobsTable = () => {
 
   //called from toolbar, enabling to refresh table data without refreshing whole page
   const refreshData = () => {
-    authAPI.get(`${API_URL}/job/task_details`, { headers: authHeader })
+    authAPI.get(`${API_URL}/job/task_details`)
       .then((data) => {
         var row = data.data.data;
         var jobTasks = [];
@@ -259,7 +258,7 @@ const MyJobsTable = () => {
   useEffect(() => {
     //get all task_details from the view and pull only the ones to the specific job
     //may be able to simplify with new crud endpoints now
-    authAPI.get(`${API_URL}/job/task_details`, { timeout:5000, headers: authHeader })
+    authAPI.get(`${API_URL}/job/task_details`, { timeout:5000 })
       .then((data) => {
         var row = data.data.data;
         var jobTasks = [];

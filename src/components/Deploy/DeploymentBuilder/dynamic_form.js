@@ -55,7 +55,6 @@ const useStyles = makeStyles(theme => ({
 const DynamicForm = props => {
   const classes = useStyles();
   const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
   const authAPI = useAuthAPI();
   
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -96,8 +95,7 @@ const DynamicForm = props => {
 
   const confirmDeploy = () => {
     return authAPI.post(API_URL + `/orchestration/start-orchestration/${job.id}`, {}, {
-      timeout: 5000,
-      headers: authHeader
+      timeout: 5000
     })
       .then(() => {
       }).catch(() => {
@@ -140,13 +138,12 @@ const DynamicForm = props => {
       setLoading(true)
       var body = { "data": { "task_object": step.task_object } }
       if (activeStep === steps.length - 1) {
-        authAPI.patch(`${API_URL}/dbase/job/${job.id}`, { "data": { "status": "Ready", "status_details": "Ready for Deployment" } }, { timeout: 5000, headers: authHeader })
+        authAPI.patch(`${API_URL}/dbase/job/${job.id}`, { "data": { "status": "Ready", "status_details": "Ready for Deployment" } }, { timeout: 5000 })
           .then(() => {
             setSuccess(true)
             setLoading(false)
             authAPI.patch(`${API_URL}/dbase/tasks/${step.id}`, body, {
-              timeout: 5000,
-              headers: authHeader
+              timeout: 5000
             })
               .then(() => {
                 setSuccess(true)
@@ -162,8 +159,7 @@ const DynamicForm = props => {
           });
       } else {
         authAPI.patch(`${API_URL}/dbase/tasks/${step.id}`, body, {
-          timeout: 5000,
-          headers: authHeader
+          timeout: 5000
         })
           .then(() => {
             setSuccess(true)

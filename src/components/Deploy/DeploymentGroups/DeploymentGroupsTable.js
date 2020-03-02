@@ -63,7 +63,6 @@ const tableTheme = createMuiTheme({
 const DeploymentGroupsTable = (props) => {
   const { history } = props;
   const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
   const authAPI = useAuthAPI();
 
   const { user } = state;
@@ -337,7 +336,7 @@ const DeploymentGroupsTable = (props) => {
 
   //handle single row deletion
   const handleDelete = () => {
-    authAPI.delete(API_URL + `/dbase/get_back_ref/deploy/id:${groupId}`, { timeout: 5000, headers: authHeader })
+    authAPI.delete(API_URL + `/dbase/get_back_ref/deploy/id:${groupId}`, { timeout: 5000 })
       .then(() => {
         setShowDeleteConfirm(false);
         setLoadingDone(false);
@@ -355,7 +354,7 @@ const DeploymentGroupsTable = (props) => {
   };
 
   const refreshDevices = () => {
-    authAPI.get(`${API_URL}/dbase/get_back_ref/deploy`, { timeout: 5000, headers: authHeader })
+    authAPI.get(`${API_URL}/dbase/get_back_ref/deploy`, { timeout: 5000 })
       .then((response) => {
         const deploymentGroups = subNullsForEmptyStrings(response.data.data);
         deploymentGroups.forEach((deploymentGroup) => {
@@ -403,7 +402,7 @@ const DeploymentGroupsTable = (props) => {
 //    };
 
     useEffect(() => {
-      authAPI.get(`${API_URL}/dbase/get_back_ref/deploy`, { timeout: 5000, headers: authHeader })
+      authAPI.get(`${API_URL}/dbase/get_back_ref/deploy`, { timeout: 5000 })
         .then((response) => {
           const deploymentGroups = subNullsForEmptyStrings(response.data.data);
           deploymentGroups.forEach((deploymentGroup) => {

@@ -37,7 +37,6 @@ const DeploymentGroupTable = () => {
   const [unlockedData, setUnlockedData] = React.useState();
   const [groupId, setGroupId] = React.useState("");
   const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
   const authAPI = useAuthAPI();
 
   const columns = [
@@ -188,8 +187,7 @@ const DeploymentGroupTable = () => {
       }, 5000);
 
       authAPI.fetch(`${API_URL}/dbase/inventory`, {
-        method: 'GET',
-        headers: authHeader
+        method: 'GET'
       })
         .then(response => response.json())
         .then(response => {

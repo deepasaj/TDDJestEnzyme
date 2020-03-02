@@ -18,7 +18,6 @@ import { useAuthAPI } from 'store/auth-store';
 function BulkUpload(props) {
   const [state] = useStateValue();
   const { history } = props;
-  const authHeader = getAuthHeader(state.token);
   const authAPI = useAuthAPI();
 
   const goToManageInventory = () => {
@@ -135,8 +134,7 @@ function BulkUpload(props) {
             authAPI.fetch(API_URL + "/bulk_upload", {
               method: 'POST',
               body: formData,
-              signal: controller_signal,
-              headers: authHeader
+              signal: controller_signal
             })
               //then for bulk upload
               .then((response) => {
@@ -203,8 +201,7 @@ function BulkUpload(props) {
                                           user_id, {
                                           method: 'POST',
                                           body: formData,
-                                          signal: controller_signal,
-                                          headers: authHeader
+                                          signal: controller_signal
                                         })
                                           //then for /bulk_insert/?job_id=
                                           .then((response3) => {
