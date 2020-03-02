@@ -7,12 +7,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import CancelIcon from '@material-ui/icons/Cancel';
 import TextField from '@material-ui/core/TextField';
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
-import { API_URL } from 'config';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
 import { withRouter } from 'react-router-dom';
-import { getAuthHeader } from 'utils/auth';
-import { useStateValue } from 'store/store';
+import { useAuthAPI } from 'store/store';
 
 const useStyles = makeStyles(() => ({
   iconContainer: {
@@ -26,10 +24,9 @@ const useStyles = makeStyles(() => ({
 const CustomToolbarSelect = (props) => {
   const { history, groupId, selectedRows, displayData, currentTitle, setCurrentTitle } = props;
   const classes = useStyles();
-  const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [selectedDevices, setSelectedDevices] = React.useState([]);
+  const authAPI = useAuthAPI();
 
   const handleSaveDeploymentGroup = () => {
     // selectedRows is the dataIndex value
@@ -61,10 +58,9 @@ const CustomToolbarSelect = (props) => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/dbase/back_populate/deploy/id:${groupId}`, {
+      authAPI.fetch(`/dbase/back_populate/deploy/id:${groupId}`, {
         body: JSON.stringify(postData),
-        method: 'PATCH',
-        headers: authHeader
+        method: 'PATCH'
       }).then(response => {
         clearTimeout(timeout);
         if (!didTimeOut) {
@@ -109,9 +105,8 @@ const CustomToolbarSelect = (props) => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/dbase/get_back_ref/deploy/id:${groupId}`, {
-        method: 'DELETE',
-        headers: authHeader
+      authAPI.fetch(`/dbase/get_back_ref/deploy/id:${groupId}`, {
+        method: 'DELETE'
       }).then((response) => {
         clearTimeout(timeout);
         if (!didTimeOut) {

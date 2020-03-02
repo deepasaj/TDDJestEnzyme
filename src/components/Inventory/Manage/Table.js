@@ -11,11 +11,10 @@ import CustomToolbar from "./AddDeviceToolbar";
 import CustomToolbarSelect from "./CustomToolbarSelect";
 import DeviceInfoModal from "./DeviceInfoDialog";
 import DeleteConfirmModal from "./DeleteConfirmationDialog";
-import { API_URL } from 'config';
 import { useStateValue } from 'store/store';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { getAuthHeader } from 'utils/auth';
+import { useAuthAPI } from 'store/store'
 
 
 const InvStyles = makeStyles(() => ({
@@ -50,7 +49,8 @@ const tableTheme = createMuiTheme({
 const InventoryTable = () => {
   const classes = InvStyles();
   const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
+  const authAPI = useAuthAPI();
+
   const { user } = state;
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [data, setData] = useState();
@@ -380,9 +380,8 @@ const InventoryTable = () => {
   //triggers from the confirm delete modal and deletes the row(s) of deleted selected devices
   const deleteMult = () => {
     for (var idx in selectedDevices) {
-      axios.delete(API_URL + `/dbase/inventory/${selectedDevices[idx].id}`, {
-        timeout: 5000,
-        headers: authHeader
+      authAPI.delete(`/dbase/inventory/${selectedDevices[idx].id}`, {
+        timeout: 5000
       })
         .then(() => {
           refreshDevices();
@@ -416,7 +415,7 @@ const InventoryTable = () => {
   //called if inline edit button is clicked
   const editRow = (event, id) => {
     setId(id);
-    axios.get(API_URL + `/dbase/inventory/${id}`, { timeout: 5000, headers: authHeader })
+    authAPI.get(`/dbase/inventory/${id}`, { timeout: 5000 })
       .then(({ data }) => {
         const rows = data.data;
         setDevice(rows);
@@ -427,7 +426,7 @@ const InventoryTable = () => {
 
   //handle single row deletion
   const handleDelete = () => {
-    axios.delete(API_URL + `/dbase/inventory/${deviceId}`, { timeout: 5000, headers: authHeader })
+    authAPI.delete(`/dbase/inventory/${deviceId}`, { timeout: 5000 })
       .then(() => {
         refreshDevices();
         setShowDeleteConfirm(false);
@@ -440,7 +439,7 @@ const InventoryTable = () => {
   //provides needed information for confirmation dialog
   const inLineDelete = (event, id) => {
     setDeviceId(id);
-    axios.get(API_URL + `/dbase/inventory/${id}`, { timeout: 5000, headers: authHeader })
+    authAPI.get(`/dbase/inventory/${id}`, { timeout: 5000 })
       .then(({ data }) => {
         const rows = data.data;
         setSingleDelete(true);
@@ -452,7 +451,7 @@ const InventoryTable = () => {
   };
 
   const refreshDevices = () => {
-    axios.get(API_URL + "/dbase/inventory", { timeout: 5000, headers: authHeader })
+    authAPI.get("/dbase/inventory", { timeout: 5000 })
       .then(({ data }) => {
         const rows = data.data;
         setData(rows);
@@ -482,7 +481,7 @@ const InventoryTable = () => {
     postData["created_by"] = user_id;
 
 
-    axios.post(API_URL + "/inventory", device_array, { timeout: 5000, headers: authHeader })
+    authAPI.post("/inventory", device_array, { timeout: 5000 })
       .then((data) => {
         const job_id = data.data.data
         checkStatus(job_id, postData);
@@ -517,7 +516,7 @@ const InventoryTable = () => {
   const checkStatus = (job_id, postData) => {
     progress();
     if (showButton === false) {
-      axios.get(API_URL + "/dbase/inventory", { timeout: 5000, headers: authHeader })
+      authAPI.get("/dbase/inventory", { timeout: 5000 })
         .then(({ data }) => {
           for (var i = 0; i < data.data.length; i++) {
             var obj = data.data[i];
@@ -543,7 +542,7 @@ const InventoryTable = () => {
           }
           setTimeout(() => {
             if (duplicateIP === false || duplicateHost === false) {
-              axios.get(API_URL + `/status/${job_id}`, { timeout: 5000, headers: authHeader })
+              authAPI.get(`/status/${job_id}`, { timeout: 5000 })
                 .then((data) => {
                   //check if the call is still processing,
                   //if it is wait 5 seconds and call again
@@ -562,7 +561,7 @@ const InventoryTable = () => {
                     if (showButton === false) {
                       var postMsg = JSON.parse(data.data.data);
                       showNotification(postMsg.message, 'info', enqueueSnackbar, closeSnackbar);
-                      axios.post(API_URL + "/dbase/inventory", { "data": [postData] }, { timeout: 5000, headers: authHeader })
+                      authAPI.post("/dbase/inventory", { "data": [postData] }, { timeout: 5000 })
                         .then(() => {
                           showNotification("Your device has been successfully added to the Proteus inventory.", 'success', enqueueSnackbar, closeSnackbar);
                           refreshDevices();
@@ -592,7 +591,7 @@ const InventoryTable = () => {
         });
     }
     else if (showButton === true) {
-      axios.get(API_URL + `/status/${job_id}`, { timeout: 5000, headers: authHeader })
+      authAPI.get(`/status/${job_id}`, { timeout: 5000 })
         .then((data) => {
           //check if the call is still processing,
           //if it is wait 5 seconds and call again
@@ -609,7 +608,7 @@ const InventoryTable = () => {
             var patch_device = { "hostname": device.hostname, "mgmt_ip": device.mgmt_ip }
             //If adding a new device, post, else patch the data
             //Make decision based on what button is shown
-            axios.patch(API_URL + `/dbase/inventory/${id}`, { "data": patch_device }, { timeout: 5000, headers: authHeader })
+            authAPI.patch(`/dbase/inventory/${id}`, { "data": patch_device }, { timeout: 5000 })
               .then(() => {
                 showNotification("Your device has been successfully changed", 'success', enqueueSnackbar, closeSnackbar);
                 refreshDevices();
@@ -636,7 +635,7 @@ const InventoryTable = () => {
 
   useEffect(() => {
     //get all inventory items to view on table
-    axios.get(API_URL + "/dbase/inventory", { timeout: 5000, headers: authHeader })
+    authAPI.get("/dbase/inventory", { timeout: 5000 })
       .then((data) => {
         const rows = data.data.data;
         setData(rows);

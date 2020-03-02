@@ -1,49 +1,28 @@
-import axios from "axios";
+
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { API_URL } from 'config';
 import Breadcrumbs from 'components/Breadcrumbs';
 import NavBar from 'components/NavBar';
-import NotFound from 'components/NotFound/NotFound';
-import { getAuthHeader } from 'utils/auth';
-import { useStateValue } from 'store/store';
-import { useSnackbar } from "notistack";
-import { showNotification } from 'utils/notifications';
+import { useUser } from 'store/store'
 
 import './styles.css';
 
 const User = () => {
-  let { username } = useParams();
-  const [user, setUser] = React.useState(0);
-  const [userNotFound, setUserNotFound] = React.useState(0);
-  const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-  useEffect(() => {
-    axios.get(`${API_URL}/user/get_user/${username}`, { timeout:5000, headers: authHeader })
-      .then(resp => {
-        setUser(resp.data.data);
-      })
-      .catch(error => {
-        if (error.response.status === 404) {
-          setUserNotFound(true);
-        } else {
-          showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-        }
-      });
-    }, []);
-
+  const user = useUser();
+  console.log(user);
   const getBreadcrumbsPath = () => {
     if (user) {
       return [
         { text: 'Home', path: '/'},
-        { text: `${user.username}`, path: `/user/${user.username}`},
+        { text: `${user.name}`, path: `/user/me`},
       ];
     }
     return [{ text: 'Home', path: '/'}];
   }
 
+  const avatarURL = () => {
+    return `url("${user.avatar}")`;
+  }
   return (
     <React.Fragment>
       <NavBar />
@@ -57,20 +36,20 @@ const User = () => {
                 <div className="card-header text-center">
                   <div
                     className="user-img-shape"
-                    style={{ backgroundImage: `url(${user.avatar})`}}
+                    style={{ backgroundImage: avatarURL()}}
                   ></div>
                 </div>
                 <div className="card-body">
-                  <ul><strong>Username: </strong>{user.username}</ul>
-                  <ul><strong>First name: </strong>{user.first_name}</ul>
-                  <ul><strong>Last name: </strong>{user.last_name}</ul>
-                  <ul><strong>Display name: </strong>{user.display_name}</ul>
+                  <ul><strong>Username: </strong>{user.preferred_username}</ul>
+                  <ul><strong>First name: </strong>{user.given_name}</ul>
+                  <ul><strong>Last name: </strong>{user.family_name}</ul>
+                  <ul><strong>Display name: </strong>{user.name}</ul>
                   <ul><strong>Email: </strong>{user.email}</ul>
                 </div>
             </div>
             ) : null
           }
-          {userNotFound ? <NotFound /> : null}
+          
         </div>
       </main>
     </React.Fragment>

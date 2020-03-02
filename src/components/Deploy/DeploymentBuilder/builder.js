@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Layout from "./layout";
 import LoadingPage from './LoadingPage';
-import { API_URL } from 'config';
 import { useParams } from 'react-router-dom';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { getAuthHeader } from 'utils/auth';
-import { useStateValue } from 'store/store';
+import { useAuthAPI } from 'store/store';
 
 
 const Builder = () => {
   const { job_id } = useParams()
-  const [{token}] = useStateValue();
-  const authHeader = getAuthHeader(token);
   const [state, setState] = useState();
   const [rows, setRows] = useState();
   const [steps, setSteps] = useState([]);
@@ -27,6 +23,7 @@ const Builder = () => {
   const [job, setJob] = useState({});
   const [disableBtn, setDisableBtn] = useState(false);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const authAPI = useAuthAPI();
 
   const cleanLabel = str => { // eslint-disable-line no-unused-vars
     return str.replace(/_/g, " ");
@@ -43,9 +40,8 @@ const Builder = () => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/deploy/get_mgmt_ip`, {
-        method: 'GET',
-        headers: authHeader
+      authAPI.fetch(`/deploy/get_mgmt_ip`, {
+        method: 'GET'
       })
         .then(response => response.json())
         .then(response => {
@@ -82,9 +78,8 @@ const Builder = () => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/deploy/get_tasks/${job_id}`, {
-        method: 'GET',
-        headers: authHeader
+      authAPI.fetch(`/deploy/get_tasks/${job_id}`, {
+        method: 'GET'
       })
         .then(response => response.json())
         .then(response => {
@@ -138,9 +133,8 @@ const Builder = () => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/dbase/job/${job_id}`, {
-        method: 'GET',
-        headers: authHeader
+      authAPI.fetch(`/dbase/job/${job_id}`, {
+        method: 'GET'
       })
         .then(response => response.json())
         .then(response => {

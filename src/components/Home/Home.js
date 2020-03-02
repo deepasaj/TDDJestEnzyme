@@ -1,15 +1,11 @@
 import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import axios from "axios";
 import { withRouter } from 'react-router-dom';
 import StatsCard from "./StatsCard";
-import { API_URL } from 'config';
-import { getAuthHeader } from 'utils/auth';
-import { useStateValue } from 'store/store';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-
+import { useAuthAPI } from 'store/store';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -58,16 +54,16 @@ const useStyles = makeStyles(theme => ({
 const HomeTab = props => {
   const { history } = props;
   const classes = useStyles();
-  const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [activeJobs, setActiveJobs] = React.useState(0);
   const [completedJobs, setCompletedJobs] = React.useState(0);
   const [invDevices, setInvDevices] = React.useState(0);
   const [deployGroups, setDeployGroups] = React.useState(0);
+  const authAPI = useAuthAPI();
 
   useEffect(() => {
-     axios.get(`${API_URL}/home/active_jobs`, { timeout:5000, headers: authHeader })
+    console.log('using effect')
+    authAPI.get(`/home/active_jobs`, { timeout:5000 })
         .then((data) => {
             const rows = data.data.data[0];
             var count = rows['count(*)'];
@@ -76,7 +72,7 @@ const HomeTab = props => {
         .catch(() => {
             showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
         });
-     axios.get(`${API_URL}/home/completed_jobs`, { timeout:5000, headers: authHeader })
+     authAPI.get(`/home/completed_jobs`, { timeout:5000 })
         .then((data) => {
             const rows = data.data.data[0];
             var count = rows['count(*)'];
@@ -85,7 +81,7 @@ const HomeTab = props => {
         .catch(() => {
             showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
         });
-     axios.get(`${API_URL}/dbase/inventory`, { timeout:5000, headers: authHeader })
+     authAPI.get(`/dbase/inventory`, { timeout:5000 })
         .then((data) => {
             const rows = data.data.data.length;
             setInvDevices(rows);
@@ -93,7 +89,7 @@ const HomeTab = props => {
         .catch(() => {
             showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
         });
-     axios.get(`${API_URL}/dbase/deployment_group`, { timeout:5000, headers: authHeader })
+     authAPI.get(`/dbase/deployment_group`, { timeout:5000 })
         .then((data) => {
             const rows = data.data.data.length;
             setDeployGroups(rows);

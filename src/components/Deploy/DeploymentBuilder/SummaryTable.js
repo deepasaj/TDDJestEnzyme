@@ -10,14 +10,11 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from "@material-ui/core/Tooltip";
 import { makeStyles, createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
-import axios from 'axios';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import PreviewPopUp from './preview_modal';
-import { API_URL } from 'config';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { getAuthHeader } from 'utils/auth';
-import { useStateValue } from 'store/store';
+import { useAuthAPI } from 'store/store'
 
 const useStyles = makeStyles(theme => ({
   rowExpand: {
@@ -65,8 +62,8 @@ const tableTheme = createMuiTheme({
 
 const SummaryTable = props => {
   const classes = useStyles();
-  const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
+  const authAPI = useAuthAPI();
+
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const { steps, job } = props;
   const [previewConfig, setPreviewConfig] = useState(null);
@@ -84,7 +81,7 @@ const SummaryTable = props => {
       jsonBody.template = taskObj.template;
     }
 
-    axios.post(`${API_URL}/generate_config`, jsonBody, { timeout: 5000, headers: authHeader })
+    authAPI.post(`/generate_config`, jsonBody, { timeout: 5000 })
       .then((response) => {
         const config = response.data.data.config;
         setPreviewConfig(config);
