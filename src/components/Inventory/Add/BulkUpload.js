@@ -148,7 +148,7 @@ function BulkUpload(props) {
                       error("invalid format");
                       return;
                     }
-                    showNotification(file.name + ' ' + message.info, 'error', enqueueSnackbar, closeSnackbar);
+                    showNotification(file.name + ' ' + message.info, 'info', enqueueSnackbar, closeSnackbar);
                     setTimeout(() => {
                       updateValue(33, file.name, index, true);
                       function getStatus(url) {
@@ -164,7 +164,8 @@ function BulkUpload(props) {
                           //fetch for url
                           fetch(url, {
                             method: 'GET',
-                            signal: controller_signal
+                            signal: controller_signal,
+                            headers: authHeader
                           })
                             //then for url
                             .then((response2) => {
