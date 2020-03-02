@@ -57,7 +57,7 @@ const reducer = (state, action) => {
       return {
         ...state,
         isAuthenticated: true,
-        user: action.payload.user
+        user: action.payload
       };
     case 'LOGOUT':
       return { ...state, isAuthenticated: false, user: {} };
@@ -75,17 +75,16 @@ export const AuthDectector = props => {
       const authenticated = await auth.isAuthenticated();
       if (!state.isAuthenticated && authenticated) {
         // detected the authenticated
-        console.log('detected authenticated');
         const user = await auth.getUser();
-        user.avata = `https://ui-avatars.com/api/?rounded=true&name=${user.name}`
+        user.avatar = `https://ui-avatars.com/api/?rounded=true&name=${user.name}`
         return dispatch({
-          type: "LOGIN",
+          type: "AUTHENTICATED",
           payload: user
         });
       }
     };
     checkAuthentication();
-  });
+  }, [state.isAuthenticated]);
   return (
     <Fragment>
       {props.children}
@@ -121,7 +120,4 @@ export const useUser = () => {
   return state.user;
 }
 
-
-export const useStateValue = () => {
-  return useContext(Store);
-}
+export const useStateValue = () => useContext(Store);

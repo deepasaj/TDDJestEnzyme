@@ -2,21 +2,14 @@
 import React, { useEffect } from 'react';
 import Breadcrumbs from 'components/Breadcrumbs';
 import NavBar from 'components/NavBar';
-import { useAuth } from 'store/auth-store'
+import { useUser } from 'store/auth-store'
 
 import './styles.css';
 
 const User = () => {
-  const auth = useAuth();
-  const [user, setUser] = React.useState({});
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      setUser(await auth.getUser());
-    };
-    checkAuth();
-  }, []);
-
+  const user = useUser();
+  console.log(user);
   const getBreadcrumbsPath = () => {
     if (user) {
       return [
@@ -27,6 +20,9 @@ const User = () => {
     return [{ text: 'Home', path: '/'}];
   }
 
+  const avatarURL = () => {
+    return `url("${user.avatar}")`;
+  }
   return (
     <React.Fragment>
       <NavBar />
@@ -40,7 +36,7 @@ const User = () => {
                 <div className="card-header text-center">
                   <div
                     className="user-img-shape"
-                    style={{ backgroundImage: `url(${user.avatar})`}}
+                    style={{ backgroundImage: avatarURL()}}
                   ></div>
                 </div>
                 <div className="card-body">

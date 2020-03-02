@@ -9,9 +9,8 @@ import ProdEnvImg from 'assets/img/production.png';
 
 function NavBar(props) {
   const { history } = props;
-  const [state] = useStateValue();
-  const {isAuthenticated, user} = state;
 
+  const [{isAuthenticated, user}] = useStateValue();
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <a className="navbar-brand" href="/">
@@ -61,7 +60,7 @@ function NavBar(props) {
         </div>
 
         {
-          isAuthenticated ? (
+          (isAuthenticated && user) ? (
             <React.Fragment>
               <div className="collapse navbar-collapse" id="navbarsExampleDefault">
                   <ul className="navbar-nav mr-auto">
