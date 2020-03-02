@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { NODE_ENV } from 'config';
 import { withRouter } from 'react-router-dom';
-import { useAuth } from 'store/auth-store';;
+import { useStateValue } from 'store/auth-store';;
 
 import GenIconImg from 'assets/img/gen_icon.png';
 import DevEnvImg from 'assets/img/development.png';
@@ -9,18 +9,9 @@ import ProdEnvImg from 'assets/img/production.png';
 
 function NavBar(props) {
   const { history } = props;
-  const auth = useAuth();
+  const [state] = useStateValue();
+  const {isAuthenticated, user} = state;
 
-  const [isAuthenticated, setAuthenticated] = useState(false);
-  const [user, setUser] = useState({});
-  useEffect(() => {
-    const checkAuth = async () => {
-      console.log(await auth.getUser());
-      setAuthenticated(await auth.isAuthenticated());
-      setUser((await auth.getUser()) || {});
-    };
-    checkAuth();
-  }, []);
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <a className="navbar-brand" href="/">
