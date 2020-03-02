@@ -73,7 +73,7 @@ const App = (
             <SecureRoute path='/inventory/manage' component={ManageInventory}/>
             <SecureRoute exact path='/job' component={Job}/>
             <SecureRoute path='/job/tasks/:jobId' component={JobTask}/>
-            <SecureRoute path='/user/:username' component={User}/>
+            <SecureRoute path='/user/me' component={User}/>
             <SecureRoute exact path='/validation' component={Validation}/>
             <SecureRoute path='/validation/reports/:jobId' component={ValidationReports}/>
             <Route component={NotFound}/>

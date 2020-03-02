@@ -1,20 +1,12 @@
 
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import Breadcrumbs from 'components/Breadcrumbs';
 import NavBar from 'components/NavBar';
-import NotFound from 'components/NotFound/NotFound';
-import { useStateValue } from 'store/store';
-import { useSnackbar } from "notistack";
-import { showNotification } from 'utils/notifications';
 import { useAuth } from 'store/auth-store'
 
 import './styles.css';
 
 const User = () => {
-  let { username } = useParams();
-  const [userNotFound, setUserNotFound] = React.useState(0);
-  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const auth = useAuth();
   const [user, setUser] = React.useState({});
 
@@ -29,7 +21,7 @@ const User = () => {
     if (user) {
       return [
         { text: 'Home', path: '/'},
-        { text: `${user.name}`, path: `/user/${user.preferred_username}`},
+        { text: `${user.name}`, path: `/user/me`},
       ];
     }
     return [{ text: 'Home', path: '/'}];
@@ -61,7 +53,7 @@ const User = () => {
             </div>
             ) : null
           }
-          {userNotFound ? <NotFound /> : null}
+          
         </div>
       </main>
     </React.Fragment>

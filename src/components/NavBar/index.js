@@ -97,7 +97,7 @@ function NavBar(props) {
                       <a
                         className="dropdown-item"
                         style={{cursor: 'pointer'}}
-                        onClick={() => history.push(`/user/${user.preferred_username}`)}
+                        onClick={() => history.push(`/user/me`)}
                       >
                         Profile
                       </a>
