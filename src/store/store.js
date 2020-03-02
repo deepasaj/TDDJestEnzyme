@@ -68,6 +68,8 @@ const reducer = (state, action) => {
 
 export const AuthDectector = props => {
   const auth = useAuth();
+  const authAPI = useAuthAPI();
+
   const [state, dispatch] = useStateValue();
   useEffect(() => {
     // check for authentication
@@ -75,8 +77,8 @@ export const AuthDectector = props => {
       const authenticated = await auth.isAuthenticated();
       if (!state.isAuthenticated && authenticated) {
         // detected the authenticated
-        const user = await auth.getUser();
-        user.avatar = `https://ui-avatars.com/api/?rounded=true&name=${user.name}`
+        const user = (await authAPI.get('/auth/me')).data;
+        user.avatar = `https://ui-avatars.com/api/?rounded=true&name=${user.display_name}`
         return dispatch({
           type: "AUTHENTICATED",
           payload: user

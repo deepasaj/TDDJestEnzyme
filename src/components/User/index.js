@@ -14,7 +14,7 @@ const User = () => {
     if (user) {
       return [
         { text: 'Home', path: '/'},
-        { text: `${user.name}`, path: `/user/me`},
+        { text: `${user.display_name}`, path: `/user/me`},
       ];
     }
     return [{ text: 'Home', path: '/'}];
@@ -40,10 +40,10 @@ const User = () => {
                   ></div>
                 </div>
                 <div className="card-body">
-                  <ul><strong>Username: </strong>{user.preferred_username}</ul>
-                  <ul><strong>First name: </strong>{user.given_name}</ul>
-                  <ul><strong>Last name: </strong>{user.family_name}</ul>
-                  <ul><strong>Display name: </strong>{user.name}</ul>
+                  <ul><strong>Username: </strong>{user.username}</ul>
+                  <ul><strong>First name: </strong>{user.first_name}</ul>
+                  <ul><strong>Last name: </strong>{user.last_name}</ul>
+                  <ul><strong>Display name: </strong>{user.display_name}</ul>
                   <ul><strong>Email: </strong>{user.email}</ul>
                 </div>
             </div>

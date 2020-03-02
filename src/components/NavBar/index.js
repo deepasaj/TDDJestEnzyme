@@ -84,7 +84,7 @@ function NavBar(props) {
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                    >
                       <img src={user.avatar} style={{borderRadius: '5px'}} />
-                      <span style={{paddingLeft: '10px'}}>{user.name}&nbsp;</span>
+                      <span style={{paddingLeft: '10px'}}>{user.display_name}&nbsp;</span>
                   </button>
                   <div className="dropdown-menu" aria-labelledby="userDropDown">
                       <a
