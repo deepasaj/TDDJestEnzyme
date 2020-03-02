@@ -4,9 +4,9 @@ import MUIDataTable from "mui-datatables";
 import DeploymentGroupCustomToolbarSelect from "./DeploymentGroupCustomToolbarSelect";
 import CustomToolbar from './CreateDeployGroupToolbar';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-import { API_URL } from 'config';
+
 import { showNotification } from 'utils/notifications';
-import { getAuthHeader } from 'utils/auth';
+
 import { useStateValue } from 'store/store';
 import { useAuthAPI } from 'store/auth-store';
 
@@ -186,7 +186,7 @@ const DeploymentGroupTable = () => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      authAPI.fetch(`${API_URL}/dbase/inventory`, {
+      authAPI.fetch(`/dbase/inventory`, {
         method: 'GET'
       })
         .then(response => response.json())

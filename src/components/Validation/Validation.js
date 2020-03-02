@@ -5,12 +5,10 @@ import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import FormControl from "@material-ui/core/FormControl";
-import { API_URL } from 'config';
 import { useStateValue } from 'store/store';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
 import { withRouter } from 'react-router-dom';
-import { getAuthHeader } from 'utils/auth';
 import { useAuthAPI } from 'store/auth-store';
 
 const useStyles = makeStyles(() => ({
@@ -66,7 +64,7 @@ const ValidationRequest = (props) => {
         didTimeOut = true;
         reject(new Error('Request timed out'));
       }, 5000);
-      authAPI.fetch(`${API_URL}/dbase/job`, {
+      authAPI.fetch(`/dbase/job`, {
         method: 'POST',
         body: JSON.stringify(jobCreationBody)
       }).then(response => response.json())
@@ -89,7 +87,7 @@ const ValidationRequest = (props) => {
                   reject(new Error('Request timed out'));
                 }, 5000);
 
-                authAPI.fetch(`${API_URL}/report_job_create`, {
+                authAPI.fetch(`/report_job_create`, {
                   method: 'POST',
                   body: JSON.stringify(createJobInput)
                 }).then(response => response.json())
@@ -108,7 +106,7 @@ const ValidationRequest = (props) => {
                             reject(new Error('Request timed out'));
                           }, 5000);
 
-                          authAPI.fetch(`${API_URL}/orchestration/start-orchestration/${id}`, {
+                          authAPI.fetch(`/orchestration/start-orchestration/${id}`, {
                             method: 'POST'
                           })
                             .then(() => {

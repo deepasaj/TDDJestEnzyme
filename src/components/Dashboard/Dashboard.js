@@ -27,11 +27,7 @@ import styles from "./assets/jss/material-dashboard-react/views/dashboardStyle.j
 import SimplePieChart from "./Charts/PieChart.js";
 import logoSrc from "assets/img/gen_icon.png";
 
-import { getAuthHeader } from 'utils/auth';
-import { useStateValue } from 'store/store';
-import { useAuthAPI } from 'store/auth-store';
-
-import { API_URL } from 'config';
+import { useAuthAPI } from 'store/auth-store';;
 
 const useStyles = makeStyles(styles);
 const month_label = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", " "];
@@ -358,7 +354,7 @@ export default function Dashboard() {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      authAPI.fetch(API_URL + "/dashboard/completed_jobs", {
+      authAPI.fetch("/dashboard/completed_jobs", {
         method: 'GET'
       })
         .then((response) => {
@@ -390,7 +386,7 @@ export default function Dashboard() {
       }, 5000);
 
       // fetch for active jobs
-      authAPI.fetch(API_URL + "/dashboard/active_jobs", {
+      authAPI.fetch("/dashboard/active_jobs", {
         method: 'GET'
       })
         .then((response) => {
@@ -420,7 +416,7 @@ export default function Dashboard() {
       }, 5000);
 
       // fetch for total tasks
-      authAPI.fetch(API_URL + "/dashboard/tasks", {
+      authAPI.fetch("/dashboard/tasks", {
         method: 'GET'
       })
         .then((response) => {
@@ -451,7 +447,7 @@ export default function Dashboard() {
       }, 5000);
 
       // fetch for inventory
-      authAPI.fetch(API_URL + "/dbase/inventory", {
+      authAPI.fetch("/dbase/inventory", {
         method: 'GET'
       })
         .then((response) => {
@@ -482,7 +478,7 @@ export default function Dashboard() {
       }, 5000);
 
       // fetch for deployment groups
-      authAPI.fetch(API_URL + "/dbase/deployment_group", {
+      authAPI.fetch("/dbase/deployment_group", {
         method: 'GET'
       })
         .then((response) => {
@@ -513,7 +509,7 @@ export default function Dashboard() {
       }, 5000);
 
       // fetch for users
-      authAPI.fetch(API_URL + "/dbase/user", {
+      authAPI.fetch("/dbase/user", {
         method: 'GET'
       })
         .then((response) => {
@@ -547,7 +543,7 @@ export default function Dashboard() {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      authAPI.fetch(API_URL + "/dashboard/daily_jobs", {
+      authAPI.fetch("/dashboard/daily_jobs", {
         method: 'GET'
       })
         .then((response) => {
@@ -579,7 +575,7 @@ export default function Dashboard() {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      authAPI.fetch(API_URL + "/dashboard/monthly_jobs", {
+      authAPI.fetch("/dashboard/monthly_jobs", {
         method: 'GET'
       })
         .then((response) => {
@@ -611,7 +607,7 @@ export default function Dashboard() {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      authAPI.fetch(API_URL + "/dashboard/daily_tasks", {
+      authAPI.fetch("/dashboard/daily_tasks", {
         method: 'GET'
       })
         .then((response) => {
@@ -643,7 +639,7 @@ export default function Dashboard() {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      authAPI.fetch(API_URL + "/dashboard/monthly_tasks", {
+      authAPI.fetch("/dashboard/monthly_tasks", {
         method: 'GET'
       })
         .then((response) => {
@@ -675,7 +671,7 @@ export default function Dashboard() {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      authAPI.fetch(API_URL + "/dashboard/daily_users", {
+      authAPI.fetch("/dashboard/daily_users", {
         method: 'GET'
       })
         .then((response) => {
@@ -707,7 +703,7 @@ export default function Dashboard() {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      authAPI.fetch(API_URL + "/dashboard/monthly_users", {
+      authAPI.fetch("/dashboard/monthly_users", {
         method: 'GET'
       })
         .then((response) => {
@@ -740,7 +736,7 @@ export default function Dashboard() {
       }, 5000);
 
       //Personalized Graph Data
-      authAPI.fetch(API_URL + "/dashboard/daily_jobs_user", {
+      authAPI.fetch("/dashboard/daily_jobs_user", {
         method: 'GET'
       })
         .then((response) => {
@@ -772,7 +768,7 @@ export default function Dashboard() {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      authAPI.fetch(API_URL + "/dashboard/monthly_jobs_user", {
+      authAPI.fetch("/dashboard/monthly_jobs_user", {
         method: 'GET'
       })
         .then((response) => {
@@ -804,7 +800,7 @@ export default function Dashboard() {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      authAPI.fetch(API_URL + "/dashboard/daily_tasks_user", {
+      authAPI.fetch("/dashboard/daily_tasks_user", {
         method: 'GET'
       })
         .then((response) => {
@@ -836,7 +832,7 @@ export default function Dashboard() {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      authAPI.fetch(API_URL + "/dashboard/monthly_tasks_user", {
+      authAPI.fetch("/dashboard/monthly_tasks_user", {
         method: 'GET'
       })
         .then((response) => {
@@ -869,7 +865,7 @@ export default function Dashboard() {
       }, 5000);
 
       // Fetch for personalized Data
-      authAPI.fetch(API_URL + "/dashboard/completed_jobs_user", {
+      authAPI.fetch("/dashboard/completed_jobs_user", {
         method: 'GET'
       })
         .then((response) => {
@@ -901,7 +897,7 @@ export default function Dashboard() {
       }, 5000);
 
       // fetch for active jobs
-      authAPI.fetch(API_URL + "/dashboard/active_jobs_user", {
+      authAPI.fetch("/dashboard/active_jobs_user", {
         method: 'GET'
       })
         .then((response) => {
@@ -932,7 +928,7 @@ export default function Dashboard() {
       }, 5000);
 
       // fetch for deployment groups
-      authAPI.fetch(API_URL + "/dashboard/deployment_group_user", {
+      authAPI.fetch("/dashboard/deployment_group_user", {
         method: 'GET'
       })
         .then((response) => {
@@ -962,7 +958,7 @@ export default function Dashboard() {
       }, 5000);
 
       // fetch for tasks user
-      authAPI.fetch(API_URL + "/dashboard/tasks_user", {
+      authAPI.fetch("/dashboard/tasks_user", {
         method: 'GET'
       })
         .then((response) => {
@@ -993,7 +989,7 @@ export default function Dashboard() {
       }, 5000);
 
       //     fetch device type for piechart
-      authAPI.fetch(API_URL + "/dashboard/device_types", {
+      authAPI.fetch("/dashboard/device_types", {
         method: 'GET'
       })
         .then((response) => {
@@ -1029,7 +1025,7 @@ export default function Dashboard() {
       }, 5000);
 
       // fetch job status for piechart
-      authAPI.fetch(API_URL + "/dashboard/job_status_stats", {
+      authAPI.fetch("/dashboard/job_status_stats", {
         method: 'GET'
       })
         .then((response) => {

@@ -9,10 +9,8 @@ import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';
 import JobTasksToolbar from './JobTasksToolbar';
 import { useParams } from 'react-router-dom';
-import { API_URL } from 'config';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { getAuthHeader } from 'utils/auth';
 import { useStateValue } from 'store/store';
 import { useAuthAPI } from 'store/auth-store'
 
@@ -187,7 +185,7 @@ const MyJobsTable = () => {
 
   //called from toolbar, enabling to refresh table data without refreshing whole page
   const refreshData = () => {
-    authAPI.get(`${API_URL}/job/task_details`)
+    authAPI.get(`/job/task_details`)
       .then((data) => {
         var row = data.data.data;
         var jobTasks = [];
@@ -258,7 +256,7 @@ const MyJobsTable = () => {
   useEffect(() => {
     //get all task_details from the view and pull only the ones to the specific job
     //may be able to simplify with new crud endpoints now
-    authAPI.get(`${API_URL}/job/task_details`, { timeout:5000 })
+    authAPI.get(`/job/task_details`, { timeout:5000 })
       .then((data) => {
         var row = data.data.data;
         var jobTasks = [];

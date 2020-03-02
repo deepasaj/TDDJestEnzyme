@@ -7,11 +7,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import CancelIcon from '@material-ui/icons/Cancel';
 import TextField from '@material-ui/core/TextField';
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
-import { API_URL } from 'config';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
 import { withRouter } from 'react-router-dom';
-import { getAuthHeader } from 'utils/auth';
 import { useStateValue } from 'store/store';
 import { useAuthAPI } from 'store/auth-store';
 
@@ -62,7 +60,7 @@ const CustomToolbarSelect = (props) => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      authAPI.fetch(`${API_URL}/dbase/back_populate/deploy/id:${groupId}`, {
+      authAPI.fetch(`/dbase/back_populate/deploy/id:${groupId}`, {
         body: JSON.stringify(postData),
         method: 'PATCH'
       }).then(response => {
@@ -109,7 +107,7 @@ const CustomToolbarSelect = (props) => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      authAPI.fetch(`${API_URL}/dbase/get_back_ref/deploy/id:${groupId}`, {
+      authAPI.fetch(`/dbase/get_back_ref/deploy/id:${groupId}`, {
         method: 'DELETE'
       }).then((response) => {
         clearTimeout(timeout);

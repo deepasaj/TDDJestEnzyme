@@ -13,10 +13,8 @@ import { makeStyles, createMuiTheme, MuiThemeProvider } from "@material-ui/core/
 import axios from 'axios';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import PreviewPopUp from './preview_modal';
-import { API_URL } from 'config';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { getAuthHeader } from 'utils/auth';
 import { useStateValue } from 'store/store';
 import { useAuthAPI } from 'store/auth-store'
 
@@ -86,7 +84,7 @@ const SummaryTable = props => {
       jsonBody.template = taskObj.template;
     }
 
-    authAPI.post(`${API_URL}/generate_config`, jsonBody, { timeout: 5000 })
+    authAPI.post(`/generate_config`, jsonBody, { timeout: 5000 })
       .then((response) => {
         const config = response.data.data.config;
         setPreviewConfig(config);

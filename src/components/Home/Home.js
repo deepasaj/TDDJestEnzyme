@@ -4,8 +4,6 @@ import Grid from "@material-ui/core/Grid";
 import axios from "axios";
 import { withRouter } from 'react-router-dom';
 import StatsCard from "./StatsCard";
-import { API_URL } from 'config';
-import { getAuthHeader } from 'utils/auth';
 import { useStateValue } from 'store/store';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
@@ -68,7 +66,7 @@ const HomeTab = props => {
 
   useEffect(() => {
     console.log('using effect')
-    authAPI.get(`${API_URL}/home/active_jobs`, { timeout:5000 })
+    authAPI.get(`/home/active_jobs`, { timeout:5000 })
         .then((data) => {
             const rows = data.data.data[0];
             var count = rows['count(*)'];
@@ -77,7 +75,7 @@ const HomeTab = props => {
         .catch(() => {
             showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
         });
-     authAPI.get(`${API_URL}/home/completed_jobs`, { timeout:5000 })
+     authAPI.get(`/home/completed_jobs`, { timeout:5000 })
         .then((data) => {
             const rows = data.data.data[0];
             var count = rows['count(*)'];
@@ -86,7 +84,7 @@ const HomeTab = props => {
         .catch(() => {
             showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
         });
-     authAPI.get(`${API_URL}/dbase/inventory`, { timeout:5000 })
+     authAPI.get(`/dbase/inventory`, { timeout:5000 })
         .then((data) => {
             const rows = data.data.data.length;
             setInvDevices(rows);
@@ -94,7 +92,7 @@ const HomeTab = props => {
         .catch(() => {
             showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
         });
-     authAPI.get(`${API_URL}/dbase/deployment_group`, { timeout:5000 })
+     authAPI.get(`/dbase/deployment_group`, { timeout:5000 })
         .then((data) => {
             const rows = data.data.data.length;
             setDeployGroups(rows);

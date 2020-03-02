@@ -3,10 +3,8 @@ import MUIDataTable from "mui-datatables";
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import CustomToolbarSelect from "./EditDeploymentToolbar";
 import CustomToolbar from './EditDeployTableToolbar';
-import { API_URL } from 'config';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { getAuthHeader } from 'utils/auth';
 import { useStateValue } from 'store/store';
 import { useAuthAPI } from 'store/auth-store';
 
@@ -210,7 +208,7 @@ const EditDeploymentsTable = (props) => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      authAPI.fetch(`${API_URL}/dbase/get_back_ref/deploy/id:${groupId}`, {
+      authAPI.fetch(`/dbase/get_back_ref/deploy/id:${groupId}`, {
         method: 'GET'
       })
       .then(response => response.json())
@@ -252,7 +250,7 @@ const EditDeploymentsTable = (props) => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      authAPI.fetch(`${API_URL}/dbase/inventory`, {
+      authAPI.fetch(`/dbase/inventory`, {
         method: 'GET'
       })
       .then(response=>response.json())

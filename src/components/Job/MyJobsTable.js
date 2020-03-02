@@ -18,11 +18,9 @@ import EditIcon from '@material-ui/icons/Edit';
 import Tooltip from "@material-ui/core/Tooltip";
 import JobsToolbar from './JobsToolbar';
 import _ from "lodash";
-import { API_URL } from 'config';
 import { useStateValue } from 'store/store';
 import { showNotification } from 'utils/notifications';
 import { withRouter } from 'react-router-dom';
-import { getAuthHeader } from 'utils/auth';
 import { useAuthAPI } from 'store/auth-store'
 
 const useStyles = makeStyles(() => ({
@@ -411,7 +409,7 @@ const Jobs = (props) => {
 
   //called from toolbar, enabling to refresh table data without refreshing whole page
   const refreshData = () => {
-    authAPI.get(`${API_URL}/job/job_tasks`)
+    authAPI.get(`/job/job_tasks`)
       .then((data) => {
         const rows = data.data.data;
         var userinput_required_tasks = [];
@@ -517,7 +515,7 @@ const Jobs = (props) => {
     } else {
       var jobId = tableMeta.rowData[0];
       var postData = { "name": tableMeta.rowData[1] };
-      authAPI.patch(API_URL + "/dbase/job/" + jobId, { "data": postData }, { timeout: 5000 })
+      authAPI.patch("/dbase/job/" + jobId, { "data": postData }, { timeout: 5000 })
         .then(() => {
         })
         .catch(() => {
@@ -539,7 +537,7 @@ const Jobs = (props) => {
       workflowTypeFilter.push(workflow_type);
     }
     //pull all from job_tasks view, pull only the ones that need user input
-    authAPI.get(`${API_URL}/job/job_tasks`, { timeout: 5000 })
+    authAPI.get(`/job/job_tasks`, { timeout: 5000 })
       .then((data) => {
         const rows = data.data.data;
         var userinput_required_tasks = [];

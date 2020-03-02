@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Layout from "./layout";
 import LoadingPage from './LoadingPage';
-import { API_URL } from 'config';
 import { useParams } from 'react-router-dom';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { getAuthHeader } from 'utils/auth';
 import { useStateValue } from 'store/store';
 import { useAuthAPI } from 'store/auth-store';
 
@@ -44,7 +42,7 @@ const Builder = () => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      authAPI.fetch(`${API_URL}/deploy/get_mgmt_ip`, {
+      authAPI.fetch(`/deploy/get_mgmt_ip`, {
         method: 'GET'
       })
         .then(response => response.json())
@@ -82,7 +80,7 @@ const Builder = () => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      authAPI.fetch(`${API_URL}/deploy/get_tasks/${job_id}`, {
+      authAPI.fetch(`/deploy/get_tasks/${job_id}`, {
         method: 'GET'
       })
         .then(response => response.json())
@@ -137,7 +135,7 @@ const Builder = () => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      authAPI.fetch(`${API_URL}/dbase/job/${job_id}`, {
+      authAPI.fetch(`/dbase/job/${job_id}`, {
         method: 'GET'
       })
         .then(response => response.json())

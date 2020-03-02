@@ -16,11 +16,9 @@ import LoadingPage from './LoadingPage';
 import CustomToolbar from './DeploymentGroupCustomToolbar';
 import DeleteConfirmModal from './DeleteConfirmationDialog';
 import { withRouter } from 'react-router-dom';
-import { API_URL } from 'config';
 import { useStateValue } from 'store/store';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { getAuthHeader } from 'utils/auth';
 import { useAuthAPI } from 'store/auth-store'
 
 
@@ -336,7 +334,7 @@ const DeploymentGroupsTable = (props) => {
 
   //handle single row deletion
   const handleDelete = () => {
-    authAPI.delete(API_URL + `/dbase/get_back_ref/deploy/id:${groupId}`, { timeout: 5000 })
+    authAPI.delete(`/dbase/get_back_ref/deploy/id:${groupId}`, { timeout: 5000 })
       .then(() => {
         setShowDeleteConfirm(false);
         setLoadingDone(false);
@@ -354,7 +352,7 @@ const DeploymentGroupsTable = (props) => {
   };
 
   const refreshDevices = () => {
-    authAPI.get(`${API_URL}/dbase/get_back_ref/deploy`, { timeout: 5000 })
+    authAPI.get(`/dbase/get_back_ref/deploy`, { timeout: 5000 })
       .then((response) => {
         const deploymentGroups = subNullsForEmptyStrings(response.data.data);
         deploymentGroups.forEach((deploymentGroup) => {
@@ -381,7 +379,7 @@ const DeploymentGroupsTable = (props) => {
 //                reject(new Error('Request timed out'));
 //            }, 5000);
 //
-//            authAPI.fetch(`${API_URL}/dbase/get_back_ref/deploy/id:${group_id}`, {
+//            authAPI.fetch(`/dbase/get_back_ref/deploy/id:${group_id}`, {
 //                method: 'DELETE'
 //            }).then((response) => {
 //                clearTimeout(timeout);
@@ -402,7 +400,7 @@ const DeploymentGroupsTable = (props) => {
 //    };
 
     useEffect(() => {
-      authAPI.get(`${API_URL}/dbase/get_back_ref/deploy`, { timeout: 5000 })
+      authAPI.get(`/dbase/get_back_ref/deploy`, { timeout: 5000 })
         .then((response) => {
           const deploymentGroups = subNullsForEmptyStrings(response.data.data);
           deploymentGroups.forEach((deploymentGroup) => {

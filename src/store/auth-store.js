@@ -1,5 +1,6 @@
 import React, { createContext, useContext } from 'react';
-import axios from "axios";
+import axios from 'axios';
+import { API_URL } from 'config';
 
 export const Store = createContext();
 
@@ -8,19 +9,24 @@ export class AuthAPI {
     this.auth = auth;
   }
 
-  get = async (url, options) => {
+  get = async (path, options) => {
+    const url = `${API_URL}${path}`
     return axios.get(url, await this.buildAuthOptions(options));
   }
-  post = async (url, data, options) => {
+  post = async (path, data, options) => {
+    const url = `${API_URL}${path}`
     return axios.post(url, data, await this.buildAuthOptions(options));
   }
-  delete = async (url, options) => {
+  delete = async (path, options) => {
+    const url = `${API_URL}${path}`
     return axios.delete(url, await this.buildAuthOptions(options));
   }
-  patch = async (url, data, options) => {
+  patch = async (path, data, options) => {
+    const url = `${API_URL}${path}`
     return axios.patch(url, data, await this.buildAuthOptions(options));
   }
-  fetch = async (url, options) => {
+  fetch = async (path, options) => {
+    const url = `${API_URL}${path}`
     return window.fetch(url, await this.buildAuthOptions(options));
   }
   buildAuthOptions = async (options) => {

@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import MUIDataTable from "mui-datatables";
-import { API_URL } from 'config';
 import LoadingPage from './LoadingPage';
 // import { task_obj } from "./mock_actual";
 import TableRow from "@material-ui/core/TableRow";
@@ -13,7 +12,6 @@ import TableHead from "@material-ui/core/TableHead";
 import { useParams } from 'react-router-dom';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { getAuthHeader } from 'utils/auth';
 import { useStateValue } from 'store/store';
 import { useAuthAPI } from 'store/auth-store';
 
@@ -96,7 +94,7 @@ const Validation = () => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      authAPI.fetch(`${API_URL}/deploy/get_tasks/${jobId}`, {
+      authAPI.fetch(`/deploy/get_tasks/${jobId}`, {
         method: 'GET'
       })
         .then(response => response.json())
@@ -152,7 +150,7 @@ const Validation = () => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      authAPI.fetch(`${API_URL}/dbase/job/${jobId}`, {
+      authAPI.fetch(`/dbase/job/${jobId}`, {
         method: 'GET'
       })
         .then(response => response.json())

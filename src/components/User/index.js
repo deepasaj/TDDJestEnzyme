@@ -1,11 +1,9 @@
-import axios from "axios";
+
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { API_URL } from 'config';
 import Breadcrumbs from 'components/Breadcrumbs';
 import NavBar from 'components/NavBar';
 import NotFound from 'components/NotFound/NotFound';
-import { getAuthHeader } from 'utils/auth';
 import { useStateValue } from 'store/store';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
@@ -22,7 +20,7 @@ const User = () => {
   const authAPI = useAuthAPI();
   
   useEffect(() => {
-    authAPI.get(`${API_URL}/user/get_user/${username}`, { timeout:5000 })
+    authAPI.get(`/user/get_user/${username}`, { timeout:5000 })
       .then(resp => {
         setUser(resp.data.data);
       })

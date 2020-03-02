@@ -2,8 +2,6 @@ import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import Breadcrumbs from 'components/Breadcrumbs';
 import NavBar from 'components/NavBar';
-import { API_URL } from 'config';
-import { getAuthHeader } from 'utils/auth';
 import { useStateValue } from 'store/store';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
@@ -19,7 +17,7 @@ const List = () => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   useEffect(() => {
-    authAPI.get(API_URL + "/inventory/list", { timeout: 5000 })
+    authAPI.get("/inventory/list", { timeout: 5000 })
       .then((resp) => {
         setItems(resp.data.inventoryRecords);
       }).catch(() => {

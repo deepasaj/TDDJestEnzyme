@@ -6,11 +6,10 @@ import { Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from '@material-ui/core/TextField';
 import { withRouter } from 'react-router-dom';
-import { API_URL } from 'config';
 import { useStateValue } from 'store/store';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { getAuthHeader } from 'utils/auth';
+
 import { useAuthAPI } from 'store/auth-store';
 
 const useStyles = makeStyles(() => ({
@@ -85,7 +84,7 @@ const TitlePopUp = props => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      authAPI.fetch(`${API_URL}/dbase/back_populate/deploy`,{
+      authAPI.fetch(`/dbase/back_populate/deploy`,{
         method:"POST",
         body: JSON.stringify(body)
       })

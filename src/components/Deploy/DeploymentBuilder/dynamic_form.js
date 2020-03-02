@@ -10,12 +10,9 @@ import HomeIcon from "@material-ui/icons/Home";
 import EditIcon from "@material-ui/icons/Edit";
 import ViewListIcon from "@material-ui/icons/ViewList";
 import ConfirmationPopUp from "./confirmation_modal";
-import axios from "axios";
-import { API_URL } from 'config';
 import { withRouter } from 'react-router-dom';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { getAuthHeader } from 'utils/auth';
 import { useStateValue } from 'store/store';
 import { useAuthAPI } from 'store/auth-store'
 
@@ -94,7 +91,7 @@ const DynamicForm = props => {
   };
 
   const confirmDeploy = () => {
-    return authAPI.post(API_URL + `/orchestration/start-orchestration/${job.id}`, {}, {
+    return authAPI.post(`/orchestration/start-orchestration/${job.id}`, {}, {
       timeout: 5000
     })
       .then(() => {
@@ -138,11 +135,11 @@ const DynamicForm = props => {
       setLoading(true)
       var body = { "data": { "task_object": step.task_object } }
       if (activeStep === steps.length - 1) {
-        authAPI.patch(`${API_URL}/dbase/job/${job.id}`, { "data": { "status": "Ready", "status_details": "Ready for Deployment" } }, { timeout: 5000 })
+        authAPI.patch(`/dbase/job/${job.id}`, { "data": { "status": "Ready", "status_details": "Ready for Deployment" } }, { timeout: 5000 })
           .then(() => {
             setSuccess(true)
             setLoading(false)
-            authAPI.patch(`${API_URL}/dbase/tasks/${step.id}`, body, {
+            authAPI.patch(`/dbase/tasks/${step.id}`, body, {
               timeout: 5000
             })
               .then(() => {
@@ -158,7 +155,7 @@ const DynamicForm = props => {
             showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
           });
       } else {
-        authAPI.patch(`${API_URL}/dbase/tasks/${step.id}`, body, {
+        authAPI.patch(`/dbase/tasks/${step.id}`, body, {
           timeout: 5000
         })
           .then(() => {
