@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import Breadcrumbs from 'components/Breadcrumbs';
 import NavBar from 'components/NavBar';
 import ProteusMain from "./Tabs";
-import { useAuth, useStateValue } from 'store/store';
+import { useAuth, useStateValue, authAPI } from 'store/store';
 import './styles.css';
 
 const HomePage = () => {
@@ -16,8 +16,8 @@ const HomePage = () => {
         const authenticated = await auth.isAuthenticated();
         if (!state.isAuthenticated && authenticated) {
           // detected the authenticated
-          const user = await auth.getUser();
-          user.avatar = `https://ui-avatars.com/api/?rounded=true&name=${user.name}`
+          const user = (await authAPI.get('/auth/me')).data;
+          user.avatar = `https://ui-avatars.com/api/?rounded=true&name=${user.display_name}`
           return dispatch({
             type: "AUTHENTICATED",
             payload: user
