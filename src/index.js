@@ -25,6 +25,7 @@ import User from "components/User";
 import Validation from "components/Validation";
 import ValidationReports from "components/Validation/ValidationReports";
 import { AuthStoreProvider } from "store/store";
+import { OKTA_ODIC } from 'config';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'assets/css/form.css';
@@ -34,11 +35,7 @@ export const history = createBrowserHistory();
 
 const auth = new Auth({
   history,
-  issuer: 'https://dev-471294.okta.com/oauth2/default',
-  clientId: '0oa304to0bdgwOIIO357',
-  redirectUri: window.location.origin + '/auth/callback',
-  pkce: true,
-  scope: 'openid profile email'
+  ...OKTA_ODIC
 });
 
 const App = () => {
