@@ -31,7 +31,7 @@ const tableTheme = createMuiTheme({
 
 const MyJobsTable = () => {
   const classes = useStyles();
-  let { job_id } = useParams();
+  let { jobId } = useParams();
   const authAPI = useAuthAPI();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [data, setData] = React.useState(); // eslint-disable-line no-unused-vars
