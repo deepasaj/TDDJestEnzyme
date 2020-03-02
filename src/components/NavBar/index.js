@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NODE_ENV } from 'config';
 import { withRouter } from 'react-router-dom';
-import { useLogout } from 'hooks/authentication';
-import { useStateValue } from 'store/store';
 import { useAuth } from 'store/auth-store';;
 
 import GenIconImg from 'assets/img/gen_icon.png';
@@ -19,7 +17,7 @@ function NavBar(props) {
     const checkAuth = async () => {
       console.log(await auth.getUser());
       setAuthenticated(await auth.isAuthenticated());
-      setUser(await auth.getUser());
+      setUser((await auth.getUser()) || {});
     };
     checkAuth();
   }, []);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import { createBrowserHistory } from 'history';
 import { Router, Route, Switch } from 'react-router-dom';
@@ -26,6 +26,7 @@ import Validation from "components/Validation";
 import ValidationReports from "components/Validation/ValidationReports";
 import { AuthStoreProvider } from "store/auth-store";
 import { StoreProvider } from "store/store";
+import { AuthCallbackRoute } from "components/AuthCallbackRoute";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'assets/css/form.css';
@@ -38,51 +39,53 @@ const auth = new Auth({
   issuer: 'https://dev-471294.okta.com/oauth2/default',
   clientId: '0oa304to0bdgwOIIO357',
   redirectUri: window.location.origin + '/auth/callback',
-  pkce: true
+  pkce: true,
+  scope: 'openid profile email'
 });
 
 const App = (
-  <StoreProvider>
-  <AuthStoreProvider auth={auth}>
-    <SnackbarProvider
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'right',
-      }}
-      maxSnack={8}
-      style={{ width: 380 }}
-    >
-    <Router history={history}>
-        <Security auth={auth}>
-          <Switch>            
-            <Route path='/auth/callback' component={ImplicitCallback} />
-            <SecureRoute exact path='/' component={Home}/>
-            <SecureRoute path='/home/index' component={Home}/>
-            <SecureRoute path='/admin' component={Admin}/>
-            <SecureRoute path='/dashboard' component={Dashboard}/>
-            <SecureRoute exact path='/deploy' component={DeployMenu}/>
-            <SecureRoute path='/deploy/group/create' component={CreateDeploymentGroup}/>
-            <SecureRoute path='/deploy/group/edit/:groupId' component={EditDeploymentGroups}/>
-            <SecureRoute path='/deploy/deployment/create/:createDeploymentGroupId' component={CreateDeploymentRequest}/>
-            <SecureRoute path='/deploy/deployment_builder/:job_id' component={DeploymentBuilder}/>
-            <SecureRoute path='/deploy/deployment_groups' component={DeploymentGroups}/>
-            <SecureRoute exact path='/inventory' component={Inventory}/>
-            <SecureRoute path='/inventory/add' component={AddDevices}/>
-            <SecureRoute path='/inventory/bulk' component={BulkOperations}/>
-            <SecureRoute path='/inventory/list' component={ListInventory}/>
-            <SecureRoute path='/inventory/manage' component={ManageInventory}/>
-            <SecureRoute exact path='/job' component={Job}/>
-            <SecureRoute path='/job/tasks/:jobId' component={JobTask}/>
-            <SecureRoute path='/user/me' component={User}/>
-            <SecureRoute exact path='/validation' component={Validation}/>
-            <SecureRoute path='/validation/reports/:jobId' component={ValidationReports}/>
-            <Route component={NotFound}/>
-          </Switch>                    
-        </Security>
-      </Router>
-    </SnackbarProvider>
-  </AuthStoreProvider>
-  </StoreProvider>
+    <StoreProvider>
+    <AuthStoreProvider auth={auth} history={history}>
+      <SnackbarProvider
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        maxSnack={8}
+        style={{ width: 380 }}
+      >
+      <Router history={history}>
+          <Security auth={auth}>
+            <Switch>            
+              <AuthCallbackRoute path='/auth/callback' />
+              <SecureRoute exact path='/' component={Home}/>
+              <SecureRoute path='/home/index' component={Home}/>
+              <SecureRoute path='/admin' component={Admin}/>
+              <SecureRoute path='/dashboard' component={Dashboard}/>
+              <SecureRoute exact path='/deploy' component={DeployMenu}/>
+              <SecureRoute path='/deploy/group/create' component={CreateDeploymentGroup}/>
+              <SecureRoute path='/deploy/group/edit/:groupId' component={EditDeploymentGroups}/>
+              <SecureRoute path='/deploy/deployment/create/:createDeploymentGroupId' component={CreateDeploymentRequest}/>
+              <SecureRoute path='/deploy/deployment_builder/:job_id' component={DeploymentBuilder}/>
+              <SecureRoute path='/deploy/deployment_groups' component={DeploymentGroups}/>
+              <SecureRoute exact path='/inventory' component={Inventory}/>
+              <SecureRoute path='/inventory/add' component={AddDevices}/>
+              <SecureRoute path='/inventory/bulk' component={BulkOperations}/>
+              <SecureRoute path='/inventory/list' component={ListInventory}/>
+              <SecureRoute path='/inventory/manage' component={ManageInventory}/>
+              <SecureRoute exact path='/job' component={Job}/>
+              <SecureRoute path='/job/tasks/:jobId' component={JobTask}/>
+              <SecureRoute path='/user/me' component={User}/>
+              <SecureRoute exact path='/validation' component={Validation}/>
+              <SecureRoute path='/validation/reports/:jobId' component={ValidationReports}/>
+              <Route component={NotFound}/>
+            </Switch>                    
+          </Security>
+        </Router>
+      </SnackbarProvider>
+    </AuthStoreProvider>
+    </StoreProvider>
 );
+
 
 ReactDOM.render(App, document.getElementById("root"));

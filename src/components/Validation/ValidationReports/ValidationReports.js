@@ -12,7 +12,6 @@ import TableHead from "@material-ui/core/TableHead";
 import { useParams } from 'react-router-dom';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { useStateValue } from 'store/store';
 import { useAuthAPI } from 'store/auth-store';
 
 
@@ -75,7 +74,6 @@ const tableTheme = createMuiTheme({
 const Validation = () => {
   const classes = useStyles();
   let { jobId } = useParams();
-  const [state] = useStateValue();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [systems, setSystems] = React.useState();
   const [job, setJob] = React.useState({}); // eslint-disable-line no-unused-vars

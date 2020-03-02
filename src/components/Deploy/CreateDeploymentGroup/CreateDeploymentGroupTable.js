@@ -7,7 +7,6 @@ import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 
 import { showNotification } from 'utils/notifications';
 
-import { useStateValue } from 'store/store';
 import { useAuthAPI } from 'store/auth-store';
 
 const tableTheme = createMuiTheme({
@@ -36,7 +35,6 @@ const DeploymentGroupTable = () => {
   const [data, setData] = React.useState();
   const [unlockedData, setUnlockedData] = React.useState();
   const [groupId, setGroupId] = React.useState("");
-  const [state] = useStateValue();
   const authAPI = useAuthAPI();
 
   const columns = [

@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from 'config';
 
@@ -7,9 +7,6 @@ export const Store = createContext();
 export class AuthAPI {
   constructor(auth) {
     this.auth = auth;
-  }
-  getAuth = () => {
-    return this.auth;
   }
   get = async (path, options) => {
     const url = `${API_URL}${path}`
@@ -44,15 +41,51 @@ export class AuthAPI {
   }
 }
 
+
+const getInitialState = (auth) => {
+  return {
+    auth,
+    authAPI: new AuthAPI(auth),
+    user: {}
+  };
+}
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'AUTHENTICATED':
+      return {
+        ...state,
+        user: action.payload.user
+      };
+    case 'LOGOUT':
+      return { ...state, user: {} };
+    default:
+      return state;
+  }
+}
+
 export const AuthStoreProvider = props => {
+  const initState = getInitialState(props.auth);
   return (
     <Store.Provider
-      value={new AuthAPI(props.auth)}
+      value={useReducer(reducer, initState)}
     >
       {props.children}
     </Store.Provider>
   );
 }
 
-export const useAuthAPI = () => useContext(Store);
-export const useAuth = () => useContext(Store).auth;
+export const useAuthAPI = () => {
+  const [state] = useContext(Store);
+  return state.authAPI;
+}
+
+export const useAuth = () => {
+  const [state] = useContext(Store);
+  return state.auth;
+}
+
+export const useUser = () => {
+  const [state] = useContext(Store);
+  return state.user;
+}
