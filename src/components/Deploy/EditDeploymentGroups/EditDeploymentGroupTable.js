@@ -5,7 +5,6 @@ import CustomToolbarSelect from "./EditDeploymentToolbar";
 import CustomToolbar from './EditDeployTableToolbar';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { useStateValue } from 'store/store';
 import { useAuthAPI } from 'store/store';
 
 const tableTheme = createMuiTheme({
@@ -31,7 +30,7 @@ const tableTheme = createMuiTheme({
 
 const EditDeploymentsTable = (props) => {
   const { groupId } = props;
-  const [state] = useStateValue();
+
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [data, setData] = React.useState([]);
   const [currentGroup, setCurrentGroup] = React.useState([]);

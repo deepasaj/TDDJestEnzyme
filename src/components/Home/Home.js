@@ -1,10 +1,8 @@
 import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import axios from "axios";
 import { withRouter } from 'react-router-dom';
 import StatsCard from "./StatsCard";
-import { useStateValue } from 'store/store';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
 import { useAuthAPI } from 'store/store';
@@ -56,7 +54,6 @@ const useStyles = makeStyles(theme => ({
 const HomeTab = props => {
   const { history } = props;
   const classes = useStyles();
-  const [state] = useStateValue();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [activeJobs, setActiveJobs] = React.useState(0);
   const [completedJobs, setCompletedJobs] = React.useState(0);

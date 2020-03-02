@@ -13,7 +13,6 @@ import ConfirmationPopUp from "./confirmation_modal";
 import { withRouter } from 'react-router-dom';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { useStateValue } from 'store/store';
 import { useAuthAPI } from 'store/store'
 
 //const Form = withTheme(MuiTheme);
@@ -51,7 +50,6 @@ const useStyles = makeStyles(theme => ({
 
 const DynamicForm = props => {
   const classes = useStyles();
-  const [state] = useStateValue();
   const authAPI = useAuthAPI();
   
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();

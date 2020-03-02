@@ -10,7 +10,6 @@ import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
 import { withRouter } from 'react-router-dom';
-import { useStateValue } from 'store/store';
 import { useAuthAPI } from 'store/store';
 
 const useStyles = makeStyles(() => ({
@@ -25,7 +24,6 @@ const useStyles = makeStyles(() => ({
 const CustomToolbarSelect = (props) => {
   const { history, groupId, selectedRows, displayData, currentTitle, setCurrentTitle } = props;
   const classes = useStyles();
-  const [state] = useStateValue();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [selectedDevices, setSelectedDevices] = React.useState([]);
   const authAPI = useAuthAPI();

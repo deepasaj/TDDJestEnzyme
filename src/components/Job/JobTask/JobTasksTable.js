@@ -11,7 +11,7 @@ import JobTasksToolbar from './JobTasksToolbar';
 import { useParams } from 'react-router-dom';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { useStateValue } from 'store/store';
+
 import { useAuthAPI } from 'store/store'
 
 const useStyles = makeStyles(() => ({
@@ -33,7 +33,6 @@ const tableTheme = createMuiTheme({
 const MyJobsTable = () => {
   const classes = useStyles();
   let { job_id } = useParams();
-  const [state] = useStateValue();
   const authAPI = useAuthAPI();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [data, setData] = React.useState(); // eslint-disable-line no-unused-vars

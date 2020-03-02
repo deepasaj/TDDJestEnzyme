@@ -2,7 +2,6 @@ import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import Breadcrumbs from 'components/Breadcrumbs';
 import NavBar from 'components/NavBar';
-import { useStateValue } from 'store/store';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
 import { useAuthAPI } from 'store/store'
@@ -10,7 +9,7 @@ import { useAuthAPI } from 'store/store'
 import './styles.css';
 
 const List = () => {
-  const [state] = useStateValue();
+
   const authAPI = useAuthAPI();
 
   const [items, setItems] = useState();
