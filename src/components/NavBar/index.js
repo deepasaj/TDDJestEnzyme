@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { NODE_ENV } from 'config';
 import { withRouter } from 'react-router-dom';
-import { useLogout } from 'hooks/authentication';
-import { useStateValue } from 'store/store';
+import { useStateValue, useAuth } from 'store/store';;
 
 import GenIconImg from 'assets/img/gen_icon.png';
 import DevEnvImg from 'assets/img/development.png';
@@ -10,14 +9,12 @@ import ProdEnvImg from 'assets/img/production.png';
 
 function NavBar(props) {
   const { history } = props;
-  const [{ user }] = useStateValue();
-  const [isAuthenticated, logout] = useLogout();
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      history.push('/login');
-    }
-  }, [isAuthenticated]);
+  const auth = useAuth();
+  const [{isAuthenticated, user}] = useStateValue();
+  
+  function logout() {
+    auth.logout('/');
+  }
 
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
@@ -68,7 +65,7 @@ function NavBar(props) {
         </div>
 
         {
-          isAuthenticated ? (
+          (isAuthenticated && user) ? (
             <React.Fragment>
               <div className="collapse navbar-collapse" id="navbarsExampleDefault">
                   <ul className="navbar-nav mr-auto">
@@ -87,13 +84,13 @@ function NavBar(props) {
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                    >
                       <img src={user.avatar} style={{borderRadius: '5px'}} />
-                      <span style={{paddingLeft: '10px'}}>{user.username}&nbsp;</span>
+                      <span style={{paddingLeft: '10px'}}>{user.name}&nbsp;</span>
                   </button>
                   <div className="dropdown-menu" aria-labelledby="userDropDown">
                       <a
                         className="dropdown-item"
                         style={{cursor: 'pointer'}}
-                        onClick={() => history.push(`/user/${user.username}`)}
+                        onClick={() => history.push(`/user/me`)}
                       >
                         Profile
                       </a>
@@ -101,7 +98,7 @@ function NavBar(props) {
                       <a
                         className="dropdown-item"
                         style={{cursor: 'pointer'}}
-                        onClick={() => logout()}
+                        onClick={logout}
                       >
                         Logout
                       </a>

@@ -3,11 +3,9 @@ import MUIDataTable from "mui-datatables";
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import CustomToolbarSelect from "./EditDeploymentToolbar";
 import CustomToolbar from './EditDeployTableToolbar';
-import { API_URL } from 'config';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { getAuthHeader } from 'utils/auth';
-import { useStateValue } from 'store/store';
+import { useAuthAPI } from 'store/store';
 
 const tableTheme = createMuiTheme({
   overrides: {
@@ -32,14 +30,14 @@ const tableTheme = createMuiTheme({
 
 const EditDeploymentsTable = (props) => {
   const { groupId } = props;
-  const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
+
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [data, setData] = React.useState([]);
   const [currentGroup, setCurrentGroup] = React.useState([]);
   const [rowSelect, setRowSelect] = React.useState([]);
   const [currentTitle, setCurrentTitle] = React.useState("");
   const [unlockedData, setUnlockedData] = React.useState();
+  const authAPI = useAuthAPI();
 
   const columns = [
     {
@@ -209,9 +207,8 @@ const EditDeploymentsTable = (props) => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/dbase/get_back_ref/deploy/id:${groupId}`, {
-        method: 'GET',
-        headers: authHeader
+      authAPI.fetch(`/dbase/get_back_ref/deploy/id:${groupId}`, {
+        method: 'GET'
       })
       .then(response => response.json())
       .then(response => {
@@ -252,9 +249,8 @@ const EditDeploymentsTable = (props) => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/dbase/inventory`, {
-        method: 'GET',
-        headers: authHeader
+      authAPI.fetch(`/dbase/inventory`, {
+        method: 'GET'
       })
       .then(response=>response.json())
       .then(response=>{

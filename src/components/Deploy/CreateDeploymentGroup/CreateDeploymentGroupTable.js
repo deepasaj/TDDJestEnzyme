@@ -4,10 +4,10 @@ import MUIDataTable from "mui-datatables";
 import DeploymentGroupCustomToolbarSelect from "./DeploymentGroupCustomToolbarSelect";
 import CustomToolbar from './CreateDeployGroupToolbar';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-import { API_URL } from 'config';
+
 import { showNotification } from 'utils/notifications';
-import { getAuthHeader } from 'utils/auth';
-import { useStateValue } from 'store/store';
+
+import { useAuthAPI } from 'store/store';
 
 const tableTheme = createMuiTheme({
     overrides: {
@@ -35,8 +35,7 @@ const DeploymentGroupTable = () => {
   const [data, setData] = React.useState();
   const [unlockedData, setUnlockedData] = React.useState();
   const [groupId, setGroupId] = React.useState("");
-  const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
+  const authAPI = useAuthAPI();
 
   const columns = [
     {
@@ -185,9 +184,8 @@ const DeploymentGroupTable = () => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/dbase/inventory`, {
-        method: 'GET',
-        headers: authHeader
+      authAPI.fetch(`/dbase/inventory`, {
+        method: 'GET'
       })
         .then(response => response.json())
         .then(response => {

@@ -6,12 +6,11 @@ import { MenuItem } from '@material-ui/core';
 import { makeStyles, createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import CustomToolbar from "./CustomToolbar";
 import ConfirmationPopUp from "./JobConfirmationModal";
-import { API_URL } from 'config';
 import { withRouter, useParams } from 'react-router-dom';
 import { useStateValue } from 'store/store';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { getAuthHeader } from 'utils/auth';
+import { useAuthAPI } from 'store/store';
 
 
 const useStyles = makeStyles(() => ({
@@ -45,7 +44,6 @@ const DeploymentRequestTable = (props) => {
   const { history } = props;
   const classes = useStyles();
   const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
   const { user } = state;
   const { createDeploymentGroupId } = useParams();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -55,6 +53,7 @@ const DeploymentRequestTable = (props) => {
   const [buttonDisable, setButtonDisable] = React.useState(true);
   const [jobID, setJobID] = React.useState(-1);
   const [showConfirmation, setShowConfirmation] = React.useState(false);
+  const authAPI = useAuthAPI();
 
   const columns = [
     {
@@ -331,9 +330,8 @@ const DeploymentRequestTable = (props) => {
           reject(new Error('Request timed out'));
         }, 5000);
 
-        fetch(`${API_URL}/list_templates`, {
+        authAPI.fetch(`/list_templates`, {
           method: 'POST',
-          headers: authHeader,
           body: JSON.stringify(body)
         }).then(response => response.json())
           .then(response => {
@@ -402,9 +400,8 @@ const DeploymentRequestTable = (props) => {
           reject(new Error('Request timed out'));
         }, 5000);
 
-        fetch(`${API_URL}/list_templates`, {
+        authAPI.fetch(`/list_templates`, {
           method: 'POST',
-          headers: authHeader,
           body: JSON.stringify(body)
         }).then(response => response.json())
           .then(response => {
@@ -452,9 +449,8 @@ const DeploymentRequestTable = (props) => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/dbase/job`, {
+      authAPI.fetch(`/dbase/job`, {
         method: 'POST',
-        headers: authHeader,
         body: JSON.stringify(jobCreationBody)
       }).then(response => response.json())
         .then((response) => {
@@ -475,9 +471,8 @@ const DeploymentRequestTable = (props) => {
                   reject(new Error('Request timed out'));
                 }, 5000);
 
-                fetch(`${API_URL}/job_create`, {
+                authAPI.fetch(`/job_create`, {
                   method: 'POST',
-                  headers: authHeader,
                   body: JSON.stringify(createJobInput)
                 }).then(response => response.json())
                   .then(response => {
@@ -495,9 +490,8 @@ const DeploymentRequestTable = (props) => {
                             reject(new Error('Request timed out'));
                           }, 5000);
 
-                          fetch(`${API_URL}/orchestration/start-orchestration/${id}`, {
-                            method: 'POST',
-                            headers: authHeader
+                          authAPI.fetch(`/orchestration/start-orchestration/${id}`, {
+                            method: 'POST'
                           })
                             .then(() => {
                               clearTimeout(timeout3);
@@ -564,9 +558,8 @@ const DeploymentRequestTable = (props) => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/dbase/get_back_ref/deploy/id:${createDeploymentGroupId}`, {
-        method: 'GET',
-        headers: authHeader
+      authAPI.fetch(`/dbase/get_back_ref/deploy/id:${createDeploymentGroupId}`, {
+        method: 'GET'
       })
         .then(response => response.json())
         .then(response => {
@@ -601,9 +594,8 @@ const DeploymentRequestTable = (props) => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/dbase/workflow_types`, {
-        method: 'GET',
-        headers: authHeader
+      authAPI.fetch(`/dbase/workflow_types`, {
+        method: 'GET'
       })
         .then(response => response.json())
         .then(response => {

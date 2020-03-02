@@ -6,11 +6,11 @@ import { Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from '@material-ui/core/TextField';
 import { withRouter } from 'react-router-dom';
-import { API_URL } from 'config';
 import { useStateValue } from 'store/store';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { getAuthHeader } from 'utils/auth';
+
+import { useAuthAPI } from 'store/store';
 
 const useStyles = makeStyles(() => ({
   btn_primary: {
@@ -38,12 +38,12 @@ const useStyles = makeStyles(() => ({
 const TitlePopUp = props => {
   const classes = useStyles();
   const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
   const { user } = state;
   const { history, showSetTitle, selectedRows, displayData, setGroupId, setShowSetTitle } = props;
   const [title, setTitle] = React.useState("");
   const [selectedDevices, setSelectedDevices] = React.useState([]);
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+  const authAPI = useAuthAPI();
 
   //set title state every time a change to the field occurs
   const handleChange = (e) => {
@@ -84,9 +84,8 @@ const TitlePopUp = props => {
         reject(new Error('Request timed out'));
       }, 5000);
 
-      fetch(`${API_URL}/dbase/back_populate/deploy`,{
+      authAPI.fetch(`/dbase/back_populate/deploy`,{
         method:"POST",
-        headers: authHeader,
         body: JSON.stringify(body)
       })
       .then(response=>response.json())

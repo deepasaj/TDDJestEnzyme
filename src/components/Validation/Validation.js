@@ -5,12 +5,11 @@ import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import FormControl from "@material-ui/core/FormControl";
-import { API_URL } from 'config';
 import { useStateValue } from 'store/store';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
 import { withRouter } from 'react-router-dom';
-import { getAuthHeader } from 'utils/auth';
+import { useAuthAPI } from 'store/store';
 
 const useStyles = makeStyles(() => ({
   devices: {
@@ -30,12 +29,12 @@ const ValidationRequest = (props) => {
   const { history } = props;
   const classes = useStyles();
   const [state] = useStateValue();
-  const authHeader = getAuthHeader(state.token);
   const { user } = state;
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [devices, setDevices] = useState();
   const [jobId, setJobID] = useState(-1); // eslint-disable-line no-unused-vars
   const [workflow, setWorkflow] = useState("DA Validation"); // eslint-disable-line no-unused-vars
+  const authAPI = useAuthAPI();
 
   const toUpper = (val) => {
     return val.toUpperCase();
@@ -65,9 +64,8 @@ const ValidationRequest = (props) => {
         didTimeOut = true;
         reject(new Error('Request timed out'));
       }, 5000);
-      fetch(`${API_URL}/dbase/job`, {
+      authAPI.fetch(`/dbase/job`, {
         method: 'POST',
-        headers: authHeader,
         body: JSON.stringify(jobCreationBody)
       }).then(response => response.json())
         .then((response) => {
@@ -89,9 +87,8 @@ const ValidationRequest = (props) => {
                   reject(new Error('Request timed out'));
                 }, 5000);
 
-                fetch(`${API_URL}/report_job_create`, {
+                authAPI.fetch(`/report_job_create`, {
                   method: 'POST',
-                  headers: authHeader,
                   body: JSON.stringify(createJobInput)
                 }).then(response => response.json())
                   .then(response => {
@@ -109,9 +106,8 @@ const ValidationRequest = (props) => {
                             reject(new Error('Request timed out'));
                           }, 5000);
 
-                          fetch(`${API_URL}/orchestration/start-orchestration/${id}`, {
-                            method: 'POST',
-                            headers: authHeader
+                          authAPI.fetch(`/orchestration/start-orchestration/${id}`, {
+                            method: 'POST'
                           })
                             .then(() => {
                               clearTimeout(timeout3);

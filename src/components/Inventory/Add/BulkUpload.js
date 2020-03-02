@@ -10,14 +10,14 @@ import { withRouter } from 'react-router-dom';
 import { API_URL } from 'config';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { getAuthHeader } from 'utils/auth';
 import { useStateValue } from 'store/store';
+import { useAuthAPI } from 'store/store';
 
 
 function BulkUpload(props) {
   const [state] = useStateValue();
   const { history } = props;
-  const authHeader = getAuthHeader(state.token);
+  const authAPI = useAuthAPI();
 
   const goToManageInventory = () => {
     history.push('/inventory/manage')
@@ -130,11 +130,10 @@ function BulkUpload(props) {
 
 
             //fetch for bulk upload
-            fetch(API_URL + "/bulk_upload", {
+            authAPI.fetch("/bulk_upload", {
               method: 'POST',
               body: formData,
-              signal: controller_signal,
-              headers: authHeader
+              signal: controller_signal
             })
               //then for bulk upload
               .then((response) => {
@@ -162,7 +161,7 @@ function BulkUpload(props) {
                           }, 7000);
 
                           //fetch for url
-                          fetch(url, {
+                          authAPI.fetch(url, {
                             method: 'GET',
                             signal: controller_signal,
                             headers: authHeader
@@ -198,12 +197,11 @@ function BulkUpload(props) {
                                         }, 15000);
 
                                         //fetch for /bulk_insert/?job_id=
-                                        fetch(API_URL + "/bulk_insert/?job_id=" + job_id + "&user_id=" +
+                                        authAPI.fetch("/bulk_insert/?job_id=" + job_id + "&user_id=" +
                                           user_id, {
                                           method: 'POST',
                                           body: formData,
-                                          signal: controller_signal,
-                                          headers: authHeader
+                                          signal: controller_signal
                                         })
                                           //then for /bulk_insert/?job_id=
                                           .then((response3) => {
@@ -268,7 +266,7 @@ function BulkUpload(props) {
                             return;
                           })
                       }
-                      getStatus(API_URL + "/bulk_status/" + job_id);
+                      getStatus("/bulk_status/" + job_id);
                     }, 2000);
                   }
                 });

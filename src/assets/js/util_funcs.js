@@ -36,7 +36,7 @@ function onConfirmDeploy(ev, devicetype, referrer) {
   const controller = new AbortController();
   const signal = controller.signal;
 
-  fetch(localproxy, {
+  window.fetch(localproxy, {
     signal,
     method: 'POST',
     body: api_data,
