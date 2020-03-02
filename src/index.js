@@ -24,8 +24,7 @@ import JobTask from "components/Job/JobTask";
 import User from "components/User";
 import Validation from "components/Validation";
 import ValidationReports from "components/Validation/ValidationReports";
-import { AuthStoreProvider } from "store/auth-store";
-import { StoreProvider } from "store/store";
+import { AuthStoreProvider } from "store/store";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'assets/css/form.css';
@@ -44,7 +43,6 @@ const auth = new Auth({
 
 const App = () => {
   return (
-    <StoreProvider>
     <AuthStoreProvider auth={auth} history={history}>
       <SnackbarProvider
         anchorOrigin={{
@@ -84,7 +82,6 @@ const App = () => {
         </Router>
       </SnackbarProvider>
     </AuthStoreProvider>
-    </StoreProvider>
 )};
 
 

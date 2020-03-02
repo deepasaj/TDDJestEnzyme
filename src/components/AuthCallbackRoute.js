@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Route } from 'react-router-dom';
 import { ImplicitCallback } from '@okta/okta-react';
-import { useAuth } from 'store/auth-store';
+import { useAuth } from 'store/store';
 
 export const AuthCallbackRoute = ({ ...props }) => {
     const auth = useAuth();

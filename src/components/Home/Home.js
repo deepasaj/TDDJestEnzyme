@@ -7,7 +7,7 @@ import StatsCard from "./StatsCard";
 import { useStateValue } from 'store/store';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { useAuthAPI } from 'store/auth-store';
+import { useAuthAPI } from 'store/store';
 
 const useStyles = makeStyles(theme => ({
   root: {

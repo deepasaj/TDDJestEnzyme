@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { NODE_ENV } from 'config';
 import { withRouter } from 'react-router-dom';
-import { useStateValue } from 'store/auth-store';;
+import { useStateValue, useAuth } from 'store/store';;
 
 import GenIconImg from 'assets/img/gen_icon.png';
 import DevEnvImg from 'assets/img/development.png';
@@ -9,8 +9,13 @@ import ProdEnvImg from 'assets/img/production.png';
 
 function NavBar(props) {
   const { history } = props;
-
+  const auth = useAuth();
   const [{isAuthenticated, user}] = useStateValue();
+  
+  function logout() {
+    auth.logout('/');
+  }
+
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
         <a className="navbar-brand" href="/">
@@ -93,7 +98,7 @@ function NavBar(props) {
                       <a
                         className="dropdown-item"
                         style={{cursor: 'pointer'}}
-                        onClick={() => logout()}
+                        onClick={logout}
                       >
                         Logout
                       </a>

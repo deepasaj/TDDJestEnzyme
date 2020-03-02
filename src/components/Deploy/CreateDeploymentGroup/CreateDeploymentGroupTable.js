@@ -7,7 +7,7 @@ import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 
 import { showNotification } from 'utils/notifications';
 
-import { useAuthAPI } from 'store/auth-store';
+import { useAuthAPI } from 'store/store';
 
 const tableTheme = createMuiTheme({
     overrides: {

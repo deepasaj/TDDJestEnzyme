@@ -12,7 +12,7 @@ import TableHead from "@material-ui/core/TableHead";
 import { useParams } from 'react-router-dom';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { useAuthAPI } from 'store/auth-store';
+import { useAuthAPI } from 'store/store';
 
 
 const separator = {

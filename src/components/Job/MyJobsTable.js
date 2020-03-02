@@ -21,7 +21,7 @@ import _ from "lodash";
 import { useStateValue } from 'store/store';
 import { showNotification } from 'utils/notifications';
 import { withRouter } from 'react-router-dom';
-import { useAuthAPI } from 'store/auth-store'
+import { useAuthAPI } from 'store/store'
 
 const useStyles = makeStyles(() => ({
   rowExpand: {

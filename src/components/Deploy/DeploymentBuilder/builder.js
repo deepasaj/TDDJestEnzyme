@@ -4,13 +4,11 @@ import LoadingPage from './LoadingPage';
 import { useParams } from 'react-router-dom';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { useStateValue } from 'store/store';
-import { useAuthAPI } from 'store/auth-store';
+import { useAuthAPI } from 'store/store';
 
 
 const Builder = () => {
   const { job_id } = useParams()
-  const [{token}] = useStateValue();
   const [state, setState] = useState();
   const [rows, setRows] = useState();
   const [steps, setSteps] = useState([]);

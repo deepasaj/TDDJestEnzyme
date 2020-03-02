@@ -6,7 +6,7 @@ import CustomToolbar from './EditDeployTableToolbar';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
 import { useStateValue } from 'store/store';
-import { useAuthAPI } from 'store/auth-store';
+import { useAuthAPI } from 'store/store';
 
 const tableTheme = createMuiTheme({
   overrides: {

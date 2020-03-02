@@ -27,7 +27,7 @@ import styles from "./assets/jss/material-dashboard-react/views/dashboardStyle.j
 import SimplePieChart from "./Charts/PieChart.js";
 import logoSrc from "assets/img/gen_icon.png";
 
-import { useAuthAPI } from 'store/auth-store';;
+import { useAuthAPI } from 'store/store';;
 
 const useStyles = makeStyles(styles);
 const month_label = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", " "];

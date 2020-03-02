@@ -11,7 +11,7 @@ import { API_URL } from 'config';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
 import { useStateValue } from 'store/store';
-import { useAuthAPI } from 'store/auth-store';
+import { useAuthAPI } from 'store/store';
 
 
 function BulkUpload(props) {

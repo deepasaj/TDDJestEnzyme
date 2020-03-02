@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import Breadcrumbs from 'components/Breadcrumbs';
 import NavBar from 'components/NavBar';
-import { useUser } from 'store/auth-store'
+import { useUser } from 'store/store'
 
 import './styles.css';
 

@@ -14,7 +14,7 @@ import DeleteConfirmModal from "./DeleteConfirmationDialog";
 import { useStateValue } from 'store/store';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { useAuthAPI } from 'store/auth-store'
+import { useAuthAPI } from 'store/store'
 
 
 const InvStyles = makeStyles(() => ({

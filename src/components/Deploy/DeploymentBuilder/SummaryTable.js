@@ -16,7 +16,7 @@ import PreviewPopUp from './preview_modal';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
 import { useStateValue } from 'store/store';
-import { useAuthAPI } from 'store/auth-store'
+import { useAuthAPI } from 'store/store'
 
 const useStyles = makeStyles(theme => ({
   rowExpand: {
