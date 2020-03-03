@@ -479,7 +479,7 @@ const InventoryTable = () => {
     device_array.push(device);
     var postData = device;
     postData["created_by"] = user_id;
-
+    setLoading(true);
 
     authAPI.post("/inventory", device_array, { timeout: 5000 })
       .then((data) => {
