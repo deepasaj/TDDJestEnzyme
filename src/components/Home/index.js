@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import Breadcrumbs from 'components/Breadcrumbs';
 import NavBar from 'components/NavBar';
 import ProteusMain from "./Tabs";
-import { useAuth, useStateValue, userAuthAPI } from 'store/store';
+import { useAuth, useStateValue, useAuthAPI } from 'store/store';
 import './styles.css';
 
 const HomePage = () => {
