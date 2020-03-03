@@ -163,8 +163,7 @@ function BulkUpload(props) {
                           //fetch for url
                           authAPI.fetch(url, {
                             method: 'GET',
-                            signal: controller_signal,
-                            headers: authHeader
+                            signal: controller_signal
                           })
                             //then for url
                             .then((response2) => {
@@ -237,7 +236,8 @@ function BulkUpload(props) {
                                         //then catch for /bulk_insert/?job_id= promise
                                         .then(function () {
                                         })
-                                        .catch(function () {
+                                        .catch(function (e) {
+                                          console.log(e);
                                           // Error: response error, request timeout or runtime error
                                           showNotification("An error occurred connecting to VAPI.", 'error', enqueueSnackbar, closeSnackbar);
                                           error("connection timeout");
@@ -259,7 +259,8 @@ function BulkUpload(props) {
                           //then catch for url promise
                           .then(function () {
                           })
-                          .catch(function () {
+                          .catch(function (e) {
+                            console.log(e);
                             // Error: response error, request timeout or runtime error
                             showNotification("CAn error occurred connecting to VAPI.", 'error', enqueueSnackbar, closeSnackbar);
                             error("connection timeout");
@@ -281,7 +282,8 @@ function BulkUpload(props) {
             //then catch for bulk upload promise
             .then(function () {
             })
-            .catch(function () {
+            .catch(function (e) {
+              console.log(e);
               // Error: response error, request timeout or runtime error
               showNotification("Currently unable to connect to VAPI.", 'error', enqueueSnackbar, closeSnackbar);
               error("connection timeout");
