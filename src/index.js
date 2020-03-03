@@ -53,26 +53,26 @@ const App = () => {
           <Security auth={auth}>
             <Switch>            
               <Route path='/auth/callback' component={ImplicitCallback} />
-              <Route exact path='/' component={Home}/>
-              <Route path='/home/index' component={Home}/>
-              <Route path='/admin' component={Admin}/>
-              <Route path='/dashboard' component={Dashboard}/>
-              <Route exact path='/deploy' component={DeployMenu}/>
-              <Route path='/deploy/group/create' component={CreateDeploymentGroup}/>
-              <Route path='/deploy/group/edit/:groupId' component={EditDeploymentGroups}/>
-              <Route path='/deploy/deployment/create/:createDeploymentGroupId' component={CreateDeploymentRequest}/>
-              <Route path='/deploy/deployment_builder/:job_id' component={DeploymentBuilder}/>
-              <Route path='/deploy/deployment_groups' component={DeploymentGroups}/>
-              <Route exact path='/inventory' component={Inventory}/>
-              <Route path='/inventory/add' component={AddDevices}/>
-              <Route path='/inventory/bulk' component={BulkOperations}/>
-              <Route path='/inventory/list' component={ListInventory}/>
-              <Route path='/inventory/manage' component={ManageInventory}/>
-              <Route exact path='/job' component={Job}/>
-              <Route path='/job/tasks/:jobId' component={JobTask}/>
-              <Route path='/user/me' component={User}/>
-              <Route exact path='/validation' component={Validation}/>
-              <Route path='/validation/reports/:jobId' component={ValidationReports}/>
+              <SecureRoute exact path='/' component={Home}/>
+              <SecureRoute path='/home/index' component={Home}/>
+              <SecureRoute path='/admin' component={Admin}/>
+              <SecureRoute path='/dashboard' component={Dashboard}/>
+              <SecureRoute exact path='/deploy' component={DeployMenu}/>
+              <SecureRoute path='/deploy/group/create' component={CreateDeploymentGroup}/>
+              <SecureRoute path='/deploy/group/edit/:groupId' component={EditDeploymentGroups}/>
+              <SecureRoute path='/deploy/deployment/create/:createDeploymentGroupId' component={CreateDeploymentRequest}/>
+              <SecureRoute path='/deploy/deployment_builder/:job_id' component={DeploymentBuilder}/>
+              <SecureRoute path='/deploy/deployment_groups' component={DeploymentGroups}/>
+              <SecureRoute exact path='/inventory' component={Inventory}/>
+              <SecureRoute path='/inventory/add' component={AddDevices}/>
+              <SecureRoute path='/inventory/bulk' component={BulkOperations}/>
+              <SecureRoute path='/inventory/list' component={ListInventory}/>
+              <SecureRoute path='/inventory/manage' component={ManageInventory}/>
+              <SecureRoute exact path='/job' component={Job}/>
+              <SecureRoute path='/job/tasks/:jobId' component={JobTask}/>
+              <SecureRoute path='/user/me' component={User}/>
+              <SecureRoute exact path='/validation' component={Validation}/>
+              <SecureRoute path='/validation/reports/:jobId' component={ValidationReports}/>
               <Route component={NotFound}/>
             </Switch>                    
           </Security>

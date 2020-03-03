@@ -74,15 +74,6 @@ export const AuthDectector = props => {
   useEffect(() => {
     // check for authentication
     const checkAuthentication = async () => {
-      if (!state.isAuthenticated) {
-        const user = (await authAPI.get('/auth/me')).data;
-        user.avatar = `https://ui-avatars.com/api/?rounded=true&name=${user.display_name}`
-        return dispatch({
-          type: "AUTHENTICATED",
-          payload: user
-        });
-      }
-      /*
       const authenticated = await auth.isAuthenticated();
       if (!state.isAuthenticated && authenticated) {
         // detected the authenticated
@@ -92,7 +83,7 @@ export const AuthDectector = props => {
           type: "AUTHENTICATED",
           payload: user
         });
-      }*/
+      }
     };
     checkAuthentication();
   });
