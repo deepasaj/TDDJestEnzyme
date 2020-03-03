@@ -17,7 +17,7 @@ function NavBar(props) {
   }
 
   return (
-    <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <nav className="navbar navbar-expand-md navbar-dark bg-dark">
         <a className="navbar-brand" href="/">
             <img src={GenIconImg} width="30" height="30" className="d-inline-block align-top" alt="Da Gen" />
             &nbsp;Proteus <i style={{fontSize: '.75em'}}>BETA</i>
@@ -83,7 +83,7 @@ function NavBar(props) {
                     className="btn btn-secondary dropdown-toggle" type="button" id="userDropDown"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                    >
-                      <img src={user.avatar} style={{borderRadius: '5px'}} />
+                      <img src={user.avatar} style={{borderRadius: '5px', width: 32, height: 32}} />
                       <span style={{paddingLeft: '10px'}}>{user.display_name}&nbsp;</span>
                   </button>
                   <div className="dropdown-menu" aria-labelledby="userDropDown">
