@@ -2,12 +2,13 @@ import React, { useEffect } from 'react';
 import Breadcrumbs from 'components/Breadcrumbs';
 import NavBar from 'components/NavBar';
 import ProteusMain from "./Tabs";
-import { useAuth, useStateValue, authAPI } from 'store/store';
+import { useAuth, useStateValue, userAuthAPI } from 'store/store';
 import './styles.css';
 
 const HomePage = () => {
 
     const auth = useAuth();
+    const authAPI = useAuthAPI();
     const [state, dispatch] = useStateValue();
 
     useEffect(() => {

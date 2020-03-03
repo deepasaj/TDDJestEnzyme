@@ -62,7 +62,6 @@ const HomeTab = props => {
   const authAPI = useAuthAPI();
 
   useEffect(() => {
-    console.log('using effect')
     authAPI.get(`/home/active_jobs`, { timeout:5000 })
         .then((data) => {
             const rows = data.data.data[0];
