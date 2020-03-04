@@ -184,8 +184,14 @@ const InventoryTable = () => {
         customBodyRender: (value, tableMeta) => {
           return <div>{tableMeta.rowData[6].toString()}</div>
         },
-        customFilterListOptions: (value) => {
-          return (value.toString())
+        customFilterListOptions: { 
+          render(value) {
+            if(value) {
+              return "Locked"
+            } else {
+              return "Unlocked"
+            }
+          }
         },
       }
     },
