@@ -1,7 +1,7 @@
 import React from 'react';
 import { NODE_ENV } from 'config';
 import { withRouter } from 'react-router-dom';
-import { useStateValue, useAuth } from 'store/store';;
+import { useStateValue, useAuth } from 'store/store';
 
 import GenIconImg from 'assets/img/gen_icon.png';
 import DevEnvImg from 'assets/img/development.png';
