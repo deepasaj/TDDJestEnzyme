@@ -262,7 +262,7 @@ function BulkUpload(props) {
                           .catch(function (e) {
                             console.log(e);
                             // Error: response error, request timeout or runtime error
-                            showNotification("CAn error occurred connecting to VAPI.", 'error', enqueueSnackbar, closeSnackbar);
+                            showNotification("An error occurred connecting to VAPI.", 'error', enqueueSnackbar, closeSnackbar);
                             error("connection timeout");
                             return;
                           })
