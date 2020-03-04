@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import MUIDataTable from "mui-datatables";
@@ -76,6 +77,12 @@ const InventoryTable = () => {
   const [duplicateHost, setDuplicateHost] = useState(false);
   const [duplicateIP, setDuplicateIP] = useState(false);
 
+  const lockedByFilterOptions = _.chain(data)
+                            .map(row => _.get(row, 'lock_user.display_name'))
+                            .filter(Boolean)
+                            .uniq()
+                            .value();
+
   const columns = [
     {
       name: "id",
@@ -129,7 +136,10 @@ const InventoryTable = () => {
         sort: true,
         display: displayList[4],
         filterList: filter[4],
-        sortDirection: sort[4]
+        sortDirection: sort[4],
+        filterOptions: {
+          names: lockedByFilterOptions
+        }
       }
     },
     {
