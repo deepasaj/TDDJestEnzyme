@@ -10,14 +10,14 @@ import { withRouter } from 'react-router-dom';
 import { API_URL } from 'config';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
-import { useStateValue } from 'store/store';
-import { useAuthAPI } from 'store/store';
+import { useStateValue, useAuthAPI, useUser } from 'store/store';
 
 
 function BulkUpload(props) {
   const [state] = useStateValue();
   const { history } = props;
   const authAPI = useAuthAPI();
+  const user = useUser();
 
   const goToManageInventory = () => {
     history.push('/inventory/manage')
@@ -89,7 +89,6 @@ function BulkUpload(props) {
       const formData = new FormData();
       formData.append(fieldName, file, file.name);
       var job_id = "";
-      var user_id = 1;
       const index = getId();
       /*
       function status(response) {
@@ -196,12 +195,14 @@ function BulkUpload(props) {
                                         }, 15000);
 
                                         //fetch for /bulk_insert/?job_id=
-                                        authAPI.fetch("/bulk_insert/?job_id=" + job_id + "&user_id=" +
-                                          user_id, {
-                                          method: 'POST',
-                                          body: formData,
-                                          signal: controller_signal
-                                        })
+                                        authAPI.fetch(
+                                          `/bulk_insert/?job_id=${job_id}&user_id=${user.id}`, 
+                                          {
+                                            method: 'POST',
+                                            body: formData,
+                                            signal: controller_signal
+                                          }
+                                        )
                                           //then for /bulk_insert/?job_id=
                                           .then((response3) => {
                                             response3.json().then((responseData3) => {
@@ -262,7 +263,7 @@ function BulkUpload(props) {
                           .catch(function (e) {
                             console.log(e);
                             // Error: response error, request timeout or runtime error
-                            showNotification("CAn error occurred connecting to VAPI.", 'error', enqueueSnackbar, closeSnackbar);
+                            showNotification("An error occurred connecting to VAPI.", 'error', enqueueSnackbar, closeSnackbar);
                             error("connection timeout");
                             return;
                           })

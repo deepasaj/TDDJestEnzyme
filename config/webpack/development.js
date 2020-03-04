@@ -9,6 +9,7 @@ module.exports = {
 		chunkFilename: '[name].js',
 		publicPath: '/',
 	},
+	devtool: 'source-map',
 	devServer: {
 		publicPath: '/',
 		contentBase: path.resolve(__dirname, '../../', 'build'),
