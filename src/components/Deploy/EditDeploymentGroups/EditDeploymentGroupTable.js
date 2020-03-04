@@ -121,6 +121,9 @@ const EditDeploymentsTable = (props) => {
     download: false,
     print: false,
     rowsSelected: rowSelect,
+    onRowsSelect(currentRowsSelected, allRowsSelected) {
+      setRowSelect(allRowsSelected.map(({ dataIndex }) => dataIndex))
+    },
     customSort: (data, colIndex, order) => {
       //sort differently if mgmt_ip or timestamp
       if (colIndex === 2) {

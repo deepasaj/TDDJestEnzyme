@@ -8,10 +8,15 @@ import './styles.css';
 
 const EditDeploymentGroups = () => {
   let { groupId } = useParams();
+  const breadcrumbsPath = [
+    { text: 'Home', path: '/'},
+    { text: 'Deploy', path: '/deploy'},
+    { text: `Edit Deployment Group ${groupId}`, path: `/deploy/group/edit/${groupId}` }
+  ];
   return (
     <React.Fragment>
       <NavBar />
-      <Breadcrumbs />
+      <Breadcrumbs paths={breadcrumbsPath} />
       <main id="main" role="main" className="container">
         <div className="EditDeploymentGroups">
           <EditDeploymentGroupTable groupId={groupId} />
