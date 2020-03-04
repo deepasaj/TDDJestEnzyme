@@ -11,7 +11,7 @@ const CreateDeploymentRequest = () => {
   const breadcrumbsPath = [
     { text: 'Home', path: '/'},
     { text: 'Deploy', path: '/deploy'},
-    { text: 'Create Deployment Group', path: `/deploy/deployment/create/${createDeploymentGroupId}` }
+    { text: `Create Deployment Request for Deployment Group ${createDeploymentGroupId}`, path: `/deploy/deployment/create/${createDeploymentGroupId}` }
   ];
   return (
     <React.Fragment>
