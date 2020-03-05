@@ -122,7 +122,9 @@ const DynamicForm = props => {
         <div className={errors.props.errors ? "fielderror" : "noerror"} title={errors.props.errors ? errors.props.errors : "meets validations"}>
             {children}
         </div>
-        {description}
+        <div>
+          {description}
+        </div>
       </div>
     );
   };
