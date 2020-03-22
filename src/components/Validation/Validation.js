@@ -5,6 +5,7 @@ import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import FormControl from "@material-ui/core/FormControl";
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { useStateValue } from 'store/store';
 import { useSnackbar } from "notistack";
 import { showNotification } from 'utils/notifications';
@@ -20,6 +21,9 @@ const useStyles = makeStyles(() => ({
   paper: {
     padding: 50
   },
+  circularProgress: {
+    marginTop: 25
+  },
   button: {
     marginTop: 25
   }
@@ -33,8 +37,8 @@ const ValidationRequest = (props) => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [devices, setDevices] = useState();
   const [jobId, setJobID] = useState(-1); // eslint-disable-line no-unused-vars
-  const [workflow, setWorkflow] = useState("DA Validation"); // eslint-disable-line no-unused-vars
   const authAPI = useAuthAPI();
+  const [postJobInProgress, setPostJobInProgress] = useState(false)
 
   const toUpper = (val) => {
     return val.toUpperCase();
@@ -50,8 +54,12 @@ const ValidationRequest = (props) => {
   //kick off job creation orchestration
   //called in JobConfirmationModal.js
   const postJob = () => {
-    var user_selections = { workflow, devices }
-    const jobCreationBody = { "data": [{ "user_id": user.id, "user_selections": [user_selections], "status": "Ready" }] }
+    setPostJobInProgress(true)
+    const userSelections = devices.map(device => ({
+      workflow: "DA Validation",
+      hostname: device.trim()
+    }))
+    const jobCreationBody = { "data": [{ "user_id": user.id, "user_selections": userSelections, "status": "Ready" }] }
 
     let didTimeOut = false;
     let didTimeOut2 = false;
@@ -116,6 +124,7 @@ const ValidationRequest = (props) => {
                                 history.push('/job');
                               }
                             }).catch(() => {
+                              setPostJobInProgress(false)
                               showNotification("There was an error submitting the request for initial orchestration for this job to execute any prerequisites tasks. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
                             });
 
@@ -124,6 +133,7 @@ const ValidationRequest = (props) => {
                           })
                           .catch(function () {
                             // Error: response error, request timeout or runtime error
+                            setPostJobInProgress(false)
                             showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
                           });
 
@@ -131,6 +141,7 @@ const ValidationRequest = (props) => {
                     }
 
                   }).catch(() => {
+                    setPostJobInProgress(false)
                     showNotification("There was an error submitting the Deployment Request. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
                   });
 
@@ -139,11 +150,13 @@ const ValidationRequest = (props) => {
                 })
                 .catch(function () {
                   // Error: response error, request timeout or runtime error
+                  setPostJobInProgress(false)
                   showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
                 });
             }
           }
         }).catch(() => {
+          setPostJobInProgress(false)
           showNotification("There was an error submitting the Deployment Request. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
         });
 
@@ -153,6 +166,7 @@ const ValidationRequest = (props) => {
       .catch(function (err) {
         // Error: response error, request timeout or runtime error
         console.log(err)
+        setPostJobInProgress(false)
         showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
       });
   }
@@ -177,14 +191,20 @@ const ValidationRequest = (props) => {
           </FormControl>
           </Grid>
           <Grid item xs={12} style={{ textAlign: "right"}} >
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            onClick={postJob}
-          >
-            Submit
-          </Button>
+          {
+            postJobInProgress ? (
+              <CircularProgress className={classes.circularProgress}/>
+            ) : (
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                onClick={postJob}
+              >
+                Submit
+              </Button>
+            )
+          }
           </Grid>
         </Paper>
       </Grid>

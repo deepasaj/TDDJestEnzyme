@@ -8,7 +8,7 @@ export const OKTA_ODIC = {
     issuer: process.env.ODIC_ISSUER || 'https://dev-471294.okta.com/oauth2/default',
     clientId: process.env.ODIC_CLIENT_ID || '0oa304to0bdgwOIIO357',
     redirectUri: process.env.ODIC_REDIRECT_URI || 'http://localhost:3010/auth/callback',
-    pkce: true,
+    pkce: false,
     scope: 'openid profile email'
 };
 // constants

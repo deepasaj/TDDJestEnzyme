@@ -178,69 +178,60 @@ const Validation = () => {
   }, []);
 
   useEffect(() => {
-    var temp_systems = [];
-    console.log(tasks[0])
-    if (tasks[0] !== undefined) {
-      var task_obj = JSON.parse(tasks[0].task_object);
-      console.log(task_obj.output);
-      if (task_obj.output) {
-        task_obj.output.map((row, index) => {
-          const hostKey = Object.keys(task_obj.output[index])[0];
-          task_obj.output[index][hostKey].map((systemRow) => {
-            var temp_device = [];
-            var temp_keyval_array = [];
+    const systemsReportsList = [];
 
-            var hostSystem = hostKey + " | " + Object.keys(systemRow);
-            temp_device.push(hostSystem);
-            temp_device.push(systemRow[Object.keys(systemRow)].status);
-            temp_device.push(systemRow[Object.keys(systemRow)].error);
+    tasks.forEach(task => {
+      const taskObject = JSON.parse(task.task_object);
+      const systemReport = taskObject.output
 
-            // Create List of Objects
-            var result_obj = systemRow[Object.keys(systemRow)].result;
-            console.log('result_obj')
-            console.log(result_obj)
-            if (result_obj && systemRow[Object.keys(systemRow)].result.length > 1) {
-              for (var i = 0; i < result_obj.length; i++) {
-                if (typeof result_obj[i] === "object") {
-                  for (var key in result_obj[i]) {
-                    if (result_obj[i].hasOwnProperty(key)) { // eslint-disable-line no-prototype-builtins
-                      var temp_keyval = {};
-                      temp_keyval[key] = result_obj[i][key];
-                      temp_keyval_array.push(temp_keyval);
-                    }
-                  }
-                } else {
-                  temp_keyval_array.push({ " ": result_obj[i] });
-                }
-                temp_keyval_array.push(separator);
-              }
-            } else {
-              if (result_obj && typeof result_obj[0] === "object") {
-                for (var key in result_obj[0]) { // eslint-disable-line no-redeclare
-                  if (result_obj[0].hasOwnProperty(key)) { // eslint-disable-line no-prototype-builtins
-                    var temp_keyval = {}; // eslint-disable-line no-redeclare
-                    temp_keyval[key] = result_obj[0][key];
-                    temp_keyval_array.push(temp_keyval);
-                  }
-                }
-              } else {
-                if(result_obj){
-                  temp_keyval_array.push({ " ": result_obj[0] });
-                }
+      const hostSystem = `${task.target} | ${task.tool}`;
+
+      const keyValue = [];
+
+      // Create List of Objects
+      const resultObject = systemReport.result;
+
+      if (resultObject && systemReport.result.length > 1) {
+        for (let i = 0; i < resultObject.length; i++) {
+          if (typeof resultObject[i] === "object") {
+            for (let key in resultObject[i]) {
+              if (resultObject[i].hasOwnProperty(key)) { // eslint-disable-line no-prototype-builtins
+                keyValue.push({ [key]: resultObject[i][key] });
               }
             }
-
-            //Push the results into a temporary array
-            temp_device.push(temp_keyval_array);
-            temp_systems.push(temp_device);
-          });
-        });
+          } else {
+            keyValue.push({ " ": resultObject[i] });
+          }
+          keyValue.push(separator);
+        }
+      } else {
+        if (resultObject && typeof resultObject[0] === "object") {
+          for (let key in resultObject[0]) { // eslint-disable-line no-redeclare
+            if (resultObject[0].hasOwnProperty(key)) { // eslint-disable-line no-prototype-builtins
+              keyValue.push({ [key]: resultObject[0][key] });
+            }
+          }
+        } else {
+          if(resultObject){
+            keyValue.push({ " ": resultObject[0] });
+          }
+        }
       }
-      setSystems(temp_systems);
+
+      //Push the results into a temporary array
+      systemsReportsList.push([
+        hostSystem,
+        systemReport.status,
+        systemReport.error,
+        keyValue
+      ]);
+    })
+
+    if(systemsReportsList.length) {
+      setSystems(systemsReportsList);
       setLoadingDone(true)
-    } else {
-      console.log('skipping');
     }
+
   }, [tasks]);
 
   const columns = [

@@ -247,13 +247,14 @@ const Jobs = (props) => {
         empty: true,
         download: false,
         customBodyRender: (value, tableMeta) => {
-          var jobReady = true;
-          if (tableMeta.rowData != undefined) {
+          var jobReady = false;
+          if (tableMeta.rowData != undefined && tableMeta.rowData[5] === user.display_name) {
             //if the job is yours and status is in one of the below status, can open job wizard
+            const workflow_type = tableMeta.rowData[6];
             if (tableMeta.rowData[4] == "User Input" || tableMeta.rowData[4] == "Ready" || tableMeta.rowData[4] == "Complete") {
-              if (tableMeta.rowData[5] === user.display_name) {
-                jobReady = false;
-              }
+              jobReady = true;
+            } else if(workflow_type === 'DA Validation' && tableMeta.rowData[4] == "Incomplete") {
+              jobReady = true
             }
           }
           return (
@@ -262,7 +263,7 @@ const Jobs = (props) => {
                 color="primary"
                 variant="contained"
                 onClick={() => { handleOpen(tableMeta) }}
-                disabled={jobReady}
+                disabled={!jobReady}
               >
                 Open
               </Button>
@@ -412,9 +413,7 @@ const Jobs = (props) => {
         const rows = data.data.data;
         var userinput_required_tasks = [];
         for (var task in rows) {
-          if (rows[task].userinput_required === 1) {
-            userinput_required_tasks.push(rows[task]);
-          }
+          userinput_required_tasks.push(rows[task]);
         }
         setUserInputTasks(userinput_required_tasks);
         setData(userinput_required_tasks);
@@ -540,9 +539,7 @@ const Jobs = (props) => {
         const rows = data.data.data;
         var userinput_required_tasks = [];
         for (var task in rows) {
-          if (rows[task].userinput_required === 1) {
-            userinput_required_tasks.push(rows[task]);
-          }
+          userinput_required_tasks.push(rows[task]);
         }
         console.log(userinput_required_tasks);
         setUserInputTasks(userinput_required_tasks);
