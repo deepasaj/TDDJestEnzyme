@@ -75,38 +75,11 @@ const TitlePopUp = props => {
   const postDeploymentGroup = () => {
     const body = { "data": [{ "devices": selectedDevices, "user_id": user.id, "name": title }] }
 
-    let didTimeOut = false;
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout = setTimeout(function () {
-        didTimeOut = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      authAPI.fetch(`/dbase/back_populate/deploy`,{
-        method:"POST",
-        body: JSON.stringify(body)
-      })
-      .then(response=>response.json())
-      .then(response => {
-        clearTimeout(timeout);
-        if (!didTimeOut) {
-          resolve(response);
-          setGroupId(response.id)
-          groupCreated()
-        }
-      })
-      .catch(() => {
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      })
-
-    })
-    .then(function () {
-    })
-    .catch(function () {
-      // Error: response error, request timeout or runtime error
-      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
+    authAPI.post(`/dbase/back_populate/deploy`, body).then(({ data }) => {
+      setGroupId(data.id);
+      groupCreated();
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
     });
 
   }

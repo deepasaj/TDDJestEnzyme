@@ -62,7 +62,7 @@ const HomeTab = props => {
   const authAPI = useAuthAPI();
 
   useEffect(() => {
-    authAPI.get(`/home/active_jobs`, { timeout:5000 })
+    authAPI.get(`/home/active_jobs`)
         .then((data) => {
             const rows = data.data.data[0];
             var count = rows['count(*)'];
@@ -71,7 +71,7 @@ const HomeTab = props => {
         .catch(() => {
             showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
         });
-     authAPI.get(`/home/completed_jobs`, { timeout:5000 })
+     authAPI.get(`/home/completed_jobs`)
         .then((data) => {
             const rows = data.data.data[0];
             var count = rows['count(*)'];
@@ -80,7 +80,7 @@ const HomeTab = props => {
         .catch(() => {
             showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
         });
-     authAPI.get(`/dbase/inventory`, { timeout:5000 })
+     authAPI.get(`/dbase/inventory`)
         .then((data) => {
             const rows = data.data.data.length;
             setInvDevices(rows);
@@ -88,7 +88,7 @@ const HomeTab = props => {
         .catch(() => {
             showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
         });
-     authAPI.get(`/dbase/deployment_group`, { timeout:5000 })
+     authAPI.get(`/dbase/deployment_group`)
         .then((data) => {
             const rows = data.data.data.length;
             setDeployGroups(rows);

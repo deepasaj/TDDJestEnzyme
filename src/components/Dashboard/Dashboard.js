@@ -27,7 +27,7 @@ import styles from "./assets/jss/material-dashboard-react/views/dashboardStyle.j
 import SimplePieChart from "./Charts/PieChart.js";
 import logoSrc from "assets/img/gen_icon.png";
 
-import { useAuthAPI } from 'store/store';;
+import { useAuthAPI } from 'store/store';
 
 const useStyles = makeStyles(styles);
 const month_label = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", " "];
@@ -323,735 +323,188 @@ export default function Dashboard() {
       setLoading(false);
     }, 3000);
 
-    let didTimeOut1 = false;
-    let didTimeOut2 = false;
-    let didTimeOut3 = false;
-    let didTimeOut4 = false;
-    let didTimeOut5 = false;
-    let didTimeOut6 = false;
-    let didTimeOut7 = false;
-    let didTimeOut8 = false;
-    let didTimeOut9 = false;
-    let didTimeOut10 = false;
-    let didTimeOut11 = false;
-    let didTimeOut12 = false;
-    let didTimeOut13 = false;
-    let didTimeOut14 = false;
-    let didTimeOut15 = false;
-    let didTimeOut16 = false;
-    let didTimeOut17 = false;
-    let didTimeOut18 = false;
-    let didTimeOut19 = false;
-    let didTimeOut20 = false;
-    let didTimeOut21 = false;
-    let didTimeOut22 = false;
-
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout1 = setTimeout(function () {
-        didTimeOut1 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      authAPI.fetch("/dashboard/completed_jobs", {
-        method: 'GET'
-      })
-        .then((response) => {
-          response.json().then((responseData) => {
-            clearTimeout(timeout1);
-            if (!didTimeOut1) {
-              resolve(responseData);
-              setCompletedJobs(responseData.data[0].count);
-            }
-
-          });
-        });
-
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout2 = setTimeout(function () {
-        didTimeOut2 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      // fetch for active jobs
-      authAPI.fetch("/dashboard/active_jobs", {
-        method: 'GET'
-      })
-        .then((response) => {
-          response.json().then((responseData) => {
-            clearTimeout(timeout2);
-            if (!didTimeOut2) {
-              resolve(responseData);
-              setActiveJobs(responseData.data[0].count);
-            }
-          });
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout3 = setTimeout(function () {
-        didTimeOut3 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      // fetch for total tasks
-      authAPI.fetch("/dashboard/tasks", {
-        method: 'GET'
-      })
-        .then((response) => {
-          response.json().then((responseData) => {
-            clearTimeout(timeout3);
-            if (!didTimeOut3) {
-              resolve(responseData);
-              const rows = responseData.data[0].count;
-              setTotalTasks(rows);
-            }
-          });
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout4 = setTimeout(function () {
-        didTimeOut4 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      // fetch for inventory
-      authAPI.fetch("/dbase/inventory", {
-        method: 'GET'
-      })
-        .then((response) => {
-          response.json().then((responseData) => {
-            clearTimeout(timeout4);
-            if (!didTimeOut4) {
-              resolve(responseData);
-              const rows = responseData.data.length;
-              setInvDevices(rows);
-            }
-          });
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout5 = setTimeout(function () {
-        didTimeOut5 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      // fetch for deployment groups
-      authAPI.fetch("/dbase/deployment_group", {
-        method: 'GET'
-      })
-        .then((response) => {
-          response.json().then((responseData) => {
-            clearTimeout(timeout5);
-            if (!didTimeOut5) {
-              resolve(responseData);
-              const rows = responseData.data.length;
-              setDeployGroups(rows);
-            }
-          });
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout6 = setTimeout(function () {
-        didTimeOut6 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      // fetch for users
-      authAPI.fetch("/dbase/user", {
-        method: 'GET'
-      })
-        .then((response) => {
-          response.json().then((responseData) => {
-            clearTimeout(timeout6);
-            if (!didTimeOut6) {
-              resolve(responseData);
-              const rows = responseData.data.length;
-              setUsers(rows);
-              for (var i = 0; i < responseData.data.length; i++) {
-                var obj = responseData.data[i];
-                addUser(obj.id, obj.display_name, obj.email, obj.username);
-              }
-            }
-          });
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout7 = setTimeout(function () {
-        didTimeOut7 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      authAPI.fetch("/dashboard/daily_jobs", {
-        method: 'GET'
-      })
-        .then((response) => {
-          response.json().then((responseData) => {
-            clearTimeout(timeout7);
-            if (!didTimeOut7) {
-              resolve(responseData);
-              for (var i = 0; i < responseData.data.length; i++) {
-                var obj = responseData.data[i];
-                addDailyJob(obj.day, obj.count);
-              }
-            }
-          });
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout8 = setTimeout(function () {
-        didTimeOut8 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      authAPI.fetch("/dashboard/monthly_jobs", {
-        method: 'GET'
-      })
-        .then((response) => {
-          response.json().then((responseData) => {
-            clearTimeout(timeout8);
-            if (!didTimeOut8) {
-              resolve(responseData);
-              for (var i = 0; i < responseData.data.length; i++) {
-                var obj = responseData.data[i];
-                addMonthlyJob(obj.month, obj.count);
-              }
-            }
-          });
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout9 = setTimeout(function () {
-        didTimeOut9 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      authAPI.fetch("/dashboard/daily_tasks", {
-        method: 'GET'
-      })
-        .then((response) => {
-          response.json().then((responseData) => {
-            clearTimeout(timeout9);
-            if (!didTimeOut9) {
-              resolve(responseData);
-              for (var i = 0; i < responseData.data.length; i++) {
-                var obj = responseData.data[i];
-                addDailyTask(obj.day, obj.count);
-              }
-            }
-          });
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout10 = setTimeout(function () {
-        didTimeOut10 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      authAPI.fetch("/dashboard/monthly_tasks", {
-        method: 'GET'
-      })
-        .then((response) => {
-          response.json().then((responseData) => {
-            clearTimeout(timeout10);
-            if (!didTimeOut10) {
-              resolve(responseData);
-              for (var i = 0; i < responseData.data.length; i++) {
-                var obj = responseData.data[i];
-                addMonthlyTask(obj.month, obj.count);
-              }
-            }
-          });
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout11 = setTimeout(function () {
-        didTimeOut11 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      authAPI.fetch("/dashboard/daily_users", {
-        method: 'GET'
-      })
-        .then((response) => {
-          response.json().then((responseData) => {
-            clearTimeout(timeout11);
-            if (!didTimeOut11) {
-              resolve(responseData);
-              for (var i = 0; i < responseData.data.length; i++) {
-                var obj = responseData.data[i];
-                addDailyUser(obj.date, obj.user_count);
-              }
-            }
-          });
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout12 = setTimeout(function () {
-        didTimeOut12 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      authAPI.fetch("/dashboard/monthly_users", {
-        method: 'GET'
-      })
-        .then((response) => {
-          response.json().then((responseData) => {
-            clearTimeout(timeout12);
-            if (!didTimeOut12) {
-              resolve(responseData);
-              for (var i = 0; i < responseData.data.length; i++) {
-                var obj = responseData.data[i];
-                addMonthlyUser(obj.month, obj.user_count);
-              }
-            }
-          });
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout13 = setTimeout(function () {
-        didTimeOut13 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      //Personalized Graph Data
-      authAPI.fetch("/dashboard/daily_jobs_user", {
-        method: 'GET'
-      })
-        .then((response) => {
-          response.json().then((responseData) => {
-            clearTimeout(timeout13);
-            if (!didTimeOut13) {
-              resolve(responseData);
-              for (var i = 0; i < responseData.data.length; i++) {
-                var obj = responseData.data[i];
-                addDailyJobUser(obj.day, obj.count);
-              }
-            }
-          });
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout14 = setTimeout(function () {
-        didTimeOut14 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      authAPI.fetch("/dashboard/monthly_jobs_user", {
-        method: 'GET'
-      })
-        .then((response) => {
-          response.json().then((responseData) => {
-            clearTimeout(timeout14);
-            if (!didTimeOut14) {
-              resolve(responseData);
-              for (var i = 0; i < responseData.data.length; i++) {
-                var obj = responseData.data[i];
-                addMonthlyJobUser(obj.month, obj.count);
-              }
-            }
-          });
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout15 = setTimeout(function () {
-        didTimeOut15 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      authAPI.fetch("/dashboard/daily_tasks_user", {
-        method: 'GET'
-      })
-        .then((response) => {
-          response.json().then((responseData) => {
-            clearTimeout(timeout15);
-            if (!didTimeOut15) {
-              resolve(responseData);
-              for (var i = 0; i < responseData.data.length; i++) {
-                var obj = responseData.data[i];
-                addDailyTaskUser(obj.day, obj.count);
-              }
-            }
-          });
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout16 = setTimeout(function () {
-        didTimeOut16 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      authAPI.fetch("/dashboard/monthly_tasks_user", {
-        method: 'GET'
-      })
-        .then((response) => {
-          response.json().then((responseData) => {
-            clearTimeout(timeout16);
-            if (!didTimeOut16) {
-              resolve(responseData);
-              for (var i = 0; i < responseData.data.length; i++) {
-                var obj = responseData.data[i];
-                addMonthlyTaskUser(obj.month, obj.count);
-              }
-            }
-          });
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout17 = setTimeout(function () {
-        didTimeOut17 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      // Fetch for personalized Data
-      authAPI.fetch("/dashboard/completed_jobs_user", {
-        method: 'GET'
-      })
-        .then((response) => {
-          response.json().then((responseData) => {
-            clearTimeout(timeout17);
-            if (!didTimeOut17) {
-              resolve(responseData);
-              const rows = responseData.data.length;
-              setCompletedJobsUser(rows);
-            }
-
-          });
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout18 = setTimeout(function () {
-        didTimeOut18 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      // fetch for active jobs
-      authAPI.fetch("/dashboard/active_jobs_user", {
-        method: 'GET'
-      })
-        .then((response) => {
-          response.json().then((responseData) => {
-            clearTimeout(timeout18);
-            if (!didTimeOut18) {
-              resolve(responseData);
-              const rows = responseData.data.length;
-              setActiveJobsUser(rows);
-            }
-          });
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout19 = setTimeout(function () {
-        didTimeOut19 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      // fetch for deployment groups
-      authAPI.fetch("/dashboard/deployment_group_user", {
-        method: 'GET'
-      })
-        .then((response) => {
-          response.json().then((responseData) => {
-            clearTimeout(timeout19);
-            if (!didTimeOut19) {
-              resolve(responseData);
-              setDeployGroupsUser(responseData.data[0].devices);
-            }
-          });
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout20 = setTimeout(function () {
-        didTimeOut20 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      // fetch for tasks user
-      authAPI.fetch("/dashboard/tasks_user", {
-        method: 'GET'
-      })
-        .then((response) => {
-          response.json().then((responseData) => {
-            clearTimeout(timeout20);
-            if (!didTimeOut20) {
-              resolve(responseData);
-              const rows = responseData.data[0].count;
-              setTotalTasksUser(rows);
-            }
-          });
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout21 = setTimeout(function () {
-        didTimeOut21 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      //     fetch device type for piechart
-      authAPI.fetch("/dashboard/device_types", {
-        method: 'GET'
-      })
-        .then((response) => {
-          response.json().then((responseData) => {
-            clearTimeout(timeout21);
-            if (!didTimeOut21) {
-              resolve(responseData);
-              if (responseData.data.length === 0) {
-                setDeviceTypesEmpty(true);
-              }
-              for (var i = 0; i < responseData.data.length; i++) {
-                var obj = responseData.data[i];
-                addDeviceType(obj.device, obj.count);
-              }
-            }
-          });
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout22 = setTimeout(function () {
-        didTimeOut22 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      // fetch job status for piechart
-      authAPI.fetch("/dashboard/job_status_stats", {
-        method: 'GET'
-      })
-        .then((response) => {
-          response.json().then((responseData) => {
-            clearTimeout(timeout22);
-            if (!didTimeOut22) {
-              resolve(responseData);
-              if (responseData.data.length === 0) {
-                setJobStatusEmpty(true);
-              }
-              for (var i = 0; i < responseData.data.length; i++) {
-                var obj = responseData.data[i];
-                addJobStatus(obj.status, obj.count);
-              }
-            }
-          });
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
+    authAPI.get("/dashboard/completed_jobs").then(({ data }) => {
+      setCompletedJobs(data.data[0].count)
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
+
+    authAPI.get("/dashboard/active_jobs").then(({ data }) => {
+      setActiveJobs(data.data[0].count)
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
+
+    authAPI.get("/dashboard/tasks").then(({ data }) => {
+      const rows = data.data[0].count;
+      setTotalTasks(rows);
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
+
+    authAPI.get("/dbase/inventory").then(({ data }) => {
+      const rows = data.data.length;
+      setInvDevices(rows);
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
+
+    authAPI.get("/dbase/deployment_group").then(({ data }) => {
+      const rows = data.data.length;
+      setDeployGroups(rows);
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
+
+    authAPI.get("/dbase/deployment_group").then(({ data }) => {
+      const rows = data.data.length;
+      setDeployGroups(rows);
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
+
+    authAPI.get("/dashboard/daily_jobs").then(({ data }) => {
+      for (var i = 0; i < data.data.length; i++) {
+        var obj = data.data[i];
+        addDailyJob(obj.day, obj.count);
+      }
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
+
+    authAPI.get("/dashboard/monthly_jobs").then(({ data }) => {
+      for (var i = 0; i < data.data.length; i++) {
+        var obj = data.data[i];
+        addMonthlyJob(obj.month, obj.count);
+      }
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
+
+    authAPI.get("/dashboard/daily_tasks").then(({ data }) => {
+      for (var i = 0; i < data.data.length; i++) {
+        var obj = data.data[i];
+        addDailyTask(obj.day, obj.count);
+      }
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
+
+    authAPI.get("/dashboard/monthly_tasks").then(({ data }) => {
+      for (var i = 0; i < data.data.length; i++) {
+        var obj = data.data[i];
+        addMonthlyTask(obj.month, obj.count);
+      }
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
+
+    authAPI.get("/dashboard/daily_users").then(({ data }) => {
+      for (var i = 0; i < data.data.length; i++) {
+        var obj = data.data[i];
+        addDailyUser(obj.date, obj.user_count);
+      }
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
+
+    authAPI.get("/dashboard/monthly_users").then(({ data }) => {
+      for (var i = 0; i < data.data.length; i++) {
+        var obj = data.data[i];
+        addMonthlyUser(obj.month, obj.user_count);
+      }
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
+
+    authAPI.get("/dashboard/daily_jobs_user").then(({ data }) => {
+      for (var i = 0; i < data.data.length; i++) {
+        var obj = data.data[i];
+        addDailyJobUser(obj.day, obj.count);
+      }
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
+
+    authAPI.get("/dashboard/monthly_jobs_user").then(({ data }) => {
+      for (var i = 0; i < data.data.length; i++) {
+        var obj = data.data[i];
+        addMonthlyJobUser(obj.month, obj.count);
+      }
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
+
+    authAPI.get("/dashboard/daily_tasks_user").then(({ data }) => {
+      for (var i = 0; i < data.data.length; i++) {
+        var obj = data.data[i];
+        addDailyTaskUser(obj.day, obj.count);
+      }
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
+
+    authAPI.get("/dashboard/monthly_tasks_user").then(({ data }) => {
+      for (var i = 0; i < data.data.length; i++) {
+        var obj = data.data[i];
+        addMonthlyTaskUser(obj.month, obj.count);
+      }
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
+
+    authAPI.get("/dashboard/completed_jobs_user").then(({ data }) => {
+        const rows = data.data.length;
+        setCompletedJobsUser(rows);
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
+
+    authAPI.get("/dashboard/active_jobs_user").then(({ data }) => {
+        const rows = data.data.length;
+        setActiveJobsUser(rows);
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
+
+    authAPI.get("/dashboard/deployment_group_user").then(({ data }) => {
+      setDeployGroupsUser(data.data[0].devices)
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
+
+    authAPI.get("/dashboard/tasks_user").then(({ data }) => {
+        const rows = data.data[0].count;
+        setTotalTasksUser(rows);
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
+
+    authAPI.get("/dashboard/device_types").then(({ data }) => {
+        if (data.data.length === 0) {
+          setDeviceTypesEmpty(true);
+        }
+
+        for (var i = 0; i < data.data.length; i++) {
+          var obj = data.data[i];
+          addDeviceType(obj.device, obj.count);
+        }
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
+
+    authAPI.get("/dashboard/job_status_stats").then(({ data }) => {
+        if (data.data.length === 0) {
+          setJobStatusEmpty(true);
+        }
+
+        for (var i = 0; i < data.data.length; i++) {
+          var obj = data.data[i];
+          addJobStatus(obj.status, obj.count);
+        }
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
 
   }, []);
 
@@ -1577,7 +1030,7 @@ export default function Dashboard() {
                       style={{ fontSize: "25px" }}
                     >
                       Active Jobs
-          </p>
+                    </p>
                     <h3 className={classes.cardTitle}>
                       {activeJobs}
                       <small />
@@ -1597,7 +1050,7 @@ export default function Dashboard() {
                       style={{ fontSize: "25px" }}
                     >
                       Your Active Jobs
-          </p>
+                    </p>
                     <h3 className={classes.cardTitle}>
                       {activeJobsUser}
                       <small />
@@ -1623,7 +1076,7 @@ export default function Dashboard() {
                       style={{ fontSize: "25px" }}
                     >
                       Completed Jobs
-          </p>
+                    </p>
                     <h3 className={classes.cardTitle}>{completedJobs}</h3>
                   </CardHeader>
                   {/* <CardFooter stats /> */}
@@ -1640,7 +1093,7 @@ export default function Dashboard() {
                       style={{ fontSize: "25px", marginLeft: "100px" }}
                     >
                       Your Completed Jobs
-          </p>
+                    </p>
                     <h3 className={classes.cardTitle}>{completedJobsUser}</h3>
                   </CardHeader>
                   {/* <CardFooter stats /> */}
@@ -1665,7 +1118,7 @@ export default function Dashboard() {
                       style={{ fontSize: "25px" }}
                     >
                       Tasks
-          </p>
+                    </p>
                     <h3 className={classes.cardTitle}>{totalTasks}</h3>
                   </CardHeader>
                   {/* <CardFooter stats /> */}
@@ -1682,7 +1135,7 @@ export default function Dashboard() {
                       style={{ fontSize: "25px" }}
                     >
                       Your Tasks
-          </p>
+                    </p>
                     <h3 className={classes.cardTitle}>{totalTasksUser}</h3>
                   </CardHeader>
                   {/* <CardFooter stats /> */}
@@ -1702,7 +1155,7 @@ export default function Dashboard() {
                     </CardIcon>
                     <p className={classes.cardCategory} style={{ fontSize: "25px" }}>
                       Deployment Groups
-        </p>
+                    </p>
                     <h3 className={classes.cardTitle}>{deployGroups}</h3>
                   </CardHeader>
                   {/* <CardFooter stats /> */}
@@ -1716,7 +1169,7 @@ export default function Dashboard() {
                     </CardIcon>
                     <p className={classes.cardCategory} style={{ fontSize: "25px" }}>
                       Your Deployment Groups
-        </p>
+                    </p>
                     <h3 className={classes.cardTitle}>{deployGroupsUser}</h3>
                   </CardHeader>
                   {/* <CardFooter stats /> */}
@@ -1738,7 +1191,7 @@ export default function Dashboard() {
                     </CardIcon>
                     <p className={classes.cardCategory} style={{ fontSize: "25px" }}>
                       Inventory
-        </p>
+                    </p>
                     <h3 className={classes.cardTitle}>{invDevices}</h3>
                   </CardHeader>
                   {/* <CardFooter stats /> */}
@@ -1760,7 +1213,7 @@ export default function Dashboard() {
                     </CardIcon>
                     <p className={classes.cardCategory} style={{ fontSize: "25px" }}>
                       Users
-        </p>
+                    </p>
                     <h3 className={classes.cardTitle}>{users}</h3>
                   </CardHeader>
                   {/* <CardFooter stats /> */}

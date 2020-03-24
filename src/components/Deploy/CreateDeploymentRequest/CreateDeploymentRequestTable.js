@@ -321,46 +321,24 @@ const DeploymentRequestTable = (props) => {
   //key will be "deviceList{hostname}" value will be templateList array
   const captureWorkflows = (rowList, row, body) => {
     if (templateList[rowList] == undefined) {
-      let didTimeOut = false;
-      // eslint-disable-next-line no-undef
-      new Promise(function (resolve, reject) {
-
-        setTimeout(function () {
-          didTimeOut = true;
-          reject(new Error('Request timed out'));
-        }, 5000);
-
-        authAPI.fetch(`/list_templates`, {
-          method: 'POST',
-          body: JSON.stringify(body)
-        }).then(response => response.json())
-          .then(response => {
-            if (!didTimeOut) {
-              resolve(response);
-              if (response.error != undefined) {
-                showNotification("Currently unable to connect to BCG.", 'error', enqueueSnackbar, closeSnackbar);
-              } else {
-                if (response.data.length == 0) {
-                  showNotification(`There was no template found related to the given hostname: ${data[row].hostname}.`, 'error', enqueueSnackbar, closeSnackbar);
-                } else {
-                  setTemplateList(prevState => {
-                    return { ...prevState, [rowList]: response.data }
-                  });
-                }
-              }
-            }
-          })
-          .catch(() => {
-            showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-          });
-      })
-        .then(function () {
-        })
-        .catch(function () {
-          // Error: response error, request timeout or runtime error
+      authAPI.post(`/list_templates`, body).then(({ data }) => {
+        if (data.error != undefined) {
           showNotification("Currently unable to connect to BCG.", 'error', enqueueSnackbar, closeSnackbar);
-        });
-
+        } else {
+          if (data.data.length == 0) {
+            showNotification(`There was no template found related to the given hostname: ${data[row].hostname}.`, 'error', enqueueSnackbar, closeSnackbar);
+          } else {
+            setTemplateList(prevState => {
+              return {
+                ...prevState,
+                [rowList]: data.data
+              };
+            });
+          }
+        }
+      }).catch(() => {
+        showNotification("Currently unable to connect to BCG.", 'error', enqueueSnackbar, closeSnackbar)
+      });
     }
   }
 
@@ -391,236 +369,75 @@ const DeploymentRequestTable = (props) => {
     var rowList = "deviceList" + data[tdm.rowIndex].hostname;
     //may be an issue if there is more than one option in the workflows drop down
     if (templateList[rowList] == undefined) {
-      let didTimeOut = false;
-      // eslint-disable-next-line no-undef
-      new Promise(function (resolve, reject) {
-
-        const timeout = setTimeout(function () {
-          didTimeOut = true;
-          reject(new Error('Request timed out'));
-        }, 5000);
-
-        authAPI.fetch(`/list_templates`, {
-          method: 'POST',
-          body: JSON.stringify(body)
-        }).then(response => response.json())
-          .then(response => {
-            clearTimeout(timeout);
-            if (!didTimeOut) {
-              resolve(response);
-              if (response.error != undefined) {
-                showNotification("Currently unable to connect to BCG.", 'error', enqueueSnackbar, closeSnackbar);
-              } else {
-                if (response.data.length == 0) {
-                  showNotification(`There was no template found related to the given hostname: ${tdm.rowData[1]}.`, 'error', enqueueSnackbar, closeSnackbar);
-                } else {
-                  setTemplateList({ ...templateList, [rowList]: response.data });
-                }
-              }
-            }
-          })
-          .catch(() => {
-            showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-          });
-      })
-        .then(function () {
-        })
-        .catch(function () {
+      authAPI.post(`/list_templates`, body).then(({ data }) => {
+        if (data.error != undefined) {
           showNotification("Currently unable to connect to BCG.", 'error', enqueueSnackbar, closeSnackbar);
-        });
+        } else {
+          if (data.data.length == 0) {
+            showNotification(`There was no template found related to the given hostname: ${tdm.rowData[1]}.`, 'error', enqueueSnackbar, closeSnackbar);
+          } else {
+            setTemplateList({ ...templateList,
+              [rowList]: data.data
+            });
+          }
+        }
+      }).catch(() => {
+        showNotification("Currently unable to connect to BCG.", 'error', enqueueSnackbar, closeSnackbar)
+      });
     }
   }
 
   //kick off job creation orchestration
   //called in JobConfirmationModal.js
-  const postJob = (title) => {
+  const postJob = async (title) => {
     const jobCreationBody = { "data": [{ "user_id": user.id, "user_selections": data, "name": title }] }
 
-    let didTimeOut = false;
-    let didTimeOut2 = false;
-    let didTimeOut3 = false;
-
-    //timeout for /dbase/job
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout = setTimeout(function () {
-        didTimeOut = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      authAPI.fetch(`/dbase/job`, {
-        method: 'POST',
-        body: JSON.stringify(jobCreationBody)
-      }).then(response => response.json())
-        .then((response) => {
-          clearTimeout(timeout);
-          if (!didTimeOut) {
-            resolve(response);
-            if (true) { // eslint-disable-line
-              var id = response.id;
-              setJobID(id);
-              const createJobInput = { "data": [{ "id": id }] }
-
-              //timeout for /job_create
-              // eslint-disable-next-line no-undef
-              new Promise(function (resolve, reject) {
-
-                const timeout2 = setTimeout(function () {
-                  didTimeOut2 = true;
-                  reject(new Error('Request timed out'));
-                }, 5000);
-
-                authAPI.fetch(`/job_create`, {
-                  method: 'POST',
-                  body: JSON.stringify(createJobInput)
-                }).then(response => response.json())
-                  .then(response => {
-                    clearTimeout(timeout2);
-                    if (!didTimeOut2) {
-                      resolve(response);
-                      if (true) { // eslint-disable-line
-
-                        //timeout for /orchestration/start-orchestration/${id}
-                        // eslint-disable-next-line no-undef
-                        new Promise(function (resolve, reject) {
-
-                          const timeout3 = setTimeout(function () {
-                            didTimeOut3 = true;
-                            reject(new Error('Request timed out'));
-                          }, 5000);
-
-                          authAPI.fetch(`/orchestration/start-orchestration/${id}`, {
-                            method: 'POST'
-                          })
-                            .then(() => {
-                              clearTimeout(timeout3);
-                              if (!didTimeOut3) {
-                                resolve(response);
-                                setShowConfirmation(false);
-                                history.push('/job')
-                              }
-                            }).catch(() => {
-                              showNotification("There was an error submitting the request for initial orchestration for this job to execute any prerequisites tasks. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-                            });
-
-                        })
-                          .then(function () {
-                          })
-                          .catch(function () {
-                            // Error: response error, request timeout or runtime error
-                            showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-                          });
-
-                      }
-                    }
-
-                  }).catch(() => {
-                    showNotification("There was an error submitting the Deployment Request. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-                  });
-
-              })
-                .then(function () {
-                })
-                .catch(function () {
-                  // Error: response error, request timeout or runtime error
-                  showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-                });
-
-
-            }
-          }
-        }).catch(() => {
-          showNotification("There was an error submitting the Deployment Request. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-
+    try {
+      const { data: job } = await authAPI.post(`/dbase/job`, jobCreationBody);
+      var id = job.id;
+      setJobID(id);
+      const createJobInput = {
+        "data": [{
+          "id": id
+        }]
+      };
+      await authAPI.post(`/job_create`, createJobInput);
+      await authAPI.post(`/orchestration/start-orchestration/${id}`);
+      setShowConfirmation(false);
+      history.push('/job');
+    } catch (e) {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
+    }
   }
 
   //set data state to be seen on table
   //calling get_back_ref endpoint by specified group id to use relationships between inventory and deployment groups
   //get workflows for column dropdown
   useEffect(() => {
-    let didTimeOut = false;
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
+    authAPI.get(`/dbase/get_back_ref/deploy/id:${createDeploymentGroupId}`).then(({ data }) => {
+      const devices = data.data[0].devices; //we asked for a single ID. API returns a list of IDs so index 0 is all we care about
 
-      const timeout = setTimeout(function () {
-        didTimeOut = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      authAPI.fetch(`/dbase/get_back_ref/deploy/id:${createDeploymentGroupId}`, {
-        method: 'GET'
-      })
-        .then(response => response.json())
-        .then(response => {
-          clearTimeout(timeout);
-          if (!didTimeOut) {
-            resolve(response);
-            const devices = response.data[0].devices //we asked for a single ID. API returns a list of IDs so index 0 is all we care about
-            const devices_data = devices.map(function (device) { //HACK to add workflow column, I don't know the correct way to do this.
-              device.workflow = '';
-              device.template = '';
-              return device;
-            })
-            setData(devices_data);
-          }
-        }).catch(() => {
-          showNotification("There was an error retrieving Deployment Group from database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
+      const devices_data = devices.map(function (device) {
+        //HACK to add workflow column, I don't know the correct way to do this.
+        device.workflow = '';
+        device.template = '';
+        return device;
       });
-    let didTimeOut2 = false;
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
+      setData(devices_data);
 
-      const timeout = setTimeout(function () {
-        didTimeOut2 = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
 
-      authAPI.fetch(`/dbase/workflow_types`, {
-        method: 'GET'
-      })
-        .then(response => response.json())
-        .then(response => {
-          clearTimeout(timeout);
-          if (!didTimeOut2) {
-            resolve(response);
-            let wf_types = []
-            response.data.forEach(row => {
-              if (row.type != "DA Validation") {
-                wf_types.push(row.type);
-              }
-            });
-            setDeviceList(wf_types);
-          }
-        }).catch(() => {
-          showNotification("There was an error retrieving the workflow options. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-        });
+    authAPI.get(`/dbase/workflow_types`).then(({ data }) => {
+      const workflowTypes = data.data
+        .map((workflow) => workflow.type)
+        .filter((workflowType) => workflowType !== "DA Validation");
 
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
+      setDeviceList(workflowTypes);
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
 
 
   }, []);

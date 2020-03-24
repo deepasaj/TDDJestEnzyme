@@ -396,9 +396,7 @@ const InventoryTable = () => {
   //triggers from the confirm delete modal and deletes the row(s) of deleted selected devices
   const deleteMult = () => {
     for (var idx in selectedDevices) {
-      authAPI.delete(`/dbase/inventory/${selectedDevices[idx].id}`, {
-        timeout: 5000
-      })
+      authAPI.delete(`/dbase/inventory/${selectedDevices[idx].id}`)
         .then(() => {
           refreshDevices();
         }).catch(() => {
@@ -431,7 +429,7 @@ const InventoryTable = () => {
   //called if inline edit button is clicked
   const editRow = (event, id) => {
     setId(id);
-    authAPI.get(`/dbase/inventory/${id}`, { timeout: 5000 })
+    authAPI.get(`/dbase/inventory/${id}`)
       .then(({ data }) => {
         const rows = data.data;
         setDevice(rows);
@@ -442,7 +440,7 @@ const InventoryTable = () => {
 
   //handle single row deletion
   const handleDelete = () => {
-    authAPI.delete(`/dbase/inventory/${deviceId}`, { timeout: 5000 })
+    authAPI.delete(`/dbase/inventory/${deviceId}`)
       .then(() => {
         refreshDevices();
         setShowDeleteConfirm(false);
@@ -455,7 +453,7 @@ const InventoryTable = () => {
   //provides needed information for confirmation dialog
   const inLineDelete = (event, id) => {
     setDeviceId(id);
-    authAPI.get(`/dbase/inventory/${id}`, { timeout: 5000 })
+    authAPI.get(`/dbase/inventory/${id}`)
       .then(({ data }) => {
         const rows = data.data;
         setSingleDelete(true);
@@ -467,7 +465,7 @@ const InventoryTable = () => {
   };
 
   const refreshDevices = () => {
-    authAPI.get("/dbase/inventory", { timeout: 5000 })
+    authAPI.get("/dbase/inventory")
       .then(({ data }) => {
         const rows = data.data;
         setData(rows);
@@ -497,7 +495,7 @@ const InventoryTable = () => {
     postData["created_by"] = user_id;
     setLoading(true);
 
-    authAPI.post("/inventory", device_array, { timeout: 5000 })
+    authAPI.post("/inventory", device_array)
       .then((data) => {
         const job_id = data.data.data
         checkStatus(job_id, postData);
@@ -532,7 +530,7 @@ const InventoryTable = () => {
   const checkStatus = (job_id, postData) => {
     progress();
     if (showButton === false) {
-      authAPI.get("/dbase/inventory", { timeout: 5000 })
+      authAPI.get("/dbase/inventory")
         .then(({ data }) => {
           for (var i = 0; i < data.data.length; i++) {
             var obj = data.data[i];
@@ -558,7 +556,7 @@ const InventoryTable = () => {
           }
           setTimeout(() => {
             if (duplicateIP === false || duplicateHost === false) {
-              authAPI.get(`/status/${job_id}`, { timeout: 5000 })
+              authAPI.get(`/status/${job_id}`)
                 .then((data) => {
                   //check if the call is still processing,
                   //if it is wait 5 seconds and call again
@@ -577,7 +575,7 @@ const InventoryTable = () => {
                     if (showButton === false) {
                       var postMsg = JSON.parse(data.data.data);
                       showNotification(postMsg.message, 'info', enqueueSnackbar, closeSnackbar);
-                      authAPI.post("/dbase/inventory", { "data": [postData] }, { timeout: 5000 })
+                      authAPI.post("/dbase/inventory", { "data": [postData] })
                         .then(() => {
                           showNotification("Your device has been successfully added to the Proteus inventory.", 'success', enqueueSnackbar, closeSnackbar);
                           refreshDevices();
@@ -607,7 +605,7 @@ const InventoryTable = () => {
         });
     }
     else if (showButton === true) {
-      authAPI.get(`/status/${job_id}`, { timeout: 5000 })
+      authAPI.get(`/status/${job_id}`)
         .then((data) => {
           //check if the call is still processing,
           //if it is wait 5 seconds and call again
@@ -624,7 +622,7 @@ const InventoryTable = () => {
             var patch_device = { "hostname": device.hostname, "mgmt_ip": device.mgmt_ip }
             //If adding a new device, post, else patch the data
             //Make decision based on what button is shown
-            authAPI.patch(`/dbase/inventory/${id}`, { "data": patch_device }, { timeout: 5000 })
+            authAPI.patch(`/dbase/inventory/${id}`, { "data": patch_device })
               .then(() => {
                 showNotification("Your device has been successfully changed", 'success', enqueueSnackbar, closeSnackbar);
                 refreshDevices();
@@ -651,7 +649,7 @@ const InventoryTable = () => {
 
   useEffect(() => {
     //get all inventory items to view on table
-    authAPI.get("/dbase/inventory", { timeout: 5000 })
+    authAPI.get("/dbase/inventory")
       .then((data) => {
         const rows = data.data.data;
         setData(rows);

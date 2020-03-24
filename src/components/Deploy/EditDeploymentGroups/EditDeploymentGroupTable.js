@@ -201,79 +201,30 @@ const EditDeploymentsTable = (props) => {
   //getting array of devices that need to be selected by their db id (currentGroup)
   useEffect(() => {
     deviceSelections();
-    let didTimeOut = false;
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
 
-      const timeout = setTimeout(function () {
-        didTimeOut = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
+    authAPI.get(`/dbase/get_back_ref/deploy/id:${groupId}`).then(({ data }) => {
+      const rows = data.data[0];
+      var groupSelect = [];
 
-      authAPI.fetch(`/dbase/get_back_ref/deploy/id:${groupId}`, {
-        method: 'GET'
-      })
-      .then(response => response.json())
-      .then(response => {
-        clearTimeout(timeout);
-        if (!didTimeOut) {
-          resolve(response);
-          const rows = response.data[0];
-          var groupSelect = [];
-          for (var idx in rows.devices) {
-            groupSelect.push(rows.devices[idx].id);
-          }
-          setCurrentTitle(rows.name);
-          setCurrentGroup(groupSelect);
-        }
-      })
-      .catch(() => {
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
+      for (var idx in rows.devices) {
+        groupSelect.push(rows.devices[idx].id);
+      }
 
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
+      setCurrentTitle(rows.name);
+      setCurrentGroup(groupSelect);
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
 
   }, [data]);
 
   //pull all devices in inventory to sort through
   useEffect(() => {
-    let didTimeOut = false;
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout = setTimeout(function () {
-        didTimeOut = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      authAPI.fetch(`/dbase/inventory`, {
-        method: 'GET'
-      })
-      .then(response=>response.json())
-      .then(response=>{
-        clearTimeout(timeout);
-        if (!didTimeOut) {
-          resolve(response);
-          const rows = response.data;
-          setData(rows);
-        }
-      })
-      .catch(() => {
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-    })
-    .then(function () {
-    })
-    .catch(function () {
-      // Error: response error, request timeout or runtime error
-      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
+    authAPI.get(`/dbase/inventory`).then(({ data }) => {      
+      const rows = data.data;
+      setData(rows);
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
     });
 
   }, []);

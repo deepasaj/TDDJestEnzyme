@@ -29,138 +29,65 @@ const Builder = () => {
     return str.replace(/_/g, " ");
   };
 
-  var IP = {}
-  const getIpData = () => {
-    let didTimeOut = false;
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout = setTimeout(function () {
-        didTimeOut = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      authAPI.fetch(`/deploy/get_mgmt_ip`, {
-        method: 'GET'
-      })
-        .then(response => response.json())
-        .then(response => {
-          clearTimeout(timeout);
-          if (!didTimeOut) {
-            resolve(response);
-            for (var i = 0; i < response.data.length; i++) {
-              var obj = response.data[i];
-              IP[obj.hostname] = obj.mgmt_ip
-            }
-          }
-        }).catch(() => {
-          showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
+  const getIpData = async () => {
+    const { data } = await authAPI.get(`/deploy/get_mgmt_ip`)
+    const IPData = {}
+    for (var i = 0; i < data.data.length; i++) {
+      var obj = data.data[i];
+      IPData[obj.hostname] = obj.mgmt_ip;
+    }
+    return IPData
   }
 
-  const getTaskData = () => {
+  const getTaskData = async (IPData) => {
+    const { data } = await authAPI.get(`/deploy/get_tasks/${job_id}`)
+    const rows = data.data;
 
-    let didTimeOut = false;
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
+    for (var row in rows) {
+      rows[row].task_object = JSON.parse(rows[row].task_object);
 
-      const timeout = setTimeout(function () {
-        didTimeOut = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
+      if (rows[row].task_object.formData == null) {
+        rows[row].mgmt_ip = IPData[rows[row].target];
+        rows[row].task_object.formData = {
+          "hostname": rows[row].target,
+          "mgmt_ip": rows[row].mgmt_ip
+        };
+      }
 
-      authAPI.fetch(`/deploy/get_tasks/${job_id}`, {
-        method: 'GET'
-      })
-        .then(response => response.json())
-        .then(response => {
-          clearTimeout(timeout);
-          if (!didTimeOut) {
-            resolve(response);
-            const rows = response.data;
-            for (var row in rows) {
-              rows[row].task_object = JSON.parse(rows[row].task_object)
-              if (rows[row].task_object.formData == null) {
-                rows[row].mgmt_ip = IP[rows[row].target];
-                rows[row].task_object.formData = { "hostname": rows[row].target, "mgmt_ip": rows[row].mgmt_ip };
-              }
-              if (rows[row].task_object.uiSchema == null) {
-                rows[row].task_object.uiSchema = {}
-              }
-              if (rows[row].task_object.input.uiSchema != undefined) {
-                if (rows[row].task_object.input.uiSchema.mgmt_ip != undefined) {
-                  rows[row].task_object.input.uiSchema.mgmt_ip['ui:readonly'] = true;
-                }
-                if (rows[row].task_object.input.uiSchema.hostname != undefined) {
-                  rows[row].task_object.input.uiSchema.hostname['ui:readonly'] = true;
-                }
-               }
-            }
-            setTasks(rows);
-            setTaskDataLoadingDone(true)
-          }
-        }).catch(() => {
-          showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-        });
+      if (rows[row].task_object.uiSchema == null) {
+        rows[row].task_object.uiSchema = {};
+      }
 
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
+      if (rows[row].task_object.input.uiSchema != undefined) {
+        if (rows[row].task_object.input.uiSchema.mgmt_ip != undefined) {
+          rows[row].task_object.input.uiSchema.mgmt_ip['ui:readonly'] = true;
+        }
 
+        if (rows[row].task_object.input.uiSchema.hostname != undefined) {
+          rows[row].task_object.input.uiSchema.hostname['ui:readonly'] = true;
+        }
+      }
+    }
+
+    setTasks(rows);
+    setTaskDataLoadingDone(true);
+  }
+
+  const getData = async () => {
+    try {
+      const { data } = await authAPI.get(`/dbase/job/${job_id}`);
+      const jobObject = data.data;
+      setJob(jobObject);
+      const IPData = await getIpData();
+      await getTaskData(IPData);
+    } catch (err) {
+      console.error(err)
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
+    }
   }
 
   useEffect(() => {
-
-    let didTimeOut = false;
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout = setTimeout(function () {
-        didTimeOut = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      authAPI.fetch(`/dbase/job/${job_id}`, {
-        method: 'GET'
-      })
-        .then(response => response.json())
-        .then(response => {
-          clearTimeout(timeout);
-          if (!didTimeOut) {
-            resolve(response);
-            const jobObject = response.data;
-            setJob(jobObject)
-            getIpData()
-            setTimeout(() => {
-              getTaskData()
-            }, 3000);
-          }
-        }).catch(() => {
-          showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-
+    getData();
   }, []);
 
   useEffect(() => {

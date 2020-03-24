@@ -81,7 +81,7 @@ const SummaryTable = props => {
       jsonBody.template = taskObj.template;
     }
 
-    authAPI.post(`/generate_config`, jsonBody, { timeout: 5000 })
+    authAPI.post(`/generate_config`, jsonBody)
       .then((response) => {
         const config = response.data.data.config;
         setPreviewConfig(config);

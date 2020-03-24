@@ -57,17 +57,17 @@ const tableTheme = createMuiTheme({
     },
     MUIDataTableHeadCell: {
       root: {
-      '&:nth-child(2)': {
-        width: 350
-      }
+        '&:nth-child(2)': {
+          width: 350
+        }
       }
     },
-//        MUIDataTableBodyCell: {
-//            root: {
-//                backgroundColor: "#FFF",
-//                width: "150px"
-//            }
-//        }
+    //        MUIDataTableBodyCell: {
+    //            root: {
+    //                backgroundColor: "#FFF",
+    //                width: "150px"
+    //            }
+    //        }
   }
 });
 
@@ -76,105 +76,25 @@ const Validation = () => {
   let { jobId } = useParams();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [systems, setSystems] = React.useState();
-  const [job, setJob] = React.useState({}); // eslint-disable-line no-unused-vars
   const [tasks, setTasks] = React.useState([])
   const [loadingDone, setLoadingDone] = React.useState(false);
   const authAPI = useAuthAPI();
 
   const getReportData = () => {
 
-    let didTimeOut = false;
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout = setTimeout(function () {
-        didTimeOut = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      authAPI.fetch(`/deploy/get_tasks/${jobId}`, {
-        method: 'GET'
-      })
-        .then(response => response.json())
-        .then(response => {
-          clearTimeout(timeout);
-          if (!didTimeOut) {
-            resolve(response);
-            const rows = response.data;
-            console.log(rows);
-            // for (var row in rows) {
-            //     rows[row].task_object = JSON.parse(rows[row].task_object)
-            //     if (rows[row].task_object.output == null) {
-            //         rows[row].mgmt_ip = IP[rows[row].target];
-            //         rows[row].task_object.formData = { "hostname": rows[row].target, "mgmt_ip": rows[row].mgmt_ip };
-            //     }
-            //     if (rows[row].task_object.uiSchema == null) {
-            //         rows[row].task_object.uiSchema = {}
-            //     }
-            //     if (rows[row].task_object.input.uiSchema != undefined) {
-            //         if (rows[row].task_object.input.uiSchema.mgmt_ip != undefined) {
-            //             rows[row].task_object.input.uiSchema.mgmt_ip['ui:readonly'] = true;
-            //         }
-            //         if (rows[row].task_object.input.uiSchema.hostname != undefined) {
-            //             rows[row].task_object.input.uiSchema.hostname['ui:readonly'] = true;
-            //         }
-            //     }
-            // }
-            setTasks(rows);
-            // setTaskDataLoadingDone(true)
-          }
-        }).catch(() => {
-          showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-        });
-
+    authAPI.get(`/deploy/get_tasks/${jobId}`).then(({ data }) => {
+      const rows = data.data;
+      console.log(rows);
+      setTasks(rows);
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
     })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
 
   };
 
   useEffect(() => {
     setLoadingDone(false)
-    let didTimeOut = false;
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout = setTimeout(function () {
-        didTimeOut = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      authAPI.fetch(`/dbase/job/${jobId}`, {
-        method: 'GET'
-      })
-        .then(response => response.json())
-        .then(response => {
-          clearTimeout(timeout);
-          if (!didTimeOut) {
-            resolve(response);
-            const jobObject = response.data;
-            setJob(jobObject)
-            setTimeout(() => {
-              getReportData()
-            }, 3000);
-          }
-        }).catch(() => {
-          showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
-
+    getReportData();
   }, []);
 
   useEffect(() => {

@@ -1,28 +1,29 @@
 import React, { createContext, useContext, useReducer, useEffect, Fragment } from 'react';
 import axios from 'axios';
-import { API_URL } from 'config';
+import { API_URL, API_DEFAULT_TIMEOUT } from 'config';
 
 export const Store = createContext();
+
+const axiosInstance = axios.create({
+  baseURL: API_URL,
+  timeout: API_DEFAULT_TIMEOUT
+})
 
 export class AuthAPI {
   constructor(auth) {
     this.auth = auth;
   }
   get = async (path, options) => {
-    const url = `${API_URL}${path}`
-    return axios.get(url, await this.buildAuthOptions(options));
+    return axiosInstance.get(path, await this.buildAuthOptions(options));
   }
   post = async (path, data, options) => {
-    const url = `${API_URL}${path}`
-    return axios.post(url, data, await this.buildAuthOptions(options));
+    return axiosInstance.post(path, data, await this.buildAuthOptions(options));
   }
   delete = async (path, options) => {
-    const url = `${API_URL}${path}`
-    return axios.delete(url, await this.buildAuthOptions(options));
+    return axiosInstance.delete(path, await this.buildAuthOptions(options));
   }
   patch = async (path, data, options) => {
-    const url = `${API_URL}${path}`
-    return axios.patch(url, data, await this.buildAuthOptions(options));
+    return axiosInstance.patch(path, data, await this.buildAuthOptions(options));
   }
   fetch = async (path, options) => {
     const url = `${API_URL}${path}`
