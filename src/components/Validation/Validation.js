@@ -53,7 +53,7 @@ const ValidationRequest = (props) => {
 
   //kick off job creation orchestration
   //called in JobConfirmationModal.js
-  const postJob = () => {
+  const postJob = async () => {
     setPostJobInProgress(true)
     const userSelections = devices.map(device => ({
       workflow: "DA Validation",
@@ -61,114 +61,23 @@ const ValidationRequest = (props) => {
     }))
     const jobCreationBody = { "data": [{ "user_id": user.id, "user_selections": userSelections, "status": "Ready" }] }
 
-    let didTimeOut = false;
-    let didTimeOut2 = false;
-    let didTimeOut3 = false;
+    try {
+      const { data: job } = await authAPI.post(`/dbase/job`, jobCreationBody)
+      console.log("successfully submitted Job, inside post to /report_job_create")
+      var jobId = job.id;
+      setJobID(jobId);
+      const createJobInput = { "data": [{ "id": jobId }] }
 
-    //timeout for /dbase/job
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-      const timeout = setTimeout(function () {
-        didTimeOut = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-      authAPI.fetch(`/dbase/job`, {
-        method: 'POST',
-        body: JSON.stringify(jobCreationBody)
-      }).then(response => response.json())
-        .then((response) => {
-          clearTimeout(timeout);
-          if (!didTimeOut) {
-            resolve(response);
-            if (true) { // eslint-disable-line no-constant-condition
-              console.log("successfully submitted Job, inside post to /report_job_create")
-              var id = response.id;
-              setJobID(id);
-              const createJobInput = { "data": [{ "id": id }] }
+      await authAPI.post(`/report_job_create`, createJobInput)
+      await authAPI.post(`/orchestration/start-orchestration/${jobId}`)
 
-              //timeout for /report_job_create
-              // eslint-disable-next-line no-undef
-              new Promise(function (resolve, reject) {
+      setPostJobInProgress(false)
 
-                const timeout2 = setTimeout(function () {
-                  didTimeOut2 = true;
-                  reject(new Error('Request timed out'));
-                }, 5000);
-
-                authAPI.fetch(`/report_job_create`, {
-                  method: 'POST',
-                  body: JSON.stringify(createJobInput)
-                }).then(response => response.json())
-                  .then(response => {
-                    clearTimeout(timeout2);
-                    if (!didTimeOut2) {
-                      resolve(response);
-                      if (true) { // eslint-disable-line no-constant-condition
-
-                        //timeout for /orchestration/start-orchestration/${id}
-                        // eslint-disable-next-line no-undef
-                        new Promise(function (resolve, reject) {
-
-                          const timeout3 = setTimeout(function () {
-                            didTimeOut3 = true;
-                            reject(new Error('Request timed out'));
-                          }, 5000);
-
-                          authAPI.fetch(`/orchestration/start-orchestration/${id}`, {
-                            method: 'POST'
-                          })
-                            .then(() => {
-                              clearTimeout(timeout3);
-                              if (!didTimeOut3) {
-                                resolve(response);
-                                history.push('/job');
-                              }
-                            }).catch(() => {
-                              setPostJobInProgress(false)
-                              showNotification("There was an error submitting the request for initial orchestration for this job to execute any prerequisites tasks. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-                            });
-
-                        })
-                          .then(function () {
-                          })
-                          .catch(function () {
-                            // Error: response error, request timeout or runtime error
-                            setPostJobInProgress(false)
-                            showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-                          });
-
-                      }
-                    }
-
-                  }).catch(() => {
-                    setPostJobInProgress(false)
-                    showNotification("There was an error submitting the Deployment Request. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-                  });
-
-              })
-                .then(function () {
-                })
-                .catch(function () {
-                  // Error: response error, request timeout or runtime error
-                  setPostJobInProgress(false)
-                  showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-                });
-            }
-          }
-        }).catch(() => {
-          setPostJobInProgress(false)
-          showNotification("There was an error submitting the Deployment Request. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function (err) {
-        // Error: response error, request timeout or runtime error
-        console.log(err)
-        setPostJobInProgress(false)
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
+      history.push('/job');
+    } catch (err) {
+      setPostJobInProgress(false)
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
+    }
   }
 
   return (

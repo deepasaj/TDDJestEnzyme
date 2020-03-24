@@ -16,7 +16,7 @@ const List = () => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   useEffect(() => {
-    authAPI.get("/inventory/list", { timeout: 5000 })
+    authAPI.get("/inventory/list")
       .then((resp) => {
         setItems(resp.data.inventoryRecords);
       }).catch(() => {

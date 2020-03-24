@@ -175,38 +175,12 @@ const DeploymentGroupTable = () => {
 
   //pulls all inventory, not the data you see in the table
   useEffect(() => {
-    let didTimeOut = false;
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout = setTimeout(function () {
-        didTimeOut = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      authAPI.fetch(`/dbase/inventory`, {
-        method: 'GET'
-      })
-        .then(response => response.json())
-        .then(response => {
-          clearTimeout(timeout);
-          if (!didTimeOut) {
-            resolve(response);
-            const rows = response.data;
-            setData(rows);
-          }
-        })
-        .catch(() => {
-          showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-
+    authAPI.get(`/dbase/inventory`).then(({ data }) => {
+      const rows = data.data;
+      setData(rows);
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    });
   }, []);
 
   //populates state with only unlocked devices

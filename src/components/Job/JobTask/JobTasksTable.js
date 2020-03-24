@@ -254,7 +254,7 @@ const MyJobsTable = () => {
   useEffect(() => {
     //get all task_details from the view and pull only the ones to the specific job
     //may be able to simplify with new crud endpoints now
-    authAPI.get(`/job/task_details`, { timeout:5000 })
+    authAPI.get(`/job/task_details`)
       .then((data) => {
         var row = data.data.data;
         var jobTasks = [];

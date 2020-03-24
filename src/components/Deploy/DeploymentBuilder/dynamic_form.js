@@ -89,9 +89,7 @@ const DynamicForm = props => {
   };
 
   const confirmDeploy = () => {
-    return authAPI.post(`/orchestration/start-orchestration/${job.id}`, {}, {
-      timeout: 5000
-    })
+    return authAPI.post(`/orchestration/start-orchestration/${job.id}`)
       .then(() => {
       }).catch(() => {
         showNotification("There was an error submitting the request for initial orchestration for this job to execute any prerequisites tasks. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
@@ -135,13 +133,11 @@ const DynamicForm = props => {
       setLoading(true)
       var body = { "data": { "task_object": step.task_object } }
       if (activeStep === steps.length - 1) {
-        authAPI.patch(`/dbase/job/${job.id}`, { "data": { "status": "Ready", "status_details": "Ready for Deployment" } }, { timeout: 5000 })
+        authAPI.patch(`/dbase/job/${job.id}`, { "data": { "status": "Ready", "status_details": "Ready for Deployment" } })
           .then(() => {
             setSuccess(true)
             setLoading(false)
-            authAPI.patch(`/dbase/tasks/${step.id}`, body, {
-              timeout: 5000
-            })
+            authAPI.patch(`/dbase/tasks/${step.id}`, body)
               .then(() => {
                 setSuccess(true)
                 setLoading(false)
@@ -155,9 +151,7 @@ const DynamicForm = props => {
             showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
           });
       } else {
-        authAPI.patch(`/dbase/tasks/${step.id}`, body, {
-          timeout: 5000
-        })
+        authAPI.patch(`/dbase/tasks/${step.id}`, body)
           .then(() => {
             setSuccess(true)
             setLoading(false)

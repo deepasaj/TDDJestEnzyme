@@ -512,7 +512,7 @@ const Jobs = (props) => {
     } else {
       var jobId = tableMeta.rowData[0];
       var postData = { "name": tableMeta.rowData[1] };
-      authAPI.patch("/dbase/job/" + jobId, { "data": postData }, { timeout: 5000 })
+      authAPI.patch("/dbase/job/" + jobId, { "data": postData })
         .then(() => {
         })
         .catch(() => {
@@ -534,7 +534,7 @@ const Jobs = (props) => {
       workflowTypeFilter.push(workflow_type);
     }
     //pull all from job_tasks view, pull only the ones that need user input
-    authAPI.get(`/job/job_tasks`, { timeout: 5000 })
+    authAPI.get(`/job/job_tasks`)
       .then((data) => {
         const rows = data.data.data;
         var userinput_required_tasks = [];

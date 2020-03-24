@@ -49,36 +49,11 @@ const CustomToolbarSelect = (props) => {
   const patchDeploymentGroup = () => {
     var postData = { "devices": selectedDevices, "name": currentTitle };
 
-    let didTimeOut = false;
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout = setTimeout(function () {
-        didTimeOut = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      authAPI.fetch(`/dbase/back_populate/deploy/id:${groupId}`, {
-        body: JSON.stringify(postData),
-        method: 'PATCH'
-      }).then(response => {
-        clearTimeout(timeout);
-        if (!didTimeOut) {
-          resolve(response);
-          history.push('/deploy/deployment_groups');
-        }
-      })
-        .catch(() => {
-          showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-        });
-
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        // Error: response error, request timeout or runtime error
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
+    authAPI.patch(`/dbase/back_populate/deploy/id:${groupId}`, postData).then(() => {
+      history.push('/deploy/deployment_groups')
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    }) 
 
   }
 
@@ -95,33 +70,11 @@ const CustomToolbarSelect = (props) => {
   //deletes whole deployment group and updates relationship values in crud endpoint
   //after successful deletion, redirect to deployment group table
   const handleClickDeleteGroupSelected = () => {
-
-    let didTimeOut = false;
-    // eslint-disable-next-line no-undef
-    new Promise(function (resolve, reject) {
-
-      const timeout = setTimeout(function () {
-        didTimeOut = true;
-        reject(new Error('Request timed out'));
-      }, 5000);
-
-      authAPI.fetch(`/dbase/get_back_ref/deploy/id:${groupId}`, {
-        method: 'DELETE'
-      }).then((response) => {
-        clearTimeout(timeout);
-        if (!didTimeOut) {
-          resolve(response);
-          history.push('/deploy/deployment_groups');
-        }
-      }).catch(() => {
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
-    })
-      .then(function () {
-      })
-      .catch(function () {
-        showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar);
-      });
+    authAPI.delete(`/dbase/get_back_ref/deploy/id:${groupId}`).then(() => {
+      history.push('/deploy/deployment_groups')
+    }).catch(() => {
+      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+    }) 
   };
 
   return (
