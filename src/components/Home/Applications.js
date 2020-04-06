@@ -1,12 +1,9 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import AssignmentIcon from "@material-ui/icons/Assignment";
-import FormatListBulletedIcon from "@material-ui/icons/FormatListBulleted";
-import DoubleArrowIcon from "@material-ui/icons/DoubleArrow";
-import TimelineIcon from '@material-ui/icons/Timeline';
-import { withRouter } from 'react-router-dom';
-import MenuCard from "./Card";
+import InventoryHomeCards from 'components/features/inventory/InventoryHomeCards'
+import WorkflowHomeCards from 'components/features/workflow/WorkflowHomeCards'
+import DashboardHomeCards from 'components/features/dashboard/DashboardHomeCards'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -55,66 +52,16 @@ const useStyles = makeStyles(theme => ({
 
 const ApplicationTab = props => {
   const classes = useStyles();
-  const { history } = props;
 
   return (
     <div className={classes.root}>
       <Grid container spacing={4} className={classes.mainGrid}>
-        <Grid item xs={6}>
-          <MenuCard
-            title="What devices you would like to integrate into the production
-            network? Get started here by adding devices"
-            cardIcon={
-              <FormatListBulletedIcon
-                className={classes.icon}
-                fontSize="large"
-              />
-            }
-            handleBtn={() => history.push('/inventory')}
-            btnText="Inventory"
-            isDisabled={false}
-            height={175}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <MenuCard
-            title="Take action now and start configuring devices for T-Mobile's production network"
-            cardIcon={
-              <DoubleArrowIcon className={classes.icon} fontSize="large" />
-            }
-            handleBtn={() => history.push('/deploy')}
-            btnText="Deployments"
-            isDisabled={false}
-            height={175}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <MenuCard
-            title="Check your jobs, their status, and their individual tasks status here"
-            cardIcon={
-              <AssignmentIcon className={classes.icon} fontSize="large" />
-            }
-            handleBtn={() => history.push('/job')}
-            btnText="Jobs"
-            isDisabled={false}
-            height={160}
-          />
-        </Grid>
-        <Grid item xs={6}>
-          <MenuCard
-            title="View metrics about jobs, deployment groups, and users here"
-            cardIcon={
-              <TimelineIcon className={classes.icon} fontSize="large" />
-            }
-            handleBtn={() => history.push('/dashboard')}
-            btnText="Dashboard"
-            isDisabled={false}
-            height={160}
-          />
-        </Grid>
+        <InventoryHomeCards classes={classes} />
+        <WorkflowHomeCards classes={classes} />
+        <DashboardHomeCards classes={classes} />
       </Grid>
     </div>
   );
 };
 
-export default withRouter(ApplicationTab);
+export default ApplicationTab;

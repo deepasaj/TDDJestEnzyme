@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import Breadcrumbs from 'components/Breadcrumbs';
 import NavBar from 'components/NavBar';
 import { useUser } from 'store/store'
@@ -14,7 +14,7 @@ const User = () => {
     if (user) {
       return [
         { text: 'Home', path: '/'},
-        { text: `${user.display_name}`, path: `/user/me`},
+        { text: `${user.display_name}`, path: `/me`},
       ];
     }
     return [{ text: 'Home', path: '/'}];
@@ -49,7 +49,7 @@ const User = () => {
             </div>
             ) : null
           }
-          
+
         </div>
       </main>
     </React.Fragment>
