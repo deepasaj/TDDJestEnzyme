@@ -16,4 +16,4 @@ COPY . .
 RUN npm install
 
 # Build app and start server from script
-CMD ["/usr/src/app/run"]
+CMD ["/usr/src/app/run.sh"]
