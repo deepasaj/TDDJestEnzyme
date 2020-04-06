@@ -1,0 +1,105 @@
+stages:
+  - build
+  - quality
+  - test
+  - release
+  - deploy
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+  DOCKER_HOST: tcp://localhost:2375
+  CONTAINER_IMAGE: ${CI_REGISTRY}/${CI_PROJECT_PATH}:${CI_BUILD_REF_NAME}_${CI_BUILD_REF}
+  CONTAINER_IMAGE_LATEST: ${CI_REGISTRY}/${CI_PROJECT_PATH}:latest
+  DEV_NAMESPACE: proteus-dev
+  UAT_NAMESPACE: proteus-uat
+  DEPLOYMENT_NAME: frontend
+
+cache:
+  paths:
+    - node_modules/
+
+build:
+  stage: build
+  image: node:12.16.1
+  script:
+    - npm install
+    - echo "Dependencies installed"
+    - npm run build
+  artifacts:
+    expire_in: 1 hour
+    paths:
+      - node_modules/
+      - dist/
+
+# TODO: Fix the linting issues
+#eslint:
+#  stage: quality
+#  image: node:12.16.1
+#  script:
+#    - npm run lint
+#  artifacts:
+#    expire_in: 1 hour
+#    paths:
+#      - node_modules/
+
+sonar gateway check:
+  stage: quality
+  image: sonarsource/sonar-scanner-cli:latest
+  script:
+    - sonar-scanner -Dsonar.qualitygate.wait=true
+  allow_failure: true
+
+publish docker image:
+  stage: release
+  image: docker:19.03.0
+  services:
+    - docker:19.03.0-dind
+  before_script:
+    - docker info
+  script:
+    - echo "Login to gitlab registry"
+    - docker login -u gitlab-ci-token -p ${CI_BUILD_TOKEN} ${CI_REGISTRY}
+    - docker build -t ${CONTAINER_IMAGE} .
+    - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE_LATEST}
+    - docker push ${CONTAINER_IMAGE}
+    - docker push ${CONTAINER_IMAGE_LATEST}
+    - echo "Published the image to gitlab registry"
+  only:
+    - dev
+    - uat
+    - master
+
+deploy to DEV:
+  stage: deploy
+  image: lwolf/helm-kubectl-docker
+  before_script:
+    - mkdir -p /etc/deploy
+    - echo ${kube_config} | base64 -d > ${KUBECONFIG}
+    - helm init --client-only
+  script:
+    - echo "Deploying to DEV"
+    - helm upgrade --install --force ${DEPLOYMENT_NAME}-proteus-dev helm/frontend/ --namespace ${DEV_NAMESPACE} --wait --timeout 300 --values helm/frontend/values.yaml
+    - echo "Deployed the app to DEV"
+  environment:
+    name: proteus-dev
+    url: http://a7b61892770cf11ea9d54068a83b7f76-427019301.us-east-2.elb.amazonaws.com/
+  only:
+    - dev
+
+deploy to UAT:
+  stage: deploy
+  image: lwolf/helm-kubectl-docker
+  before_script:
+    - mkdir -p /etc/deploy
+    - echo ${kube_config} | base64 -d > ${KUBECONFIG}
+    - helm init --client-only
+  script:
+    - echo "Deploying to UAT"
+    - helm upgrade --install --force ${DEPLOYMENT_NAME}-proteus-uat helm/frontend/ --namespace ${UAT_NAMESPACE} --wait --timeout 300 --values helm/frontend/values.yaml
+    - echo "Deployed the app to UAT"
+  environment:
+    name: proteus-uat
+  #    url: http://a7b61892770cf11ea9d54068a83b7f76-427019301.us-east-2.elb.amazonaws.com/
+  only:
+    - uat

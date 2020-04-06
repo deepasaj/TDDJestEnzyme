@@ -28,3 +28,13 @@ npm run build # build the production distribution of the app
 npm run lint  # run the ESLint linter
 npm run lint:fix # run the ESLint linter and automatically fix errors whenever possible
 ```
+
+## Install Helm Charts
+
+The helm config is in the helm and configmap directories. 
+
+To install the chart in `proteus-dev`:
+
+```bash
+$  helm upgrade --install --force frontend-proteus-dev helm/frontend/ --namespace proteus-dev --wait --timeout 300 --values helm/frontend/values.yaml
+```
