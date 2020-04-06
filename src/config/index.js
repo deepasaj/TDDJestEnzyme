@@ -9,7 +9,10 @@ export const OKTA_OIDC = {
     clientId: process.env.ODIC_CLIENT_ID || '0oa304to0bdgwOIIO357',
     redirectUri: process.env.ODIC_REDIRECT_URI || 'http://localhost:3010/auth/callback',
     pkce: false,
-    scope: 'openid profile email'
+    scope: 'openid profile email',
+    cookies: {
+        secure: false
+    }
 };
 // constants
 export const VERSION = "0.9.0 Beta"
