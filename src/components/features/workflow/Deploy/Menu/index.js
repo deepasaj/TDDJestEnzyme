@@ -1,21 +1,26 @@
 import React from 'react';
 import Breadcrumbs from 'components/Breadcrumbs';
 import NavBar from 'components/NavBar';
-import ProteusMain from "./Tabs";
+import DeployMenu from "./DeployMenu";
+
 import './styles.css';
 
-const HomePage = () => {
+const Menu = () => {
+  const breadcrumbsPath = [
+    { text: 'Home', path: '/'},
+    { text: 'Deploy', path: '/workflow/deploy'},
+  ];
   return (
     <React.Fragment>
       <NavBar />
-      <Breadcrumbs />
+      <Breadcrumbs paths={breadcrumbsPath} />
       <main id="main" role="main" className="container">
-        <div className="HomePage">
-          <ProteusMain />
+        <div className="Menu">
+          <DeployMenu />
         </div>
       </main>
     </React.Fragment>
   );
 }
 
-export default HomePage;
+export default Menu;
