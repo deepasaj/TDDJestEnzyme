@@ -42,8 +42,8 @@ function NavBar(props) {
 
       <InventoryNavBarLinks />
       <WorkflowNavBarLinks />
-      <DashboardNavBarLinks />
       <AdminNavBarLinks />
+      <DashboardNavBarLinks />
 
       <div className="navbar-collapse" />
 
