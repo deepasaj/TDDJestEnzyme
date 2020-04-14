@@ -1,5 +1,3 @@
-import { usePermission } from 'store/store'
+import { usePermission } from 'store/store';
 
-export const useFeaturePermission = () => {
-  return usePermission('workflow')
-}
+export const useFeaturePermission = () => usePermission('workflow');

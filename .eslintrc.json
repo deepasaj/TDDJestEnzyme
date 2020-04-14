@@ -1,3 +1,41 @@
 {
-  "extends": "react-app"
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "extends": [
+    "plugin:react/recommended",
+    "airbnb"
+  ],
+  "globals": {
+    "Atomics": "readonly",
+    "SharedArrayBuffer": "readonly"
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react"
+  ],
+  "rules": {
+    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "max-len": ["error", { "code": 120 }],
+    "prefer-destructuring": ["error", {
+      "object": true,
+      "array": false
+    }],
+    "no-plusplus": "off",
+    "no-shadow": "off",
+    "import/prefer-default-export": "off",
+    "react/require-default-props": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/prop-types": ["error", { "ignore": ["children"] }]
+  },
+  "settings": {
+    "import/resolver": "webpack"
+  }
 }
