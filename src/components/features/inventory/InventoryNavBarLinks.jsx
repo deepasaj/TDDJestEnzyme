@@ -1,21 +1,26 @@
-import React from 'react'
-import { useHistory } from 'react-router-dom'
-import { useFeaturePermission } from './hooks'
+import React from 'react';
+import { useHistory } from 'react-router-dom';
+import { useFeaturePermission } from './hooks';
 
 const InventoryNavBarLinks = () => {
-  const history = useHistory()
-  const [hasReadAccess, hasWriteAccess] = useFeaturePermission()
+  const history = useHistory();
+  const [hasReadAccess, hasWriteAccess] = useFeaturePermission();
 
   const clickHandler = (e) => {
     e.preventDefault();
-    const href = e.currentTarget.getAttribute('href')
+    const href = e.currentTarget.getAttribute('href');
     if (href) history.push(href);
-  }
+  };
 
   return hasReadAccess && (
     <div className="dropdown" style={{ paddingRight: '2px' }}>
-      <button className="btn btn-secondary-quicklinks dropdown-toggle" type="button" data-toggle="dropdown"
-        aria-haspopup="true" aria-expanded="false">
+      <button
+        className="btn btn-secondary-quicklinks dropdown-toggle"
+        type="button"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
         Inventory&nbsp;
       </button>
       <div className="dropdown-menu" aria-labelledby="userDropDown">
@@ -23,7 +28,7 @@ const InventoryNavBarLinks = () => {
           hasWriteAccess && (
             <div>
               <a className="dropdown-item" href="/inventory/bulk" onClick={clickHandler}>Bulk Add Devices</a>
-              <div className="dropdown-divider"></div>
+              <div className="dropdown-divider" />
             </div>
           )
         }
@@ -32,7 +37,7 @@ const InventoryNavBarLinks = () => {
         </a>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default InventoryNavBarLinks
+export default InventoryNavBarLinks;

@@ -1,24 +1,24 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom';
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle';
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from '@material-ui/core/styles';
 import Breadcrumbs from 'components/Breadcrumbs';
 import NavBar from 'components/NavBar';
 import MenuCard from 'components/MenuCard';
 
 const useStyles = makeStyles(() => ({
   icon: {
-    fontSize: "70px",
-    margin: "7px "
+    fontSize: '70px',
+    margin: '7px ',
   },
 }));
 
 const AdminMenu = () => {
-  const classes = useStyles()
-  const history = useHistory()
+  const classes = useStyles();
+  const history = useHistory();
   const breadcrumbsPath = [
-    { text: 'Home', path: '/'},
-    { text: 'Admin', path: '/admin'},
+    { text: 'Home', path: '/' },
+    { text: 'Admin', path: '/admin' },
   ];
   return (
     <>
@@ -28,13 +28,13 @@ const AdminMenu = () => {
         <div className="d-flex justify-content-center">
           <MenuCard
             title="Manage roles. Associate groups, users and features with them"
-            cardIcon={
+            cardIcon={(
               <SupervisedUserCircleIcon
                 className={classes.icon}
                 fontSize="large"
               />
-            }
-            handleBtn={() => history.push('/admin/role_management')}
+            )}
+            onClick={() => history.push('/admin/role_management')}
             btnText="Manage Roles"
             isDisabled={false}
             height={175}
@@ -43,6 +43,6 @@ const AdminMenu = () => {
       </main>
     </>
   );
-}
+};
 
 export default AdminMenu;

@@ -1,33 +1,34 @@
-import _ from 'lodash'
-import React, { useState, useEffect } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
-import { useSnackbar } from "notistack";
-import Typography from "@material-ui/core/Typography";
+import _ from 'lodash';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { useHistory, useParams } from 'react-router-dom';
+import { useSnackbar } from 'notistack';
+import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 import SaveIcon from '@material-ui/icons/Save';
-import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Breadcrumbs from 'components/Breadcrumbs';
 import NavBar from 'components/NavBar';
-import LoadingPage from 'components/LoadingPage'
+import LoadingPage from 'components/LoadingPage';
 import { useAuthAPI } from 'store/store';
-import { FEATURES } from 'config'
+import { FEATURES } from 'config';
 import { showNotification } from 'utils/notifications';
-import RoleSettingsTable from './RoleSettingsTable'
-import DeleteConfirmationDialog from './DeleteConfirmationDialog'
+import RoleSettingsTable from './RoleSettingsTable';
+import DeleteConfirmationDialog from './DeleteConfirmationDialog';
 
 
 const useStyles = makeStyles((theme) => ({
   indicator: {
-    backgroundColor: '#4051B6'
+    backgroundColor: '#4051B6',
   },
   titleText: {
     paddingLeft: 24,
-    lineHeight: '48px'
+    lineHeight: '48px',
   },
   toolbarSelect: {
     height: 64,
@@ -43,61 +44,67 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: typeof theme.spacing === 'function' ? theme.spacing(1) : theme.spacing.unit,
   },
   toolbarSelectTitleText: {
-    paddingLeft: 24
+    paddingLeft: 24,
   },
   toolbarSelectRight: {
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   underTabsDivider: {
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: 0
+    bottom: 0,
   },
   footerCell: {
-    padding: 0
+    padding: 0,
   },
   footer: {
     display: 'flex',
     alignItems: 'center',
-    paddingLeft: 14
+    paddingLeft: 14,
   },
   addGroupButton: {
     color: '#147BFC',
     whiteSpace: 'nowrap',
     textTransform: 'none',
-    padding: '2px 10px'
+    padding: '2px 10px',
   },
 }));
 
-function ToolbarSelect({ role, roleGroups, roleMembers, roleFeatures }) {
-  const classes = useStyles()
-  const [name, setName] = useState(role.name)
-  const [showRoleDeletionDialog, setShowRoleDeletionDialog] = useState(false)
+function ToolbarSelect({
+  role, roleGroups, roleMembers, roleFeatures,
+}) {
+  const classes = useStyles();
+  const [name, setName] = useState(role.name);
+  const [showRoleDeletionDialog, setShowRoleDeletionDialog] = useState(false);
   const authAPI = useAuthAPI();
-  const history = useHistory()
+  const history = useHistory();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   const saveRole = () => {
     const updatedRole = {
       name,
-      groups: roleGroups.map(({ group_id }) => group_id),
-      members: roleMembers.map(({ user_id }) => user_id),
+      groups: roleGroups.map((roleGroup) => roleGroup.group_id),
+      members: roleMembers.map((roleMember) => roleMember.user_id),
       features: roleFeatures.map((feature) => ({
         value: feature.value,
-        permission: feature.permission
-      }))
-    }
+        permission: feature.permission,
+      })),
+    };
 
     authAPI.post(`/admin/role/${role.id}/update`, {
-      data: updatedRole
+      data: updatedRole,
     }).then(() => {
-      history.push('/admin/role_management')
+      history.push('/admin/role_management');
     }).catch(() => {
-      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+      showNotification(
+        'There was an error contacting the database. Please contact administrator.',
+        'error', enqueueSnackbar,
+        closeSnackbar,
+      );
     });
-  }
+  };
 
   return (
     <Paper className={classes.toolbarSelect}>
@@ -106,52 +113,80 @@ function ToolbarSelect({ role, roleGroups, roleMembers, roleFeatures }) {
         roleName={name}
         onClose={() => setShowRoleDeletionDialog(false)}
         onProceed={() => {
-          authAPI.delete(`/admin/role/${role.id}/delete`).then(({ data }) => {
-            history.push('/admin/role_management')
+          authAPI.delete(`/admin/role/${role.id}/delete`).then(() => {
+            history.push('/admin/role_management');
           }).catch(() => {
-            showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+            showNotification(
+              'There was an error contacting the database. Please contact administrator.',
+              'error', enqueueSnackbar,
+              closeSnackbar,
+            );
           });
         }}
       />
       <Typography className={classes.toolbarSelectTitleText}>
-        {roleGroups.length} group(s), {roleMembers.length} member(s), {roleFeatures.length} feature(s) selected
+        {roleGroups.length}
+        {' '}
+        group(s),
+        {roleMembers.length}
+        {' '}
+        member(s),
+        {roleFeatures.length}
+        {' '}
+        feature(s) selected
       </Typography>
       <div className={classes.toolbarSelectRight}>
         <TextField placeholder="Role Name" value={name} onChange={(e) => setName(e.target.value)} />
-        <Tooltip title={"Save"}>
+        <Tooltip title="Save">
           <IconButton onClick={saveRole}>
             <SaveIcon className={classes.icon} />
           </IconButton>
         </Tooltip>
-        <Tooltip title={"Delete Role"}>
+        <Tooltip title="Delete Role">
           <IconButton
             onClick={() => setShowRoleDeletionDialog(true)}
           >
             <DeleteForeverIcon className={classes.icon} />
           </IconButton>
         </Tooltip>
-        <Tooltip title={"Cancel and Return"}>
+        <Tooltip title="Cancel and Return">
           <IconButton onClick={() => history.push('/admin/role_management')}>
             <CancelIcon className={classes.icon} />
           </IconButton>
         </Tooltip>
       </div>
     </Paper>
-  )
+  );
 }
 
+ToolbarSelect.propTypes = {
+  role: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string.isRequired,
+  }),
+  roleGroups: PropTypes.arrayOf(PropTypes.shape({
+    group_id: PropTypes.number.isRequired,
+  })).isRequired,
+  roleMembers: PropTypes.arrayOf(PropTypes.shape({
+    user_id: PropTypes.number.isRequired,
+  })).isRequired,
+  roleFeatures: PropTypes.arrayOf(PropTypes.shape({
+    value: PropTypes.string.isRequired,
+    permission: PropTypes.string.isRequired,
+  })).isRequired,
+};
 
 function CreateRole() {
   const authAPI = useAuthAPI();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-  const { roleId } = useParams()
+  const { roleId } = useParams();
 
-  const [role, setRole] = useState(null)
-  const [groups, setGroups] = useState([])
-  const [users, setUsers] = useState([])
-  const [roleGroups, setRoleGroups] = useState([])
-  const [roleMembers, setRoleMembers] = useState([])
-  const [roleFeatures, setRoleFeatures] = useState([])
+  const [role, setRole] = useState(null);
+  const [groups, setGroups] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [roleGroups, setRoleGroups] = useState([]);
+  const [roleMembers, setRoleMembers] = useState([]);
+  const [roleFeatures, setRoleFeatures] = useState([]);
 
   const breadcrumbsPath = [
     { text: 'Home', path: '/' },
@@ -163,38 +198,39 @@ function CreateRole() {
 
   async function getData() {
     try {
-      const [groupData, usersData, roleData] = await Promise.all([
+      const [groupResponse, usersResponse, roleResponse] = await Promise.all([
         authAPI.get('/admin/user_groups'),
         authAPI.get('/admin/users'),
-        authAPI.get(`/admin/role/${roleId}`)
-      ])
+        authAPI.get(`/admin/role/${roleId}`),
+      ]);
 
-      const groups = groupData.data.data
-      setGroups(groups)
+      setGroups(groupResponse.data.data);
 
-      const users = usersData.data.data
-      setUsers(users)
+      setUsers(usersResponse.data.data);
 
-      const role = roleData.data.data
-      setRole(role)
-      setRoleGroups(role.groups)
-      setRoleMembers(role.members)
-      setRoleFeatures(role.features)
+      const roleData = roleResponse.data.data;
+      setRole(roleData);
+      setRoleGroups(roleData.groups);
+      setRoleMembers(roleData.members);
+      setRoleFeatures(roleData.features);
     } catch (e) {
-      showNotification("There was an error contacting the database. Please contact administrator.", 'error', enqueueSnackbar, closeSnackbar)
+      showNotification(
+        'There was an error contacting the database. Please contact administrator.',
+        'error', enqueueSnackbar,
+        closeSnackbar,
+      );
     }
   }
 
   async function refreshGroups() {
-    const groupData = await authAPI.get('/admin/user_groups')
+    const groupData = await authAPI.get('/admin/user_groups');
 
-    const groups = groupData.data.data
-    setGroups(groups)
+    setGroups(groupData.data.data);
   }
 
   useEffect(() => {
-    getData()
-  }, [])
+    getData();
+  }, []);
 
   return (
     <>
@@ -215,19 +251,21 @@ function CreateRole() {
                 roleFeatures={roleFeatures}
                 setRoleFeatures={setRoleFeatures}
                 onRefreshGroups={refreshGroups}
-                ToolbarSelect={() => <ToolbarSelect
-                  role={role}
-                  roleGroups={roleGroups}
-                  roleMembers={roleMembers}
-                  roleFeatures={roleFeatures}
-                />}
+                ToolbarSelect={() => (
+                  <ToolbarSelect
+                    role={role}
+                    roleGroups={roleGroups}
+                    roleMembers={roleMembers}
+                    roleFeatures={roleFeatures}
+                  />
+                )}
               />
             </main>
           </>
         ) : <LoadingPage />
       }
     </>
-  )
+  );
 }
 
-export default CreateRole
+export default CreateRole;

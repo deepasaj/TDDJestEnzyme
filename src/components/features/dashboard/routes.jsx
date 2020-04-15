@@ -1,17 +1,22 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Route, Switch } from 'react-router-dom';
-import Dashboard from "./";
 import { useFeaturePermission } from './hooks';
+import Dashboard from '.';
 
 const DashboardRoutes = ({ NotFound }) => {
-  const [hasReadAccess] = useFeaturePermission()
+  const [hasReadAccess] = useFeaturePermission();
 
   return hasReadAccess ? (
     <Switch>
-      <Route path='/dashboard' component={Dashboard} />
+      <Route path="/dashboard" component={Dashboard} />
       <Route component={NotFound} />
     </Switch>
-  ) : <Route component={NotFound} />
-}
+  ) : <Route component={NotFound} />;
+};
 
-export default DashboardRoutes
+DashboardRoutes.propTypes = {
+  NotFound: PropTypes.elementType.isRequired,
+};
+
+export default DashboardRoutes;

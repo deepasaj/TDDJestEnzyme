@@ -7,11 +7,11 @@ import './styles.css';
 
 const DashboardPage = () => {
   const breadcrumbsPath = [
-    { text: 'Home', path: '/'},
-    { text: 'Metrics', path: '/dashboard'},
+    { text: 'Home', path: '/' },
+    { text: 'Metrics', path: '/dashboard' },
   ];
   return (
-    <React.Fragment>
+    <>
       <NavBar />
       <Breadcrumbs paths={breadcrumbsPath} />
       <main id="main" role="main" className="dashboard-container">
@@ -19,8 +19,8 @@ const DashboardPage = () => {
           <Dashboard />
         </div>
       </main>
-    </React.Fragment>
+    </>
   );
-}
+};
 
 export default DashboardPage;

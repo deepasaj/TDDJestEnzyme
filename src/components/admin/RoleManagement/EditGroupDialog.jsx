@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -10,21 +11,21 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles(() => ({
   title: {
     paddingTop: '5px',
-    marginBottom: "-6px"
+    marginBottom: '-6px',
   },
   content: {
     minWidth: 300,
     margin: '0 10px',
-    paddingTop: "20px",
-    paddingBottom: "24px"
+    paddingTop: '20px',
+    paddingBottom: '24px',
   },
   actions: {
-    justifyContent: "center",
-    marginTop: "-10px",
-    marginBottom: "3px"
+    justifyContent: 'center',
+    marginTop: '-10px',
+    marginBottom: '3px',
   },
   updateButton: {
-    margin: '25px 0px 0px 25px'
+    margin: '25px 0px 0px 25px',
   },
   cancelButton: {
     marginTop: '25px',
@@ -34,7 +35,7 @@ const useStyles = makeStyles(() => ({
 
 const EditGroupDialog = ({ initialName, onClose, onProceed }) => {
   const classes = useStyles();
-  const [name, setName] = useState(initialName)
+  const [name, setName] = useState(initialName);
 
   return (
     <Dialog open onClose={onClose}>
@@ -48,12 +49,24 @@ const EditGroupDialog = ({ initialName, onClose, onProceed }) => {
         <Button className={classes.cancelButton} color="secondary" variant="contained" onClick={onClose}>
           Cancel
         </Button>
-        <Button className={classes.updateButton} type="submit" color="primary" variant="contained" onClick={() => onProceed(name)} >
+        <Button
+          className={classes.updateButton}
+          type="submit"
+          color="primary"
+          variant="contained"
+          onClick={() => onProceed(name)}
+        >
           Update
         </Button>
       </DialogActions>
     </Dialog>
-  )
-}
+  );
+};
 
-export default EditGroupDialog
+EditGroupDialog.propTypes = {
+  initialName: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onProceed: PropTypes.func.isRequired,
+};
+
+export default EditGroupDialog;

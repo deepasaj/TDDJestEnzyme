@@ -1,24 +1,24 @@
-import React from "react";
-import { useHistory } from 'react-router-dom'
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import AddCircleIcon from "@material-ui/icons/AddCircle";
-import BuildIcon from "@material-ui/icons/Build";
+import React from 'react';
+import { useHistory } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import BuildIcon from '@material-ui/icons/Build';
 import Breadcrumbs from 'components/Breadcrumbs';
 import NavBar from 'components/NavBar';
-import MenuCard from "components/MenuCard";
+import MenuCard from 'components/MenuCard';
 import './styles.css';
 
 const useStyles = makeStyles(() => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
   },
   mainGrid: {
-    justifyContent: "center"
+    justifyContent: 'center',
   },
   icon: {
-    fontSize: "70px",
-    margin: "7px "
+    fontSize: '70px',
+    margin: '7px ',
   },
 }));
 
@@ -31,7 +31,7 @@ const InventoryMenu = () => {
   ];
 
   return (
-    <React.Fragment>
+    <>
       <NavBar />
       <Breadcrumbs paths={breadcrumbsPath} />
       <main id="main" role="main" className="container">
@@ -44,7 +44,7 @@ const InventoryMenu = () => {
                   cardIcon={
                     <AddCircleIcon className={classes.icon} fontSize="large" />
                   }
-                  handleBtn={() => history.push('/inventory/bulk')}
+                  onClick={() => history.push('/inventory/bulk')}
                   btnText="Bulk Add Devices"
                   isDisabled={false}
                   height={180}
@@ -52,9 +52,9 @@ const InventoryMenu = () => {
               </Grid>
               <Grid item xs={5}>
                 <MenuCard
-                  title="Need to view, update, delete, or add a few devices in your inventory? get your puppet master game on now"
+                  title="Need to view, update, delete, or add a few devices in your inventory?"
                   cardIcon={<BuildIcon className={classes.icon} fontSize="large" />}
-                  handleBtn={() => history.push('/inventory/manage')}
+                  onClick={() => history.push('/inventory/manage')}
                   btnText="Manage"
                   isDisabled={false}
                   height={180}
@@ -64,7 +64,7 @@ const InventoryMenu = () => {
           </div>
         </div>
       </main>
-    </React.Fragment>
+    </>
   );
 };
 

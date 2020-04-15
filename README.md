@@ -31,7 +31,7 @@ npm run lint:fix # run the ESLint linter and automatically fix errors whenever p
 
 ## Install Helm Charts
 
-The helm config is in the helm and configmap directories. 
+The helm config is in the helm and configmap directories.
 
 To install the chart in `proteus-dev`:
 
