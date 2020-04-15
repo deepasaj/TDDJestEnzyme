@@ -70,7 +70,7 @@
     "url-loader": "^3.0.0",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.10.1",
+    "webpack-dev-server": "^3.10.3",
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
@@ -119,7 +119,6 @@
     "react-number-format": "^4.3.1",
     "react-promise": "^3.0.2",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "^1.1.5",
     "recharts": "^1.8.5",
     "rjsf-material-ui": "^0.3.9",
     "typeface-roboto": "^0.0.75",
