@@ -18,8 +18,8 @@ describe('User', () => {
     console.log(user.children().debug());
   }
 
-  const expectBreadcrumbsAsSecondChild = (user) => {
-    expect(user.childAt(1).equals(<Breadcrumbs paths={[{ text: 'Home', path: '/' }]}/>)).toBeTruthy();
+  const expectBreadcrumbsAsSecondChild = (user, props = [{ text: 'Home', path: '/' }]) => {
+    expect(user.childAt(1).equals(<Breadcrumbs paths={props}/>)).toBeTruthy();
   };
 
   const expectNavBarAsFirstChild = (user) => {
@@ -37,7 +37,19 @@ describe('User', () => {
     const user = shallow(<User />);
 
     expectNavBarAsFirstChild(user);
-    logUser(user)
     expectBreadcrumbsAsSecondChild(user);
   });
+
+  it('should render Breadcrumbs after NavBar with user info when the user has logged in', () => {
+    useUser.mockReturnValue(mockUser);
+
+    const user = shallow(<User />);
+
+    expectNavBarAsFirstChild(user);
+    expectBreadcrumbsAsSecondChild(user, [
+      { text: 'Home', path: '/' },
+      { text: `${mockUser.display_name}`, path: '/me' },
+    ]);
+  });
+
 });
