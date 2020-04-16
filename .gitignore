@@ -4,5 +4,8 @@
 # Build output
 /dist
 
+# Coverage report
+coverage
+
 .idea/
 .DS_Store

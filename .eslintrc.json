@@ -1,7 +1,8 @@
 {
   "env": {
     "browser": true,
-    "es6": true
+    "es6": true,
+    "jest/globals": true
   },
   "extends": [
     "plugin:react/recommended",
@@ -19,7 +20,8 @@
     "sourceType": "module"
   },
   "plugins": [
-    "react"
+    "react",
+    "jest"
   ],
   "rules": {
     "no-console": ["error", { "allow": ["warn", "error"] }],
