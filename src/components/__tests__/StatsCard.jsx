@@ -17,7 +17,7 @@ describe('Stats Card', () => {
     expect(cardContent.type()).toEqual(CardContent);
     expect(cardContent.children()).toHaveLength(2);
     expect(cardContent.childAt(0).type()).toEqual(Typography);
-    expect(cardContent.childAt(0).text()).toEqual(10);
+    expect(cardContent.childAt(0).text()).toEqual('10');
     expect(cardContent.childAt(1).type()).toEqual(Typography);
     expect(cardContent.childAt(1).text()).toEqual(sampleText);
   });
