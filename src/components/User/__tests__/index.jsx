@@ -35,7 +35,7 @@ describe('User', () => {
   };
 
   const expectMainBlock = (user) => {
-    let main = user.childAt(2);
+    const main = user.childAt(2);
     expect(main.type()).toEqual('main');
     expect(main.prop('role')).toEqual('main');
     expect(main.prop('id')).toEqual('main');
@@ -43,31 +43,31 @@ describe('User', () => {
   };
 
   const expectJustifyContentDiv = (user) => {
-    let main = user.childAt(2);
-    let justfyContentDiv = main.childAt(1);
+    const main = user.childAt(2);
+    const justfyContentDiv = main.childAt(1);
     expect(justfyContentDiv.type()).toEqual('div');
     expect(justfyContentDiv.prop('className')).toEqual('row justify-content-md-center');
   };
 
   const expectCardDiv = (user) => {
-    let main = user.childAt(2);
-    let cardDiv = main.childAt(1).children();
+    const main = user.childAt(2);
+    const cardDiv = main.childAt(1).children();
     expect(cardDiv.type()).toEqual('div');
     expect(cardDiv.prop('className')).toEqual('card');
   };
 
   const expectCardDivNotRendered = (user) => {
-    let main = user.childAt(2);
-    let justfyContentDiv = main.childAt(1);
+    const main = user.childAt(2);
+    const justfyContentDiv = main.childAt(1);
     console.log(justfyContentDiv.debug())
     expect(justfyContentDiv.children().length).toBe(0);
   };
 
   const expectAvatar = (user) => {
-    let main = user.childAt(2);
-    let cardDiv = main.childAt(1).children();
-    let cardHeader = cardDiv.childAt(0);
-    let avatarDiv = cardHeader.childAt(0);
+    const main = user.childAt(2);
+    const cardDiv = main.childAt(1).children();
+    const cardHeader = cardDiv.childAt(0);
+    const avatarDiv = cardHeader.childAt(0);
     const mockAvatarUrl = () => `url("${mockUser.avatar}")`;
 
     expect(cardHeader.type()).toEqual('div');
@@ -79,9 +79,9 @@ describe('User', () => {
   };
 
   const expectUserName = (user) => {
-    let main = user.childAt(2);
-    let cardDiv = main.childAt(1).children();
-    let cardBody = cardDiv.childAt(1);
+    const main = user.childAt(2);
+    const cardDiv = main.childAt(1).children();
+    const cardBody = cardDiv.childAt(1);
 
     expect(cardBody.type()).toEqual('div');
     expect(cardBody.prop('className')).toEqual('card-body');
@@ -95,7 +95,7 @@ describe('User', () => {
   };
 
   const expectFirstName = (user) => {
-    let cardBody = user.childAt(2).childAt(1).children().childAt(1);
+    const cardBody = user.childAt(2).childAt(1).children().childAt(1);
 
     expect(cardBody.childAt(1).equals(
       <ul>
@@ -107,7 +107,7 @@ describe('User', () => {
   };
 
   const expectLastName = (user) => {
-    let cardBody = user.childAt(2).childAt(1).children().childAt(1);
+    const cardBody = user.childAt(2).childAt(1).children().childAt(1);
 
     expect(cardBody.childAt(2).equals(
       <ul>
@@ -119,7 +119,7 @@ describe('User', () => {
   };
 
   const expectDisplayName = (user) => {
-    let cardBody = user.childAt(2).childAt(1).children().childAt(1);
+    const cardBody = user.childAt(2).childAt(1).children().childAt(1);
 
     expect(cardBody.childAt(3).equals(
       <ul>
@@ -132,7 +132,7 @@ describe('User', () => {
 
 
   const expectEmail = (user) => {
-    let cardBody = user.childAt(2).childAt(1).children().childAt(1);
+    const cardBody = user.childAt(2).childAt(1).children().childAt(1);
 
     expect(cardBody.childAt(4).equals(
       <ul>
@@ -161,7 +161,7 @@ describe('User', () => {
     expectBreadcrumbs(user);
   });
 
-  it('should render Breadcrumbs after NavBar with user info when the user has logged in', () => {
+  it('should render Breadcrumbs with user info when the user has logged in', () => {
     useUser.mockReturnValue(mockUser);
 
     const user = shallow(<User />);
