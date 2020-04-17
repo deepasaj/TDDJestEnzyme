@@ -2,30 +2,24 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import NavBar from 'components/NavBar';
 import { useUser } from 'store/store';
-import User from '../index';
 import Breadcrumbs from 'components/Breadcrumbs';
+import User from '../index';
 
 jest.mock('store/store');
 
 describe('User', () => {
-
-
-  //<editor-fold desc="Custom expects">
+  // <editor-fold desc="Custom expects">
   const mockUser = {
     display_name: 'Steichen, Joelle',
     email: 'Joelle.Steichen1@T-Mobile.com',
     avatar: 'any url',
     first_name: ' a first name',
     last_name: 'a last name',
-    username: 'a user name'
+    username: 'a user name',
   };
 
-  const logUser = (user) => {
-    console.log(user.children().debug());
-  }
-
   const expectBreadcrumbs = (user, expectedProps = [{ text: 'Home', path: '/' }]) => {
-    expect(user.childAt(1).equals(<Breadcrumbs paths={expectedProps}/>)).toBeTruthy();
+    expect(user.childAt(1).equals(<Breadcrumbs paths={expectedProps} />)).toBeTruthy();
   };
 
   const expectNavBarAsFirstChild = (user) => {
@@ -57,7 +51,6 @@ describe('User', () => {
   const expectCardDivNotRendered = (user) => {
     const main = user.childAt(2);
     const justfyContentDiv = main.childAt(1);
-    console.log(justfyContentDiv.debug())
     expect(justfyContentDiv.children().length).toBe(0);
   };
 
@@ -72,7 +65,6 @@ describe('User', () => {
     expect(cardHeader.prop('className')).toEqual('card-header text-center');
     expect(avatarDiv.type()).toEqual('div');
     expect(avatarDiv.prop('className')).toEqual('user-img-shape');
-    console.log(avatarDiv.prop('style'))
     expect(avatarDiv.prop('style')).toEqual({ backgroundImage: mockAvatarUrl() });
   };
 
@@ -87,9 +79,8 @@ describe('User', () => {
       <ul>
         <strong>Username: </strong>
         {mockUser.username}
-      </ul>
-      )
-    ).toBeTruthy();
+      </ul>,
+    )).toBeTruthy();
   };
 
   const expectFirstName = (user) => {
@@ -99,9 +90,8 @@ describe('User', () => {
       <ul>
         <strong>First name: </strong>
         {mockUser.first_name}
-      </ul>
-      )
-    ).toBeTruthy();
+      </ul>,
+    )).toBeTruthy();
   };
 
   const expectLastName = (user) => {
@@ -111,9 +101,8 @@ describe('User', () => {
       <ul>
         <strong>Last name: </strong>
         {mockUser.last_name}
-      </ul>
-      )
-    ).toBeTruthy();
+      </ul>,
+    )).toBeTruthy();
   };
 
   const expectDisplayName = (user) => {
@@ -123,9 +112,8 @@ describe('User', () => {
       <ul>
         <strong>Display name: </strong>
         {mockUser.display_name}
-      </ul>
-      )
-    ).toBeTruthy();
+      </ul>,
+    )).toBeTruthy();
   };
 
 
@@ -136,12 +124,11 @@ describe('User', () => {
       <ul>
         <strong>Email: </strong>
         {mockUser.email}
-      </ul>
-      )
-    ).toBeTruthy();
+      </ul>,
+    )).toBeTruthy();
   };
 
-  //</editor-fold>
+  // </editor-fold>
 
   beforeEach(() => {
     useUser.mockReturnValue(null);
@@ -170,79 +157,78 @@ describe('User', () => {
     ]);
   });
 
-  it("should renter main block", () => {
+  it('should renter main block', () => {
     const user = shallow(<User />);
 
-    expectMainBlock(user)
+    expectMainBlock(user);
   });
 
-  it("should renter a div inside main to justify content", () => {
+  it('should renter a div inside main to justify content', () => {
     const user = shallow(<User />);
 
-    expectJustifyContentDiv(user)
+    expectJustifyContentDiv(user);
   });
 
-  it("should render card div if user has logged in", () => {
+  it('should render card div if user has logged in', () => {
     useUser.mockReturnValue(mockUser);
 
     const user = shallow(<User />);
 
-    expectCardDiv(user)
+    expectCardDiv(user);
   });
 
-  it("should not render card div if user has not logged in", () => {
+  it('should not render card div if user has not logged in', () => {
     const user = shallow(<User />);
 
-    expectCardDivNotRendered(user)
+    expectCardDivNotRendered(user);
   });
 
-  it("should render avatar if user has logged in", () => {
+  it('should render avatar if user has logged in', () => {
     useUser.mockReturnValue(mockUser);
 
     const user = shallow(<User />);
 
-    expectAvatar(user)
+    expectAvatar(user);
   });
 
-  it("should render user name if user has logged in", () => {
+  it('should render user name if user has logged in', () => {
     useUser.mockReturnValue(mockUser);
 
     const user = shallow(<User />);
 
-    expectUserName(user)
+    expectUserName(user);
   });
 
-  it("should render first name if user has logged in", () => {
+  it('should render first name if user has logged in', () => {
     useUser.mockReturnValue(mockUser);
 
     const user = shallow(<User />);
 
-    expectFirstName(user)
+    expectFirstName(user);
   });
 
 
-  it("should render last name if user has logged in", () => {
+  it('should render last name if user has logged in', () => {
     useUser.mockReturnValue(mockUser);
 
     const user = shallow(<User />);
 
-    expectLastName(user)
+    expectLastName(user);
   });
 
-  it("should render display name if user has logged in", () => {
+  it('should render display name if user has logged in', () => {
     useUser.mockReturnValue(mockUser);
 
     const user = shallow(<User />);
 
-    expectDisplayName(user)
+    expectDisplayName(user);
   });
 
-  it("should render email if user has logged in", () => {
+  it('should render email if user has logged in', () => {
     useUser.mockReturnValue(mockUser);
 
     const user = shallow(<User />);
 
-    expectEmail(user)
+    expectEmail(user);
   });
-
 });
