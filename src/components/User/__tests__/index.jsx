@@ -7,8 +7,6 @@ import Breadcrumbs from 'components/Breadcrumbs';
 
 jest.mock('store/store');
 
-//TODO: what is <style> at line no 27
-
 describe('User', () => {
 
 
